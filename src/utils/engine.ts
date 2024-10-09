@@ -42,6 +42,9 @@ export function getEngine(): AiEngine {
 
     case OCO_AI_PROVIDER_ENUM.GROQ:
       return new GroqEngine(DEFAULT_CONFIG);
+    
+      case OCO_AI_PROVIDER_ENUM.MDENGIN : 
+      return new Md
 
     default:
       return new OpenAiEngine(DEFAULT_CONFIG);

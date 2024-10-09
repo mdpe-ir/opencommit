@@ -501,7 +501,7 @@ var require_parse = __commonJS({
     "use strict";
     var path5 = require("path");
     var resolveCommand = require_resolveCommand();
-    var escape2 = require_escape();
+    var escape = require_escape();
     var readShebang = require_readShebang();
     var isWin = process.platform === "win32";
     var isExecutableRegExp = /\.(?:com|exe)$/i;
@@ -525,8 +525,8 @@ var require_parse = __commonJS({
       if (parsed.options.forceShell || needsShell) {
         const needsDoubleEscapeMetaChars = isCmdShimRegExp.test(commandFile);
         parsed.command = path5.normalize(parsed.command);
-        parsed.command = escape2.command(parsed.command);
-        parsed.args = parsed.args.map((arg) => escape2.argument(arg, needsDoubleEscapeMetaChars));
+        parsed.command = escape.command(parsed.command);
+        parsed.args = parsed.args.map((arg) => escape.argument(arg, needsDoubleEscapeMetaChars));
         const shellCommand = [parsed.command].concat(parsed.args).join(" ");
         parsed.args = ["/d", "/s", "/c", `"${shellCommand}"`];
         parsed.command = process.env.comspec || "cmd.exe";
@@ -1178,11 +1178,11 @@ var require_main = __commonJS({
     function configDotenv(options) {
       const dotenvPath = path5.resolve(process.cwd(), ".env");
       let encoding = "utf8";
-      const debug3 = Boolean(options && options.debug);
+      const debug2 = Boolean(options && options.debug);
       if (options && options.encoding) {
         encoding = options.encoding;
       } else {
-        if (debug3) {
+        if (debug2) {
           _debug("No encoding is specified. UTF-8 is used by default");
         }
       }
@@ -1204,7 +1204,7 @@ var require_main = __commonJS({
           const parsed = DotenvModule.parse(fs7.readFileSync(path6, { encoding }));
           DotenvModule.populate(parsedAll, parsed, options);
         } catch (e3) {
-          if (debug3) {
+          if (debug2) {
             _debug(`Failed to load ${path6} ${e3.message}`);
           }
           lastError = e3;
@@ -1260,7 +1260,7 @@ var require_main = __commonJS({
       }
     }
     function populate(processEnv, parsed, options = {}) {
-      const debug3 = Boolean(options && options.debug);
+      const debug2 = Boolean(options && options.debug);
       const override = Boolean(options && options.override);
       if (typeof parsed !== "object") {
         const err = new Error("OBJECT_REQUIRED: Please check the processEnv argument being passed to populate");
@@ -1272,7 +1272,7 @@ var require_main = __commonJS({
           if (override === true) {
             processEnv[key] = parsed[key];
           }
-          if (debug3) {
+          if (debug2) {
             if (override === true) {
               _debug(`"${key}" is already defined and WAS overwritten`);
             } else {
@@ -1352,13 +1352,13 @@ var require_ini = __commonJS({
       }
       return out;
     };
-    var dotSplit = (str2) => str2.replace(/\1/g, "LITERAL\\1LITERAL").replace(/\\\./g, "").split(/\./).map((part) => part.replace(/\1/g, "\\.").replace(/\2LITERAL\\1LITERAL\2/g, ""));
-    var decode = (str2) => {
+    var dotSplit = (str) => str.replace(/\1/g, "LITERAL\\1LITERAL").replace(/\\\./g, "").split(/\./).map((part) => part.replace(/\1/g, "\\.").replace(/\2LITERAL\\1LITERAL\2/g, ""));
+    var decode = (str) => {
       const out = /* @__PURE__ */ Object.create(null);
       let p4 = out;
       let section = null;
       const re3 = /^\[([^\]]*)\]$|^([^=]+)(=(.*))?$/i;
-      const lines = str2.split(/[\r\n]+/g);
+      const lines = str.split(/[\r\n]+/g);
       for (const line of lines) {
         if (!line || line.match(/^\s*[;#]/)) {
           continue;
@@ -1678,8 +1678,8 @@ var require_tr46 = __commonJS({
       TRANSITIONAL: 0,
       NONTRANSITIONAL: 1
     };
-    function normalize(str2) {
-      return str2.split("\0").map(function(s2) {
+    function normalize(str) {
+      return str.split("\0").map(function(s2) {
         return s2.normalize("NFC");
       }).join("\0");
     }
@@ -1846,8 +1846,8 @@ var require_url_state_machine = __commonJS({
       wss: 443
     };
     var failure = Symbol("failure");
-    function countSymbols(str2) {
-      return punycode.ucs2.decode(str2).length;
+    function countSymbols(str) {
+      return punycode.ucs2.decode(str).length;
     }
     function at2(input, idx) {
       const c3 = input[idx];
@@ -1905,14 +1905,14 @@ var require_url_state_machine = __commonJS({
     }
     function utf8PercentEncode(c3) {
       const buf = new Buffer(c3);
-      let str2 = "";
+      let str = "";
       for (let i3 = 0; i3 < buf.length; ++i3) {
-        str2 += percentEncode(buf[i3]);
+        str += percentEncode(buf[i3]);
       }
-      return str2;
+      return str;
     }
-    function utf8PercentDecode(str2) {
-      const input = new Buffer(str2);
+    function utf8PercentDecode(str) {
+      const input = new Buffer(str);
       const output = [];
       for (let i3 = 0; i3 < input.length; ++i3) {
         if (input[i3] !== 37) {
@@ -3264,16 +3264,16 @@ var require_lib2 = __commonJS({
     function _interopDefault(ex) {
       return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
     }
-    var Stream3 = _interopDefault(require("stream"));
+    var Stream2 = _interopDefault(require("stream"));
     var http3 = _interopDefault(require("http"));
     var Url = _interopDefault(require("url"));
     var whatwgUrl = _interopDefault(require_public_api());
     var https3 = _interopDefault(require("https"));
     var zlib3 = _interopDefault(require("zlib"));
-    var Readable5 = Stream3.Readable;
+    var Readable4 = Stream2.Readable;
     var BUFFER = Symbol("buffer");
     var TYPE = Symbol("type");
-    var Blob5 = class {
+    var Blob4 = class {
       constructor() {
         this[TYPE] = "";
         const blobParts = arguments[0];
@@ -3292,7 +3292,7 @@ var require_lib2 = __commonJS({
               buffer = Buffer.from(element.buffer, element.byteOffset, element.byteLength);
             } else if (element instanceof ArrayBuffer) {
               buffer = Buffer.from(element);
-            } else if (element instanceof Blob5) {
+            } else if (element instanceof Blob4) {
               buffer = element[BUFFER];
             } else {
               buffer = Buffer.from(typeof element === "string" ? element : String(element));
@@ -3322,7 +3322,7 @@ var require_lib2 = __commonJS({
         return Promise.resolve(ab);
       }
       stream() {
-        const readable = new Readable5();
+        const readable = new Readable4();
         readable._read = function() {
         };
         readable.push(this[BUFFER]);
@@ -3354,17 +3354,17 @@ var require_lib2 = __commonJS({
         const span = Math.max(relativeEnd - relativeStart, 0);
         const buffer = this[BUFFER];
         const slicedBuffer = buffer.slice(relativeStart, relativeStart + span);
-        const blob = new Blob5([], { type: arguments[2] });
+        const blob = new Blob4([], { type: arguments[2] });
         blob[BUFFER] = slicedBuffer;
         return blob;
       }
     };
-    Object.defineProperties(Blob5.prototype, {
+    Object.defineProperties(Blob4.prototype, {
       size: { enumerable: true },
       type: { enumerable: true },
       slice: { enumerable: true }
     });
-    Object.defineProperty(Blob5.prototype, Symbol.toStringTag, {
+    Object.defineProperty(Blob4.prototype, Symbol.toStringTag, {
       value: "Blob",
       writable: false,
       enumerable: false,
@@ -3388,7 +3388,7 @@ var require_lib2 = __commonJS({
     } catch (e3) {
     }
     var INTERNALS = Symbol("Body internals");
-    var PassThrough = Stream3.PassThrough;
+    var PassThrough = Stream2.PassThrough;
     function Body(body) {
       var _this = this;
       var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, _ref$size = _ref.size;
@@ -3407,7 +3407,7 @@ var require_lib2 = __commonJS({
         body = Buffer.from(body);
       } else if (ArrayBuffer.isView(body)) {
         body = Buffer.from(body.buffer, body.byteOffset, body.byteLength);
-      } else if (body instanceof Stream3)
+      } else if (body instanceof Stream2)
         ;
       else {
         body = Buffer.from(String(body));
@@ -3419,7 +3419,7 @@ var require_lib2 = __commonJS({
       };
       this.size = size;
       this.timeout = timeout;
-      if (body instanceof Stream3) {
+      if (body instanceof Stream2) {
         body.on("error", function(err) {
           const error = err.name === "AbortError" ? err : new FetchError(`Invalid response body while trying to fetch ${_this.url}: ${err.message}`, "system", err);
           _this[INTERNALS].error = error;
@@ -3442,7 +3442,7 @@ var require_lib2 = __commonJS({
         let ct2 = this.headers && this.headers.get("content-type") || "";
         return consumeBody.call(this).then(function(buf) {
           return Object.assign(
-            new Blob5([], {
+            new Blob4([], {
               type: ct2.toLowerCase()
             }),
             {
@@ -3511,7 +3511,7 @@ var require_lib2 = __commonJS({
       if (Buffer.isBuffer(body)) {
         return Body.Promise.resolve(body);
       }
-      if (!(body instanceof Stream3)) {
+      if (!(body instanceof Stream2)) {
         return Body.Promise.resolve(Buffer.alloc(0));
       }
       let accum = [];
@@ -3564,18 +3564,18 @@ var require_lib2 = __commonJS({
       }
       const ct2 = headers.get("content-type");
       let charset = "utf-8";
-      let res, str2;
+      let res, str;
       if (ct2) {
         res = /charset=([^;]*)/i.exec(ct2);
       }
-      str2 = buffer.slice(0, 1024).toString();
-      if (!res && str2) {
-        res = /<meta.+?charset=(['"])(.+?)\1/i.exec(str2);
+      str = buffer.slice(0, 1024).toString();
+      if (!res && str) {
+        res = /<meta.+?charset=(['"])(.+?)\1/i.exec(str);
       }
-      if (!res && str2) {
-        res = /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(str2);
+      if (!res && str) {
+        res = /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(str);
         if (!res) {
-          res = /<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(str2);
+          res = /<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(str);
           if (res) {
             res.pop();
           }
@@ -3584,8 +3584,8 @@ var require_lib2 = __commonJS({
           res = /charset=(.*)/i.exec(res.pop());
         }
       }
-      if (!res && str2) {
-        res = /<\?xml.+?encoding=(['"])(.+?)\1/i.exec(str2);
+      if (!res && str) {
+        res = /<\?xml.+?encoding=(['"])(.+?)\1/i.exec(str);
       }
       if (res) {
         charset = res.pop();
@@ -3610,7 +3610,7 @@ var require_lib2 = __commonJS({
       if (instance.bodyUsed) {
         throw new Error("cannot clone body after it is used");
       }
-      if (body instanceof Stream3 && typeof body.getBoundary !== "function") {
+      if (body instanceof Stream2 && typeof body.getBoundary !== "function") {
         p1 = new PassThrough();
         p22 = new PassThrough();
         body.pipe(p1);
@@ -3637,7 +3637,7 @@ var require_lib2 = __commonJS({
         return null;
       } else if (typeof body.getBoundary === "function") {
         return `multipart/form-data;boundary=${body.getBoundary()}`;
-      } else if (body instanceof Stream3) {
+      } else if (body instanceof Stream2) {
         return null;
       } else {
         return "text/plain;charset=UTF-8";
@@ -3698,11 +3698,11 @@ var require_lib2 = __commonJS({
       return void 0;
     }
     var MAP = Symbol("map");
-    var Headers6 = class {
+    var Headers4 = class {
       constructor() {
         let init = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : void 0;
         this[MAP] = /* @__PURE__ */ Object.create(null);
-        if (init instanceof Headers6) {
+        if (init instanceof Headers4) {
           const rawHeaders = init.raw();
           const headerNames = Object.keys(rawHeaders);
           for (const headerName of headerNames) {
@@ -3810,14 +3810,14 @@ var require_lib2 = __commonJS({
         return createHeadersIterator(this, "key+value");
       }
     };
-    Headers6.prototype.entries = Headers6.prototype[Symbol.iterator];
-    Object.defineProperty(Headers6.prototype, Symbol.toStringTag, {
+    Headers4.prototype.entries = Headers4.prototype[Symbol.iterator];
+    Object.defineProperty(Headers4.prototype, Symbol.toStringTag, {
       value: "Headers",
       writable: false,
       enumerable: false,
       configurable: true
     });
-    Object.defineProperties(Headers6.prototype, {
+    Object.defineProperties(Headers4.prototype, {
       get: { enumerable: true },
       forEach: { enumerable: true },
       set: { enumerable: true },
@@ -3829,22 +3829,22 @@ var require_lib2 = __commonJS({
       entries: { enumerable: true }
     });
     function getHeaders2(headers) {
-      let kind3 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "key+value";
+      let kind2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "key+value";
       const keys = Object.keys(headers[MAP]).sort();
-      return keys.map(kind3 === "key" ? function(k7) {
+      return keys.map(kind2 === "key" ? function(k7) {
         return k7.toLowerCase();
-      } : kind3 === "value" ? function(k7) {
+      } : kind2 === "value" ? function(k7) {
         return headers[MAP][k7].join(", ");
       } : function(k7) {
         return [k7.toLowerCase(), headers[MAP][k7].join(", ")];
       });
     }
     var INTERNAL = Symbol("internal");
-    function createHeadersIterator(target, kind3) {
+    function createHeadersIterator(target, kind2) {
       const iterator = Object.create(HeadersIteratorPrototype);
       iterator[INTERNAL] = {
         target,
-        kind: kind3,
+        kind: kind2,
         index: 0
       };
       return iterator;
@@ -3855,8 +3855,8 @@ var require_lib2 = __commonJS({
           throw new TypeError("Value of `this` is not a HeadersIterator");
         }
         var _INTERNAL = this[INTERNAL];
-        const target = _INTERNAL.target, kind3 = _INTERNAL.kind, index = _INTERNAL.index;
-        const values = getHeaders2(target, kind3);
+        const target = _INTERNAL.target, kind2 = _INTERNAL.kind, index = _INTERNAL.index;
+        const values = getHeaders2(target, kind2);
         const len = values.length;
         if (index >= len) {
           return {
@@ -3886,7 +3886,7 @@ var require_lib2 = __commonJS({
       return obj;
     }
     function createHeadersLenient(obj) {
-      const headers = new Headers6();
+      const headers = new Headers4();
       for (const name of Object.keys(obj)) {
         if (invalidTokenRegex.test(name)) {
           continue;
@@ -3910,13 +3910,13 @@ var require_lib2 = __commonJS({
     }
     var INTERNALS$1 = Symbol("Response internals");
     var STATUS_CODES = http3.STATUS_CODES;
-    var Response6 = class {
+    var Response4 = class {
       constructor() {
         let body = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
         let opts = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         Body.call(this, body, opts);
         const status = opts.status || 200;
-        const headers = new Headers6(opts.headers);
+        const headers = new Headers4(opts.headers);
         if (body != null && !headers.has("Content-Type")) {
           const contentType = extractContentType(body);
           if (contentType) {
@@ -3950,7 +3950,7 @@ var require_lib2 = __commonJS({
         return this[INTERNALS$1].headers;
       }
       clone() {
-        return new Response6(clone(this), {
+        return new Response4(clone(this), {
           url: this.url,
           status: this.status,
           statusText: this.statusText,
@@ -3960,8 +3960,8 @@ var require_lib2 = __commonJS({
         });
       }
     };
-    Body.mixIn(Response6.prototype);
-    Object.defineProperties(Response6.prototype, {
+    Body.mixIn(Response4.prototype);
+    Object.defineProperties(Response4.prototype, {
       url: { enumerable: true },
       status: { enumerable: true },
       ok: { enumerable: true },
@@ -3970,7 +3970,7 @@ var require_lib2 = __commonJS({
       headers: { enumerable: true },
       clone: { enumerable: true }
     });
-    Object.defineProperty(Response6.prototype, Symbol.toStringTag, {
+    Object.defineProperty(Response4.prototype, Symbol.toStringTag, {
       value: "Response",
       writable: false,
       enumerable: false,
@@ -3986,7 +3986,7 @@ var require_lib2 = __commonJS({
       }
       return parse_url(urlStr);
     }
-    var streamDestructionSupported = "destroy" in Stream3.Readable.prototype;
+    var streamDestructionSupported = "destroy" in Stream2.Readable.prototype;
     function isRequest2(input) {
       return typeof input === "object" && typeof input[INTERNALS$2] === "object";
     }
@@ -3994,7 +3994,7 @@ var require_lib2 = __commonJS({
       const proto2 = signal && typeof signal === "object" && Object.getPrototypeOf(signal);
       return !!(proto2 && proto2.constructor.name === "AbortSignal");
     }
-    var Request6 = class {
+    var Request4 = class {
       constructor(input) {
         let init = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         let parsedURL;
@@ -4018,7 +4018,7 @@ var require_lib2 = __commonJS({
           timeout: init.timeout || input.timeout || 0,
           size: init.size || input.size || 0
         });
-        const headers = new Headers6(init.headers || input.headers || {});
+        const headers = new Headers4(init.headers || input.headers || {});
         if (inputBody != null && !headers.has("Content-Type")) {
           const contentType = extractContentType(inputBody);
           if (contentType) {
@@ -4059,17 +4059,17 @@ var require_lib2 = __commonJS({
         return this[INTERNALS$2].signal;
       }
       clone() {
-        return new Request6(this);
+        return new Request4(this);
       }
     };
-    Body.mixIn(Request6.prototype);
-    Object.defineProperty(Request6.prototype, Symbol.toStringTag, {
+    Body.mixIn(Request4.prototype);
+    Object.defineProperty(Request4.prototype, Symbol.toStringTag, {
       value: "Request",
       writable: false,
       enumerable: false,
       configurable: true
     });
-    Object.defineProperties(Request6.prototype, {
+    Object.defineProperties(Request4.prototype, {
       method: { enumerable: true },
       url: { enumerable: true },
       headers: { enumerable: true },
@@ -4079,7 +4079,7 @@ var require_lib2 = __commonJS({
     });
     function getNodeRequestOptions(request3) {
       const parsedURL = request3[INTERNALS$2].parsedURL;
-      const headers = new Headers6(request3[INTERNALS$2].headers);
+      const headers = new Headers4(request3[INTERNALS$2].headers);
       if (!headers.has("Accept")) {
         headers.set("Accept", "*/*");
       }
@@ -4089,7 +4089,7 @@ var require_lib2 = __commonJS({
       if (!/^https?:$/.test(parsedURL.protocol)) {
         throw new TypeError("Only HTTP(S) protocols are supported");
       }
-      if (request3.signal && request3.body instanceof Stream3.Readable && !streamDestructionSupported) {
+      if (request3.signal && request3.body instanceof Stream2.Readable && !streamDestructionSupported) {
         throw new Error("Cancellation of streamed requests with AbortSignal is not supported in node < 8");
       }
       let contentLengthValue = null;
@@ -4131,7 +4131,7 @@ var require_lib2 = __commonJS({
     AbortError2.prototype.constructor = AbortError2;
     AbortError2.prototype.name = "AbortError";
     var URL$1 = Url.URL || whatwgUrl.URL;
-    var PassThrough$1 = Stream3.PassThrough;
+    var PassThrough$1 = Stream2.PassThrough;
     var isDomainOrSubdomain = function isDomainOrSubdomain2(destination, original) {
       const orig = new URL$1(original).hostname;
       const dest = new URL$1(destination).hostname;
@@ -4142,13 +4142,13 @@ var require_lib2 = __commonJS({
       const dest = new URL$1(destination).protocol;
       return orig === dest;
     };
-    function fetch4(url2, opts) {
-      if (!fetch4.Promise) {
+    function fetch3(url2, opts) {
+      if (!fetch3.Promise) {
         throw new Error("native promise missing, set fetch.Promise to your favorite alternative");
       }
-      Body.Promise = fetch4.Promise;
-      return new fetch4.Promise(function(resolve, reject) {
-        const request3 = new Request6(url2, opts);
+      Body.Promise = fetch3.Promise;
+      return new fetch3.Promise(function(resolve, reject) {
+        const request3 = new Request4(url2, opts);
         const options = getNodeRequestOptions(request3);
         const send = (options.protocol === "https:" ? https3 : http3).request;
         const signal = request3.signal;
@@ -4156,7 +4156,7 @@ var require_lib2 = __commonJS({
         const abort = function abort2() {
           let error = new AbortError2("The user aborted a request.");
           reject(error);
-          if (request3.body && request3.body instanceof Stream3.Readable) {
+          if (request3.body && request3.body instanceof Stream2.Readable) {
             destroyStream(request3.body, error);
           }
           if (!response || !response.body)
@@ -4220,7 +4220,7 @@ var require_lib2 = __commonJS({
         req.on("response", function(res) {
           clearTimeout(reqTimeout);
           const headers = createHeadersLenient(res.headers);
-          if (fetch4.isRedirect(res.statusCode)) {
+          if (fetch3.isRedirect(res.statusCode)) {
             const location = headers.get("Location");
             let locationURL = null;
             try {
@@ -4256,7 +4256,7 @@ var require_lib2 = __commonJS({
                   return;
                 }
                 const requestOpts = {
-                  headers: new Headers6(request3.headers),
+                  headers: new Headers4(request3.headers),
                   follow: request3.follow,
                   counter: request3.counter + 1,
                   agent: request3.agent,
@@ -4282,7 +4282,7 @@ var require_lib2 = __commonJS({
                   requestOpts.body = void 0;
                   requestOpts.headers.delete("content-length");
                 }
-                resolve(fetch4(new Request6(locationURL, requestOpts)));
+                resolve(fetch3(new Request4(locationURL, requestOpts)));
                 finalize();
                 return;
             }
@@ -4303,7 +4303,7 @@ var require_lib2 = __commonJS({
           };
           const codings = headers.get("Content-Encoding");
           if (!request3.compress || request3.method === "HEAD" || codings === null || res.statusCode === 204 || res.statusCode === 304) {
-            response = new Response6(body, response_options);
+            response = new Response4(body, response_options);
             resolve(response);
             return;
           }
@@ -4313,7 +4313,7 @@ var require_lib2 = __commonJS({
           };
           if (codings == "gzip" || codings == "x-gzip") {
             body = body.pipe(zlib3.createGunzip(zlibOptions2));
-            response = new Response6(body, response_options);
+            response = new Response4(body, response_options);
             resolve(response);
             return;
           }
@@ -4325,12 +4325,12 @@ var require_lib2 = __commonJS({
               } else {
                 body = body.pipe(zlib3.createInflateRaw());
               }
-              response = new Response6(body, response_options);
+              response = new Response4(body, response_options);
               resolve(response);
             });
             raw.on("end", function() {
               if (!response) {
-                response = new Response6(body, response_options);
+                response = new Response4(body, response_options);
                 resolve(response);
               }
             });
@@ -4338,11 +4338,11 @@ var require_lib2 = __commonJS({
           }
           if (codings == "br" && typeof zlib3.createBrotliDecompress === "function") {
             body = body.pipe(zlib3.createBrotliDecompress());
-            response = new Response6(body, response_options);
+            response = new Response4(body, response_options);
             resolve(response);
             return;
           }
-          response = new Response6(body, response_options);
+          response = new Response4(body, response_options);
           resolve(response);
         });
         writeToStream(req, request3);
@@ -4375,16 +4375,16 @@ var require_lib2 = __commonJS({
         stream4.end();
       }
     }
-    fetch4.isRedirect = function(code) {
+    fetch3.isRedirect = function(code) {
       return code === 301 || code === 302 || code === 303 || code === 307 || code === 308;
     };
-    fetch4.Promise = global.Promise;
-    module2.exports = exports = fetch4;
+    fetch3.Promise = global.Promise;
+    module2.exports = exports = fetch3;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = exports;
-    exports.Headers = Headers6;
-    exports.Request = Request6;
-    exports.Response = Response6;
+    exports.Headers = Headers4;
+    exports.Request = Request4;
+    exports.Response = Response4;
     exports.FetchError = FetchError;
     exports.AbortError = AbortError2;
   }
@@ -4555,13 +4555,13 @@ function J4(e3) {
 function K5(e3) {
   return !!r2(e3) && (!!Object.prototype.hasOwnProperty.call(e3, "_readRequests") && e3 instanceof ReadableStreamDefaultReader);
 }
-function Z5(e3, t2) {
+function Z4(e3, t2) {
   const r3 = e3._readRequests;
   e3._readRequests = new S5(), r3.forEach((e4) => {
     e4._errorSteps(t2);
   });
 }
-function ee2(e3) {
+function ee(e3) {
   return new TypeError(`ReadableStreamDefaultReader.prototype.${e3} can only be used on a ReadableStreamDefaultReader`);
 }
 function oe(e3) {
@@ -5326,7 +5326,7 @@ function Xt(e3) {
 function Jt(e3, t2) {
   e3._state = "errored", e3._storedError = t2;
   const r3 = e3._reader;
-  void 0 !== r3 && (A4(r3, t2), K5(r3) ? Z5(r3, t2) : Ie(r3, t2));
+  void 0 !== r3 && (A4(r3, t2), K5(r3) ? Z4(r3, t2) : Ie(r3, t2));
 }
 function Kt(e3) {
   return new TypeError(`ReadableStream.prototype.${e3} can only be used on a ReadableStream`);
@@ -5512,14 +5512,14 @@ var init_ponyfill = __esm({
         E3(this, e3), this._readRequests = new S5();
       }
       get closed() {
-        return K5(this) ? this._closedPromise : d6(ee2("closed"));
+        return K5(this) ? this._closedPromise : d6(ee("closed"));
       }
       cancel(e3) {
-        return K5(this) ? void 0 === this._ownerReadableStream ? d6(k6("cancel")) : P3(this, e3) : d6(ee2("cancel"));
+        return K5(this) ? void 0 === this._ownerReadableStream ? d6(k6("cancel")) : P3(this, e3) : d6(ee("cancel"));
       }
       read() {
         if (!K5(this))
-          return d6(ee2("read"));
+          return d6(ee("read"));
         if (void 0 === this._ownerReadableStream)
           return d6(k6("read from"));
         let e3, t2;
@@ -5533,11 +5533,11 @@ var init_ponyfill = __esm({
       }
       releaseLock() {
         if (!K5(this))
-          throw ee2("releaseLock");
+          throw ee("releaseLock");
         void 0 !== this._ownerReadableStream && function(e3) {
           W5(e3);
           const t2 = new TypeError("Reader was released");
-          Z5(e3, t2);
+          Z4(e3, t2);
         }(this);
       }
     };
@@ -6474,21 +6474,21 @@ var init_Blob = __esm({
     init_ponyfill();
     init_isFunction();
     init_blobHelpers();
-    __classPrivateFieldGet = function(receiver, state2, kind3, f4) {
-      if (kind3 === "a" && !f4)
+    __classPrivateFieldGet = function(receiver, state2, kind2, f4) {
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a getter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot read private member from an object whose class did not declare it");
-      return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+      return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
     };
-    __classPrivateFieldSet = function(receiver, state2, value, kind3, f4) {
-      if (kind3 === "m")
+    __classPrivateFieldSet = function(receiver, state2, value, kind2, f4) {
+      if (kind2 === "m")
         throw new TypeError("Private method is not writable");
-      if (kind3 === "a" && !f4)
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a setter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot write private member to an object whose class did not declare it");
-      return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+      return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
     };
     Blob3 = class {
       constructor(blobParts = [], options = {}) {
@@ -6590,21 +6590,21 @@ var __classPrivateFieldSet2, __classPrivateFieldGet2, _File_name, _File_lastModi
 var init_File = __esm({
   "node_modules/formdata-node/lib/esm/File.js"() {
     init_Blob();
-    __classPrivateFieldSet2 = function(receiver, state2, value, kind3, f4) {
-      if (kind3 === "m")
+    __classPrivateFieldSet2 = function(receiver, state2, value, kind2, f4) {
+      if (kind2 === "m")
         throw new TypeError("Private method is not writable");
-      if (kind3 === "a" && !f4)
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a setter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot write private member to an object whose class did not declare it");
-      return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+      return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
     };
-    __classPrivateFieldGet2 = function(receiver, state2, kind3, f4) {
-      if (kind3 === "a" && !f4)
+    __classPrivateFieldGet2 = function(receiver, state2, kind2, f4) {
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a getter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot read private member from an object whose class did not declare it");
-      return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+      return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
     };
     File3 = class extends Blob3 {
       constructor(fileBits, name, options = {}) {
@@ -6669,13 +6669,13 @@ var require_ms = __commonJS({
         "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
       );
     };
-    function parse(str2) {
-      str2 = String(str2);
-      if (str2.length > 100) {
+    function parse(str) {
+      str = String(str);
+      if (str.length > 100) {
         return;
       }
       var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
-        str2
+        str
       );
       if (!match) {
         return;
@@ -6806,7 +6806,7 @@ var require_agent = __commonJS({
     "use strict";
     var OriginalAgent = require("http").Agent;
     var ms = require_humanize_ms();
-    var debug3 = require("util").debuglog("agentkeepalive");
+    var debug2 = require("util").debuglog("agentkeepalive");
     var {
       INIT_SOCKET,
       CURRENT_ID,
@@ -6909,7 +6909,7 @@ var require_agent = __commonJS({
           return true;
         }
         if (customTimeout <= 0) {
-          debug3(
+          debug2(
             "%s(requests: %s, finished: %s) free but need to destroy by TTL, request count %s, diff is %s",
             socket[SOCKET_NAME],
             socket[SOCKET_REQUEST_COUNT],
@@ -6931,10 +6931,10 @@ var require_agent = __commonJS({
         const agentTimeout = this.options.timeout;
         if (getSocketTimeout(socket) !== agentTimeout) {
           socket.setTimeout(agentTimeout);
-          debug3("%s reset timeout to %sms", socket[SOCKET_NAME], agentTimeout);
+          debug2("%s reset timeout to %sms", socket[SOCKET_NAME], agentTimeout);
         }
         socket[SOCKET_REQUEST_COUNT]++;
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) reuse on addRequest, timeout %sms",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7015,13 +7015,13 @@ var require_agent = __commonJS({
       return socket.timeout || socket._idleTimeout;
     }
     function installListeners(agent, socket, options) {
-      debug3("%s create, timeout %sms", socket[SOCKET_NAME], getSocketTimeout(socket));
+      debug2("%s create, timeout %sms", socket[SOCKET_NAME], getSocketTimeout(socket));
       function onFree() {
         if (!socket._httpMessage && socket[SOCKET_REQUEST_COUNT] === 1)
           return;
         socket[SOCKET_REQUEST_FINISHED_COUNT]++;
         agent.requestCount++;
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) free",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7030,7 +7030,7 @@ var require_agent = __commonJS({
         const name = agent.getName(options);
         if (socket.writable && agent.requests[name] && agent.requests[name].length) {
           socket[SOCKET_REQUEST_COUNT]++;
-          debug3(
+          debug2(
             "%s(requests: %s, finished: %s) will be reuse on agent free event",
             socket[SOCKET_NAME],
             socket[SOCKET_REQUEST_COUNT],
@@ -7040,7 +7040,7 @@ var require_agent = __commonJS({
       }
       socket.on("free", onFree);
       function onClose(isError2) {
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) close, isError: %s",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7055,7 +7055,7 @@ var require_agent = __commonJS({
         const timeout = getSocketTimeout(socket);
         const req = socket._httpMessage;
         const reqTimeoutListenerCount = req && req.listeners("timeout").length || 0;
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) timeout after %sms, listeners %s, defaultTimeoutListenerCount %s, hasHttpRequest %s, HttpRequest timeoutListenerCount %s",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7066,15 +7066,15 @@ var require_agent = __commonJS({
           !!req,
           reqTimeoutListenerCount
         );
-        if (debug3.enabled) {
-          debug3("timeout listeners: %s", socket.listeners("timeout").map((f4) => f4.name).join(", "));
+        if (debug2.enabled) {
+          debug2("timeout listeners: %s", socket.listeners("timeout").map((f4) => f4.name).join(", "));
         }
         agent.timeoutSocketCount++;
         const name = agent.getName(options);
         if (agent.freeSockets[name] && agent.freeSockets[name].indexOf(socket) !== -1) {
           socket.destroy();
           agent.removeSocket(socket, options);
-          debug3("%s is free, destroy quietly", socket[SOCKET_NAME]);
+          debug2("%s is free, destroy quietly", socket[SOCKET_NAME]);
         } else {
           if (reqTimeoutListenerCount === 0) {
             const error = new Error("Socket timeout");
@@ -7082,14 +7082,14 @@ var require_agent = __commonJS({
             error.timeout = timeout;
             socket.destroy(error);
             agent.removeSocket(socket, options);
-            debug3("%s destroy with timeout error", socket[SOCKET_NAME]);
+            debug2("%s destroy with timeout error", socket[SOCKET_NAME]);
           }
         }
       }
       socket.on("timeout", onTimeout);
       function onError(err) {
         const listenerCount = socket.listeners("error").length;
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) error: %s, listenerCount: %s",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7099,14 +7099,14 @@ var require_agent = __commonJS({
         );
         agent.errorSocketCount++;
         if (listenerCount === 1) {
-          debug3("%s emit uncaught error event", socket[SOCKET_NAME]);
+          debug2("%s emit uncaught error event", socket[SOCKET_NAME]);
           socket.removeListener("error", onError);
           socket.emit("error", err);
         }
       }
       socket.on("error", onError);
       function onRemove() {
-        debug3(
+        debug2(
           "%s(requests: %s, finished: %s) agentRemove",
           socket[SOCKET_NAME],
           socket[SOCKET_REQUEST_COUNT],
@@ -7751,7 +7751,7 @@ var require_ponyfill_es2018 = __commonJS({
             value: name,
             configurable: true
           });
-        } catch (_a6) {
+        } catch (_a5) {
         }
       }
       const originalPromise = Promise;
@@ -8246,7 +8246,7 @@ var require_ponyfill_es2018 = __commonJS({
         }
         try {
           return x5._asyncIteratorImpl instanceof ReadableStreamAsyncIteratorImpl;
-        } catch (_a6) {
+        } catch (_a5) {
           return false;
         }
       }
@@ -8256,7 +8256,7 @@ var require_ponyfill_es2018 = __commonJS({
       const NumberIsNaN = Number.isNaN || function(x5) {
         return x5 !== x5;
       };
-      var _a5, _b2, _c2;
+      var _a4, _b2, _c2;
       function CreateArrayFromList(elements) {
         return elements.slice();
       }
@@ -8310,7 +8310,7 @@ var require_ponyfill_es2018 = __commonJS({
         const nextMethod = asyncIterator2.next;
         return { iterator: asyncIterator2, nextMethod, done: false };
       }
-      const SymbolAsyncIterator = (_c2 = (_a5 = Symbol.asyncIterator) !== null && _a5 !== void 0 ? _a5 : (_b2 = Symbol.for) === null || _b2 === void 0 ? void 0 : _b2.call(Symbol, "Symbol.asyncIterator")) !== null && _c2 !== void 0 ? _c2 : "@@asyncIterator";
+      const SymbolAsyncIterator = (_c2 = (_a4 = Symbol.asyncIterator) !== null && _a4 !== void 0 ? _a4 : (_b2 = Symbol.for) === null || _b2 === void 0 ? void 0 : _b2.call(Symbol, "Symbol.asyncIterator")) !== null && _c2 !== void 0 ? _c2 : "@@asyncIterator";
       function GetIterator(obj, hint = "sync", method) {
         if (method === void 0) {
           if (hint === "async") {
@@ -9067,9 +9067,9 @@ var require_ponyfill_es2018 = __commonJS({
         return mode;
       }
       function convertByobReadOptions(options, context) {
-        var _a6;
+        var _a5;
         assertDictionary(options, context);
-        const min = (_a6 = options === null || options === void 0 ? void 0 : options.min) !== null && _a6 !== void 0 ? _a6 : 1;
+        const min = (_a5 = options === null || options === void 0 ? void 0 : options.min) !== null && _a5 !== void 0 ? _a5 : 1;
         return {
           min: convertUnsignedLongLongWithEnforceRange(min, `${context} has member 'min' that`)
         };
@@ -9310,7 +9310,7 @@ var require_ponyfill_es2018 = __commonJS({
         }
         try {
           return typeof value.aborted === "boolean";
-        } catch (_a6) {
+        } catch (_a5) {
           return false;
         }
       }
@@ -9426,12 +9426,12 @@ var require_ponyfill_es2018 = __commonJS({
         return true;
       }
       function WritableStreamAbort(stream4, reason) {
-        var _a6;
+        var _a5;
         if (stream4._state === "closed" || stream4._state === "errored") {
           return promiseResolvedWith(void 0);
         }
         stream4._writableStreamController._abortReason = reason;
-        (_a6 = stream4._writableStreamController._abortController) === null || _a6 === void 0 ? void 0 : _a6.abort(reason);
+        (_a5 = stream4._writableStreamController._abortController) === null || _a5 === void 0 ? void 0 : _a5.abort(reason);
         const state2 = stream4._state;
         if (state2 === "closed" || state2 === "errored") {
           return promiseResolvedWith(void 0);
@@ -10139,7 +10139,7 @@ var require_ponyfill_es2018 = __commonJS({
         try {
           new ctor();
           return true;
-        } catch (_a6) {
+        } catch (_a5) {
           return false;
         }
       }
@@ -11037,7 +11037,7 @@ var require_ponyfill_es2018 = __commonJS({
         assertWritableStream(writable, `${context} has member 'writable' that`);
         return { readable, writable };
       }
-      class ReadableStream7 {
+      class ReadableStream5 {
         constructor(rawUnderlyingSource = {}, rawStrategy = {}) {
           if (rawUnderlyingSource === void 0) {
             rawUnderlyingSource = null;
@@ -11146,10 +11146,10 @@ var require_ponyfill_es2018 = __commonJS({
           return ReadableStreamFrom(asyncIterable);
         }
       }
-      Object.defineProperties(ReadableStream7, {
+      Object.defineProperties(ReadableStream5, {
         from: { enumerable: true }
       });
-      Object.defineProperties(ReadableStream7.prototype, {
+      Object.defineProperties(ReadableStream5.prototype, {
         cancel: { enumerable: true },
         getReader: { enumerable: true },
         pipeThrough: { enumerable: true },
@@ -11158,33 +11158,33 @@ var require_ponyfill_es2018 = __commonJS({
         values: { enumerable: true },
         locked: { enumerable: true }
       });
-      setFunctionName(ReadableStream7.from, "from");
-      setFunctionName(ReadableStream7.prototype.cancel, "cancel");
-      setFunctionName(ReadableStream7.prototype.getReader, "getReader");
-      setFunctionName(ReadableStream7.prototype.pipeThrough, "pipeThrough");
-      setFunctionName(ReadableStream7.prototype.pipeTo, "pipeTo");
-      setFunctionName(ReadableStream7.prototype.tee, "tee");
-      setFunctionName(ReadableStream7.prototype.values, "values");
+      setFunctionName(ReadableStream5.from, "from");
+      setFunctionName(ReadableStream5.prototype.cancel, "cancel");
+      setFunctionName(ReadableStream5.prototype.getReader, "getReader");
+      setFunctionName(ReadableStream5.prototype.pipeThrough, "pipeThrough");
+      setFunctionName(ReadableStream5.prototype.pipeTo, "pipeTo");
+      setFunctionName(ReadableStream5.prototype.tee, "tee");
+      setFunctionName(ReadableStream5.prototype.values, "values");
       if (typeof Symbol.toStringTag === "symbol") {
-        Object.defineProperty(ReadableStream7.prototype, Symbol.toStringTag, {
+        Object.defineProperty(ReadableStream5.prototype, Symbol.toStringTag, {
           value: "ReadableStream",
           configurable: true
         });
       }
-      Object.defineProperty(ReadableStream7.prototype, SymbolAsyncIterator, {
-        value: ReadableStream7.prototype.values,
+      Object.defineProperty(ReadableStream5.prototype, SymbolAsyncIterator, {
+        value: ReadableStream5.prototype.values,
         writable: true,
         configurable: true
       });
       function CreateReadableStream(startAlgorithm, pullAlgorithm, cancelAlgorithm, highWaterMark = 1, sizeAlgorithm = () => 1) {
-        const stream4 = Object.create(ReadableStream7.prototype);
+        const stream4 = Object.create(ReadableStream5.prototype);
         InitializeReadableStream(stream4);
         const controller = Object.create(ReadableStreamDefaultController2.prototype);
         SetUpReadableStreamDefaultController(stream4, controller, startAlgorithm, pullAlgorithm, cancelAlgorithm, highWaterMark, sizeAlgorithm);
         return stream4;
       }
       function CreateReadableByteStream(startAlgorithm, pullAlgorithm, cancelAlgorithm) {
-        const stream4 = Object.create(ReadableStream7.prototype);
+        const stream4 = Object.create(ReadableStream5.prototype);
         InitializeReadableStream(stream4);
         const controller = Object.create(ReadableByteStreamController2.prototype);
         SetUpReadableByteStreamController(stream4, controller, startAlgorithm, pullAlgorithm, cancelAlgorithm, 0, void 0);
@@ -11203,7 +11203,7 @@ var require_ponyfill_es2018 = __commonJS({
         if (!Object.prototype.hasOwnProperty.call(x5, "_readableStreamController")) {
           return false;
         }
-        return x5 instanceof ReadableStream7;
+        return x5 instanceof ReadableStream5;
       }
       function IsReadableStreamLocked(stream4) {
         if (stream4._reader === void 0) {
@@ -11766,7 +11766,7 @@ var require_ponyfill_es2018 = __commonJS({
       exports2.ByteLengthQueuingStrategy = ByteLengthQueuingStrategy2;
       exports2.CountQueuingStrategy = CountQueuingStrategy2;
       exports2.ReadableByteStreamController = ReadableByteStreamController2;
-      exports2.ReadableStream = ReadableStream7;
+      exports2.ReadableStream = ReadableStream5;
       exports2.ReadableStreamBYOBReader = ReadableStreamBYOBReader2;
       exports2.ReadableStreamBYOBRequest = ReadableStreamBYOBRequest2;
       exports2.ReadableStreamDefaultController = ReadableStreamDefaultController2;
@@ -11855,21 +11855,21 @@ var init_fileFromPath = __esm({
     init_File();
     init_isPlainObject();
     init_isFile();
-    __classPrivateFieldSet4 = function(receiver, state2, value, kind3, f4) {
-      if (kind3 === "m")
+    __classPrivateFieldSet4 = function(receiver, state2, value, kind2, f4) {
+      if (kind2 === "m")
         throw new TypeError("Private method is not writable");
-      if (kind3 === "a" && !f4)
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a setter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot write private member to an object whose class did not declare it");
-      return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+      return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
     };
-    __classPrivateFieldGet5 = function(receiver, state2, kind3, f4) {
-      if (kind3 === "a" && !f4)
+    __classPrivateFieldGet5 = function(receiver, state2, kind2, f4) {
+      if (kind2 === "a" && !f4)
         throw new TypeError("Private accessor was defined without a getter");
       if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
         throw new TypeError("Cannot read private member from an object whose class did not declare it");
-      return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+      return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
     };
     MESSAGE = "The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.";
     FileFromPath = class {
@@ -11912,7 +11912,7 @@ var init_fileFromPath = __esm({
 // node_modules/delayed-stream/lib/delayed_stream.js
 var require_delayed_stream = __commonJS({
   "node_modules/delayed-stream/lib/delayed_stream.js"(exports, module2) {
-    var Stream3 = require("stream").Stream;
+    var Stream2 = require("stream").Stream;
     var util3 = require("util");
     module2.exports = DelayedStream;
     function DelayedStream() {
@@ -11924,7 +11924,7 @@ var require_delayed_stream = __commonJS({
       this._released = false;
       this._bufferedEvents = [];
     }
-    util3.inherits(DelayedStream, Stream3);
+    util3.inherits(DelayedStream, Stream2);
     DelayedStream.create = function(source, options) {
       var delayedStream = new this();
       options = options || {};
@@ -11971,7 +11971,7 @@ var require_delayed_stream = __commonJS({
       this._bufferedEvents = [];
     };
     DelayedStream.prototype.pipe = function() {
-      var r3 = Stream3.prototype.pipe.apply(this, arguments);
+      var r3 = Stream2.prototype.pipe.apply(this, arguments);
       this.resume();
       return r3;
     };
@@ -12004,7 +12004,7 @@ var require_delayed_stream = __commonJS({
 var require_combined_stream = __commonJS({
   "node_modules/combined-stream/lib/combined_stream.js"(exports, module2) {
     var util3 = require("util");
-    var Stream3 = require("stream").Stream;
+    var Stream2 = require("stream").Stream;
     var DelayedStream = require_delayed_stream();
     module2.exports = CombinedStream;
     function CombinedStream() {
@@ -12019,7 +12019,7 @@ var require_combined_stream = __commonJS({
       this._insideLoop = false;
       this._pendingNext = false;
     }
-    util3.inherits(CombinedStream, Stream3);
+    util3.inherits(CombinedStream, Stream2);
     CombinedStream.create = function(options) {
       var combinedStream = new this();
       options = options || {};
@@ -12051,7 +12051,7 @@ var require_combined_stream = __commonJS({
       return this;
     };
     CombinedStream.prototype.pipe = function(dest, options) {
-      Stream3.prototype.pipe.call(this, dest, options);
+      Stream2.prototype.pipe.call(this, dest, options);
       this.resume();
       return dest;
     };
@@ -20733,11 +20733,11 @@ var require_mime_types = __commonJS({
       }
       return false;
     }
-    function contentType(str2) {
-      if (!str2 || typeof str2 !== "string") {
+    function contentType(str) {
+      if (!str || typeof str !== "string") {
         return false;
       }
-      var mime = str2.indexOf("/") === -1 ? exports.lookup(str2) : str2;
+      var mime = str.indexOf("/") === -1 ? exports.lookup(str) : str;
       if (!mime) {
         return false;
       }
@@ -21025,15 +21025,15 @@ var require_form_data = __commonJS({
     var https3 = require("https");
     var parseUrl = require("url").parse;
     var fs7 = require("fs");
-    var Stream3 = require("stream").Stream;
+    var Stream2 = require("stream").Stream;
     var mime = require_mime_types();
     var asynckit = require_asynckit();
     var populate = require_populate();
-    module2.exports = FormData6;
-    util3.inherits(FormData6, CombinedStream);
-    function FormData6(options) {
-      if (!(this instanceof FormData6)) {
-        return new FormData6(options);
+    module2.exports = FormData5;
+    util3.inherits(FormData5, CombinedStream);
+    function FormData5(options) {
+      if (!(this instanceof FormData5)) {
+        return new FormData5(options);
       }
       this._overheadLength = 0;
       this._valueLength = 0;
@@ -21044,9 +21044,9 @@ var require_form_data = __commonJS({
         this[option] = options[option];
       }
     }
-    FormData6.LINE_BREAK = "\r\n";
-    FormData6.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-    FormData6.prototype.append = function(field, value, options) {
+    FormData5.LINE_BREAK = "\r\n";
+    FormData5.DEFAULT_CONTENT_TYPE = "application/octet-stream";
+    FormData5.prototype.append = function(field, value, options) {
       options = options || {};
       if (typeof options == "string") {
         options = { filename: options };
@@ -21066,7 +21066,7 @@ var require_form_data = __commonJS({
       append2(footer);
       this._trackLength(header, value, options);
     };
-    FormData6.prototype._trackLength = function(header, value, options) {
+    FormData5.prototype._trackLength = function(header, value, options) {
       var valueLength = 0;
       if (options.knownLength != null) {
         valueLength += +options.knownLength;
@@ -21076,15 +21076,15 @@ var require_form_data = __commonJS({
         valueLength = Buffer.byteLength(value);
       }
       this._valueLength += valueLength;
-      this._overheadLength += Buffer.byteLength(header) + FormData6.LINE_BREAK.length;
-      if (!value || !value.path && !(value.readable && value.hasOwnProperty("httpVersion")) && !(value instanceof Stream3)) {
+      this._overheadLength += Buffer.byteLength(header) + FormData5.LINE_BREAK.length;
+      if (!value || !value.path && !(value.readable && value.hasOwnProperty("httpVersion")) && !(value instanceof Stream2)) {
         return;
       }
       if (!options.knownLength) {
         this._valuesToMeasure.push(value);
       }
     };
-    FormData6.prototype._lengthRetriever = function(value, callback) {
+    FormData5.prototype._lengthRetriever = function(value, callback) {
       if (value.hasOwnProperty("fd")) {
         if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
           callback(null, value.end + 1 - (value.start ? value.start : 0));
@@ -21111,7 +21111,7 @@ var require_form_data = __commonJS({
         callback("Unknown stream");
       }
     };
-    FormData6.prototype._multiPartHeader = function(field, value, options) {
+    FormData5.prototype._multiPartHeader = function(field, value, options) {
       if (typeof options.header == "string") {
         return options.header;
       }
@@ -21137,12 +21137,12 @@ var require_form_data = __commonJS({
           header = [header];
         }
         if (header.length) {
-          contents += prop + ": " + header.join("; ") + FormData6.LINE_BREAK;
+          contents += prop + ": " + header.join("; ") + FormData5.LINE_BREAK;
         }
       }
-      return "--" + this.getBoundary() + FormData6.LINE_BREAK + contents + FormData6.LINE_BREAK;
+      return "--" + this.getBoundary() + FormData5.LINE_BREAK + contents + FormData5.LINE_BREAK;
     };
-    FormData6.prototype._getContentDisposition = function(value, options) {
+    FormData5.prototype._getContentDisposition = function(value, options) {
       var filename, contentDisposition;
       if (typeof options.filepath === "string") {
         filename = path5.normalize(options.filepath).replace(/\\/g, "/");
@@ -21156,7 +21156,7 @@ var require_form_data = __commonJS({
       }
       return contentDisposition;
     };
-    FormData6.prototype._getContentType = function(value, options) {
+    FormData5.prototype._getContentType = function(value, options) {
       var contentType = options.contentType;
       if (!contentType && value.name) {
         contentType = mime.lookup(value.name);
@@ -21171,13 +21171,13 @@ var require_form_data = __commonJS({
         contentType = mime.lookup(options.filepath || options.filename);
       }
       if (!contentType && typeof value == "object") {
-        contentType = FormData6.DEFAULT_CONTENT_TYPE;
+        contentType = FormData5.DEFAULT_CONTENT_TYPE;
       }
       return contentType;
     };
-    FormData6.prototype._multiPartFooter = function() {
+    FormData5.prototype._multiPartFooter = function() {
       return function(next) {
-        var footer = FormData6.LINE_BREAK;
+        var footer = FormData5.LINE_BREAK;
         var lastPart = this._streams.length === 0;
         if (lastPart) {
           footer += this._lastBoundary();
@@ -21185,10 +21185,10 @@ var require_form_data = __commonJS({
         next(footer);
       }.bind(this);
     };
-    FormData6.prototype._lastBoundary = function() {
-      return "--" + this.getBoundary() + "--" + FormData6.LINE_BREAK;
+    FormData5.prototype._lastBoundary = function() {
+      return "--" + this.getBoundary() + "--" + FormData5.LINE_BREAK;
     };
-    FormData6.prototype.getHeaders = function(userHeaders) {
+    FormData5.prototype.getHeaders = function(userHeaders) {
       var header;
       var formHeaders = {
         "content-type": "multipart/form-data; boundary=" + this.getBoundary()
@@ -21200,16 +21200,16 @@ var require_form_data = __commonJS({
       }
       return formHeaders;
     };
-    FormData6.prototype.setBoundary = function(boundary) {
+    FormData5.prototype.setBoundary = function(boundary) {
       this._boundary = boundary;
     };
-    FormData6.prototype.getBoundary = function() {
+    FormData5.prototype.getBoundary = function() {
       if (!this._boundary) {
         this._generateBoundary();
       }
       return this._boundary;
     };
-    FormData6.prototype.getBuffer = function() {
+    FormData5.prototype.getBuffer = function() {
       var dataBuffer = new Buffer.alloc(0);
       var boundary = this.getBoundary();
       for (var i3 = 0, len = this._streams.length; i3 < len; i3++) {
@@ -21220,20 +21220,20 @@ var require_form_data = __commonJS({
             dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i3])]);
           }
           if (typeof this._streams[i3] !== "string" || this._streams[i3].substring(2, boundary.length + 2) !== boundary) {
-            dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData6.LINE_BREAK)]);
+            dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData5.LINE_BREAK)]);
           }
         }
       }
       return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
     };
-    FormData6.prototype._generateBoundary = function() {
+    FormData5.prototype._generateBoundary = function() {
       var boundary = "--------------------------";
       for (var i3 = 0; i3 < 24; i3++) {
         boundary += Math.floor(Math.random() * 10).toString(16);
       }
       this._boundary = boundary;
     };
-    FormData6.prototype.getLengthSync = function() {
+    FormData5.prototype.getLengthSync = function() {
       var knownLength = this._overheadLength + this._valueLength;
       if (this._streams.length) {
         knownLength += this._lastBoundary().length;
@@ -21243,14 +21243,14 @@ var require_form_data = __commonJS({
       }
       return knownLength;
     };
-    FormData6.prototype.hasKnownLength = function() {
+    FormData5.prototype.hasKnownLength = function() {
       var hasKnownLength = true;
       if (this._valuesToMeasure.length) {
         hasKnownLength = false;
       }
       return hasKnownLength;
     };
-    FormData6.prototype.getLength = function(cb) {
+    FormData5.prototype.getLength = function(cb) {
       var knownLength = this._overheadLength + this._valueLength;
       if (this._streams.length) {
         knownLength += this._lastBoundary().length;
@@ -21270,7 +21270,7 @@ var require_form_data = __commonJS({
         cb(null, knownLength);
       });
     };
-    FormData6.prototype.submit = function(params, cb) {
+    FormData5.prototype.submit = function(params, cb) {
       var request3, options, defaults2 = { method: "post" };
       if (typeof params == "string") {
         params = parseUrl(params);
@@ -21315,14 +21315,14 @@ var require_form_data = __commonJS({
       }.bind(this));
       return request3;
     };
-    FormData6.prototype._error = function(err) {
+    FormData5.prototype._error = function(err) {
       if (!this.error) {
         this.error = err;
         this.pause();
         this.emit("error", err);
       }
     };
-    FormData6.prototype.toString = function() {
+    FormData5.prototype.toString = function() {
       return "[object FormData]";
     };
   }
@@ -21430,11 +21430,11 @@ var require_common = __commonJS({
         let enableOverride = null;
         let namespacesCache;
         let enabledCache;
-        function debug3(...args) {
-          if (!debug3.enabled) {
+        function debug2(...args) {
+          if (!debug2.enabled) {
             return;
           }
-          const self2 = debug3;
+          const self2 = debug2;
           const curr = Number(new Date());
           const ms = curr - (prevTime || curr);
           self2.diff = ms;
@@ -21464,12 +21464,12 @@ var require_common = __commonJS({
           const logFn = self2.log || createDebug.log;
           logFn.apply(self2, args);
         }
-        debug3.namespace = namespace;
-        debug3.useColors = createDebug.useColors();
-        debug3.color = createDebug.selectColor(namespace);
-        debug3.extend = extend3;
-        debug3.destroy = createDebug.destroy;
-        Object.defineProperty(debug3, "enabled", {
+        debug2.namespace = namespace;
+        debug2.useColors = createDebug.useColors();
+        debug2.color = createDebug.selectColor(namespace);
+        debug2.extend = extend3;
+        debug2.destroy = createDebug.destroy;
+        Object.defineProperty(debug2, "enabled", {
           enumerable: true,
           configurable: false,
           get: () => {
@@ -21487,9 +21487,9 @@ var require_common = __commonJS({
           }
         });
         if (typeof createDebug.init === "function") {
-          createDebug.init(debug3);
+          createDebug.init(debug2);
         }
-        return debug3;
+        return debug2;
       }
       function extend3(namespace, delimiter) {
         const newDebug = createDebug(this.namespace + (typeof delimiter === "undefined" ? ":" : delimiter) + namespace);
@@ -21995,18 +21995,18 @@ var require_node = __commonJS({
     function load() {
       return process.env.DEBUG;
     }
-    function init(debug3) {
-      debug3.inspectOpts = {};
+    function init(debug2) {
+      debug2.inspectOpts = {};
       const keys = Object.keys(exports.inspectOpts);
       for (let i3 = 0; i3 < keys.length; i3++) {
-        debug3.inspectOpts[keys[i3]] = exports.inspectOpts[keys[i3]];
+        debug2.inspectOpts[keys[i3]] = exports.inspectOpts[keys[i3]];
       }
     }
     module2.exports = require_common()(exports);
     var { formatters } = module2.exports;
     formatters.o = function(v5) {
       this.inspectOpts.colors = this.useColors;
-      return util3.inspect(v5, this.inspectOpts).split("\n").map((str2) => str2.trim()).join(" ");
+      return util3.inspect(v5, this.inspectOpts).split("\n").map((str) => str.trim()).join(" ");
     };
     formatters.O = function(v5) {
       this.inspectOpts.colors = this.useColors;
@@ -22029,19 +22029,19 @@ var require_src2 = __commonJS({
 // node_modules/follow-redirects/debug.js
 var require_debug = __commonJS({
   "node_modules/follow-redirects/debug.js"(exports, module2) {
-    var debug3;
+    var debug2;
     module2.exports = function() {
-      if (!debug3) {
+      if (!debug2) {
         try {
-          debug3 = require_src2()("follow-redirects");
+          debug2 = require_src2()("follow-redirects");
         } catch (error) {
         }
-        if (typeof debug3 !== "function") {
-          debug3 = function() {
+        if (typeof debug2 !== "function") {
+          debug2 = function() {
           };
         }
       }
-      debug3.apply(null, arguments);
+      debug2.apply(null, arguments);
     };
   }
 });
@@ -22055,7 +22055,7 @@ var require_follow_redirects = __commonJS({
     var https3 = require("https");
     var Writable = require("stream").Writable;
     var assert = require("assert");
-    var debug3 = require_debug();
+    var debug2 = require_debug();
     var useNativeURL = false;
     try {
       assert(new URL2());
@@ -22355,7 +22355,7 @@ var require_follow_redirects = __commonJS({
       var currentHost = currentHostHeader || currentUrlParts.host;
       var currentUrl = /^\w+:/.test(location) ? this._currentUrl : url2.format(Object.assign(currentUrlParts, { host: currentHost }));
       var redirectUrl = resolveUrl(location, currentUrl);
-      debug3("redirecting to", redirectUrl.href);
+      debug2("redirecting to", redirectUrl.href);
       this._isRedirect = true;
       spreadUrlObject(redirectUrl, this._options);
       if (redirectUrl.protocol !== currentUrlParts.protocol && redirectUrl.protocol !== "https:" || redirectUrl.host !== currentHost && !isSubdomain(redirectUrl.host, currentHost)) {
@@ -22409,7 +22409,7 @@ var require_follow_redirects = __commonJS({
             options.hostname = "::1";
           }
           assert.equal(options.protocol, protocol, "protocol mismatch");
-          debug3("options", options);
+          debug2("options", options);
           return new RedirectableRequest(options, callback);
         }
         function get(input, options, callback) {
@@ -22911,8 +22911,8 @@ var require_tslib = __commonJS({
     var __makeTemplateObject2;
     var __importStar2;
     var __importDefault2;
-    var __classPrivateFieldGet14;
-    var __classPrivateFieldSet12;
+    var __classPrivateFieldGet9;
+    var __classPrivateFieldSet8;
     var __classPrivateFieldIn2;
     var __createBinding2;
     var __addDisposableResource2;
@@ -22999,7 +22999,7 @@ var require_tslib = __commonJS({
             throw new TypeError("Function expected");
           return f4;
         }
-        var kind3 = contextIn.kind, key = kind3 === "getter" ? "get" : kind3 === "setter" ? "set" : "value";
+        var kind2 = contextIn.kind, key = kind2 === "getter" ? "get" : kind2 === "setter" ? "set" : "value";
         var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
         var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
         var _7, done = false;
@@ -23014,8 +23014,8 @@ var require_tslib = __commonJS({
               throw new TypeError("Cannot add initializers after decoration has completed");
             extraInitializers.push(accept(f4 || null));
           };
-          var result = (0, decorators[i3])(kind3 === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-          if (kind3 === "accessor") {
+          var result = (0, decorators[i3])(kind2 === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+          if (kind2 === "accessor") {
             if (result === void 0)
               continue;
             if (result === null || typeof result !== "object")
@@ -23027,7 +23027,7 @@ var require_tslib = __commonJS({
             if (_7 = accept(result.init))
               initializers.unshift(_7);
           } else if (_7 = accept(result)) {
-            if (kind3 === "field")
+            if (kind2 === "field")
               initializers.unshift(_7);
             else
               descriptor[key] = _7;
@@ -23338,21 +23338,21 @@ var require_tslib = __commonJS({
       __importDefault2 = function(mod) {
         return mod && mod.__esModule ? mod : { "default": mod };
       };
-      __classPrivateFieldGet14 = function(receiver, state2, kind3, f4) {
-        if (kind3 === "a" && !f4)
+      __classPrivateFieldGet9 = function(receiver, state2, kind2, f4) {
+        if (kind2 === "a" && !f4)
           throw new TypeError("Private accessor was defined without a getter");
         if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
           throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+        return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
       };
-      __classPrivateFieldSet12 = function(receiver, state2, value, kind3, f4) {
-        if (kind3 === "m")
+      __classPrivateFieldSet8 = function(receiver, state2, value, kind2, f4) {
+        if (kind2 === "m")
           throw new TypeError("Private method is not writable");
-        if (kind3 === "a" && !f4)
+        if (kind2 === "a" && !f4)
           throw new TypeError("Private accessor was defined without a setter");
         if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
           throw new TypeError("Cannot write private member to an object whose class did not declare it");
-        return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+        return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
       };
       __classPrivateFieldIn2 = function(state2, receiver) {
         if (receiver === null || typeof receiver !== "object" && typeof receiver !== "function")
@@ -23436,8 +23436,8 @@ var require_tslib = __commonJS({
       exporter("__makeTemplateObject", __makeTemplateObject2);
       exporter("__importStar", __importStar2);
       exporter("__importDefault", __importDefault2);
-      exporter("__classPrivateFieldGet", __classPrivateFieldGet14);
-      exporter("__classPrivateFieldSet", __classPrivateFieldSet12);
+      exporter("__classPrivateFieldGet", __classPrivateFieldGet9);
+      exporter("__classPrivateFieldSet", __classPrivateFieldSet8);
       exporter("__classPrivateFieldIn", __classPrivateFieldIn2);
       exporter("__addDisposableResource", __addDisposableResource2);
       exporter("__disposeResources", __disposeResources2);
@@ -23497,12 +23497,12 @@ var require_helpers = __commonJS({
     exports.toBuffer = toBuffer;
     async function json(stream4) {
       const buf = await toBuffer(stream4);
-      const str2 = buf.toString("utf8");
+      const str = buf.toString("utf8");
       try {
-        return JSON.parse(str2);
+        return JSON.parse(str);
       } catch (_err) {
         const err = _err;
-        err.message += ` (input: ${str2})`;
+        err.message += ` (input: ${str})`;
         throw err;
       }
     }
@@ -23678,7 +23678,7 @@ var require_parse_proxy_response = __commonJS({
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.parseProxyResponse = void 0;
     var debug_1 = __importDefault2(require_src2());
-    var debug3 = (0, debug_1.default)("https-proxy-agent:parse-proxy-response");
+    var debug2 = (0, debug_1.default)("https-proxy-agent:parse-proxy-response");
     function parseProxyResponse(socket) {
       return new Promise((resolve, reject) => {
         let buffersLength = 0;
@@ -23697,12 +23697,12 @@ var require_parse_proxy_response = __commonJS({
         }
         function onend() {
           cleanup();
-          debug3("onend");
+          debug2("onend");
           reject(new Error("Proxy connection ended before receiving CONNECT response"));
         }
         function onerror(err) {
           cleanup();
-          debug3("onerror %o", err);
+          debug2("onerror %o", err);
           reject(err);
         }
         function ondata(b7) {
@@ -23711,7 +23711,7 @@ var require_parse_proxy_response = __commonJS({
           const buffered = Buffer.concat(buffers, buffersLength);
           const endOfHeaders = buffered.indexOf("\r\n\r\n");
           if (endOfHeaders === -1) {
-            debug3("have not received end of HTTP headers yet...");
+            debug2("have not received end of HTTP headers yet...");
             read();
             return;
           }
@@ -23744,7 +23744,7 @@ var require_parse_proxy_response = __commonJS({
               headers[key] = value;
             }
           }
-          debug3("got proxy server response: %o %o", firstLine, headers);
+          debug2("got proxy server response: %o %o", firstLine, headers);
           cleanup();
           resolve({
             connect: {
@@ -23812,14 +23812,14 @@ var require_dist2 = __commonJS({
     var agent_base_1 = require_dist();
     var url_1 = require("url");
     var parse_proxy_response_1 = require_parse_proxy_response();
-    var debug3 = (0, debug_1.default)("https-proxy-agent");
+    var debug2 = (0, debug_1.default)("https-proxy-agent");
     var HttpsProxyAgent2 = class extends agent_base_1.Agent {
       constructor(proxy, opts) {
         super(opts);
         this.options = { path: void 0 };
         this.proxy = typeof proxy === "string" ? new url_1.URL(proxy) : proxy;
         this.proxyHeaders = opts?.headers ?? {};
-        debug3("Creating new HttpsProxyAgent instance: %o", this.proxy.href);
+        debug2("Creating new HttpsProxyAgent instance: %o", this.proxy.href);
         const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
         const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
         this.connectOpts = {
@@ -23836,14 +23836,14 @@ var require_dist2 = __commonJS({
         }
         let socket;
         if (proxy.protocol === "https:") {
-          debug3("Creating `tls.Socket`: %o", this.connectOpts);
+          debug2("Creating `tls.Socket`: %o", this.connectOpts);
           const servername = this.connectOpts.servername || this.connectOpts.host;
           socket = tls.connect({
             ...this.connectOpts,
             servername: servername && net.isIP(servername) ? void 0 : servername
           });
         } else {
-          debug3("Creating `net.Socket`: %o", this.connectOpts);
+          debug2("Creating `net.Socket`: %o", this.connectOpts);
           socket = net.connect(this.connectOpts);
         }
         const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
@@ -23871,7 +23871,7 @@ var require_dist2 = __commonJS({
         if (connect.statusCode === 200) {
           req.once("socket", resume);
           if (opts.secureEndpoint) {
-            debug3("Upgrading socket connection to TLS");
+            debug2("Upgrading socket connection to TLS");
             const servername = opts.servername || opts.host;
             return tls.connect({
               ...omit(opts, "host", "path", "port"),
@@ -23885,7 +23885,7 @@ var require_dist2 = __commonJS({
         const fakeSocket = new net.Socket({ writable: false });
         fakeSocket.readable = true;
         req.once("socket", (s2) => {
-          debug3("Replaying proxy buffer for failed request");
+          debug2("Replaying proxy buffer for failed request");
           (0, assert_1.default)(s2.listenerCount("data") > 0);
           s2.push(buffered);
           s2.push(null);
@@ -23958,13 +23958,13 @@ var require_dist3 = __commonJS({
     var events_1 = require("events");
     var agent_base_1 = require_dist();
     var url_1 = require("url");
-    var debug3 = (0, debug_1.default)("http-proxy-agent");
+    var debug2 = (0, debug_1.default)("http-proxy-agent");
     var HttpProxyAgent2 = class extends agent_base_1.Agent {
       constructor(proxy, opts) {
         super(opts);
         this.proxy = typeof proxy === "string" ? new url_1.URL(proxy) : proxy;
         this.proxyHeaders = opts?.headers ?? {};
-        debug3("Creating new HttpProxyAgent instance: %o", this.proxy.href);
+        debug2("Creating new HttpProxyAgent instance: %o", this.proxy.href);
         const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
         const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
         this.connectOpts = {
@@ -24010,21 +24010,21 @@ var require_dist3 = __commonJS({
         }
         let first;
         let endOfHeaders;
-        debug3("Regenerating stored HTTP header string for request");
+        debug2("Regenerating stored HTTP header string for request");
         req._implicitHeader();
         if (req.outputData && req.outputData.length > 0) {
-          debug3("Patching connection write() output buffer with updated header");
+          debug2("Patching connection write() output buffer with updated header");
           first = req.outputData[0].data;
           endOfHeaders = first.indexOf("\r\n\r\n") + 4;
           req.outputData[0].data = req._header + first.substring(endOfHeaders);
-          debug3("Output buffer: %o", req.outputData[0].data);
+          debug2("Output buffer: %o", req.outputData[0].data);
         }
         let socket;
         if (this.proxy.protocol === "https:") {
-          debug3("Creating `tls.Socket`: %o", this.connectOpts);
+          debug2("Creating `tls.Socket`: %o", this.connectOpts);
           socket = tls.connect(this.connectOpts);
         } else {
-          debug3("Creating `net.Socket`: %o", this.connectOpts);
+          debug2("Creating `net.Socket`: %o", this.connectOpts);
           socket = net.connect(this.connectOpts);
         }
         await (0, events_1.once)(socket, "connect");
@@ -24054,2144 +24054,6 @@ var require_state2 = __commonJS({
     exports.state = void 0;
     exports.state = {
       instrumenterImplementation: void 0
-    };
-  }
-});
-
-// node_modules/es-errors/index.js
-var require_es_errors = __commonJS({
-  "node_modules/es-errors/index.js"(exports, module2) {
-    "use strict";
-    module2.exports = Error;
-  }
-});
-
-// node_modules/es-errors/eval.js
-var require_eval = __commonJS({
-  "node_modules/es-errors/eval.js"(exports, module2) {
-    "use strict";
-    module2.exports = EvalError;
-  }
-});
-
-// node_modules/es-errors/range.js
-var require_range = __commonJS({
-  "node_modules/es-errors/range.js"(exports, module2) {
-    "use strict";
-    module2.exports = RangeError;
-  }
-});
-
-// node_modules/es-errors/ref.js
-var require_ref = __commonJS({
-  "node_modules/es-errors/ref.js"(exports, module2) {
-    "use strict";
-    module2.exports = ReferenceError;
-  }
-});
-
-// node_modules/es-errors/syntax.js
-var require_syntax = __commonJS({
-  "node_modules/es-errors/syntax.js"(exports, module2) {
-    "use strict";
-    module2.exports = SyntaxError;
-  }
-});
-
-// node_modules/es-errors/type.js
-var require_type = __commonJS({
-  "node_modules/es-errors/type.js"(exports, module2) {
-    "use strict";
-    module2.exports = TypeError;
-  }
-});
-
-// node_modules/es-errors/uri.js
-var require_uri = __commonJS({
-  "node_modules/es-errors/uri.js"(exports, module2) {
-    "use strict";
-    module2.exports = URIError;
-  }
-});
-
-// node_modules/has-symbols/shams.js
-var require_shams = __commonJS({
-  "node_modules/has-symbols/shams.js"(exports, module2) {
-    "use strict";
-    module2.exports = function hasSymbols() {
-      if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
-        return false;
-      }
-      if (typeof Symbol.iterator === "symbol") {
-        return true;
-      }
-      var obj = {};
-      var sym = Symbol("test");
-      var symObj = Object(sym);
-      if (typeof sym === "string") {
-        return false;
-      }
-      if (Object.prototype.toString.call(sym) !== "[object Symbol]") {
-        return false;
-      }
-      if (Object.prototype.toString.call(symObj) !== "[object Symbol]") {
-        return false;
-      }
-      var symVal = 42;
-      obj[sym] = symVal;
-      for (sym in obj) {
-        return false;
-      }
-      if (typeof Object.keys === "function" && Object.keys(obj).length !== 0) {
-        return false;
-      }
-      if (typeof Object.getOwnPropertyNames === "function" && Object.getOwnPropertyNames(obj).length !== 0) {
-        return false;
-      }
-      var syms = Object.getOwnPropertySymbols(obj);
-      if (syms.length !== 1 || syms[0] !== sym) {
-        return false;
-      }
-      if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
-        return false;
-      }
-      if (typeof Object.getOwnPropertyDescriptor === "function") {
-        var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
-        if (descriptor.value !== symVal || descriptor.enumerable !== true) {
-          return false;
-        }
-      }
-      return true;
-    };
-  }
-});
-
-// node_modules/has-symbols/index.js
-var require_has_symbols = __commonJS({
-  "node_modules/has-symbols/index.js"(exports, module2) {
-    "use strict";
-    var origSymbol = typeof Symbol !== "undefined" && Symbol;
-    var hasSymbolSham = require_shams();
-    module2.exports = function hasNativeSymbols() {
-      if (typeof origSymbol !== "function") {
-        return false;
-      }
-      if (typeof Symbol !== "function") {
-        return false;
-      }
-      if (typeof origSymbol("foo") !== "symbol") {
-        return false;
-      }
-      if (typeof Symbol("bar") !== "symbol") {
-        return false;
-      }
-      return hasSymbolSham();
-    };
-  }
-});
-
-// node_modules/has-proto/index.js
-var require_has_proto = __commonJS({
-  "node_modules/has-proto/index.js"(exports, module2) {
-    "use strict";
-    var test2 = {
-      __proto__: null,
-      foo: {}
-    };
-    var $Object = Object;
-    module2.exports = function hasProto() {
-      return { __proto__: test2 }.foo === test2.foo && !(test2 instanceof $Object);
-    };
-  }
-});
-
-// node_modules/function-bind/implementation.js
-var require_implementation = __commonJS({
-  "node_modules/function-bind/implementation.js"(exports, module2) {
-    "use strict";
-    var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
-    var toStr = Object.prototype.toString;
-    var max = Math.max;
-    var funcType = "[object Function]";
-    var concatty = function concatty2(a4, b7) {
-      var arr = [];
-      for (var i3 = 0; i3 < a4.length; i3 += 1) {
-        arr[i3] = a4[i3];
-      }
-      for (var j4 = 0; j4 < b7.length; j4 += 1) {
-        arr[j4 + a4.length] = b7[j4];
-      }
-      return arr;
-    };
-    var slicy = function slicy2(arrLike, offset) {
-      var arr = [];
-      for (var i3 = offset || 0, j4 = 0; i3 < arrLike.length; i3 += 1, j4 += 1) {
-        arr[j4] = arrLike[i3];
-      }
-      return arr;
-    };
-    var joiny = function(arr, joiner) {
-      var str2 = "";
-      for (var i3 = 0; i3 < arr.length; i3 += 1) {
-        str2 += arr[i3];
-        if (i3 + 1 < arr.length) {
-          str2 += joiner;
-        }
-      }
-      return str2;
-    };
-    module2.exports = function bind2(that) {
-      var target = this;
-      if (typeof target !== "function" || toStr.apply(target) !== funcType) {
-        throw new TypeError(ERROR_MESSAGE + target);
-      }
-      var args = slicy(arguments, 1);
-      var bound;
-      var binder = function() {
-        if (this instanceof bound) {
-          var result = target.apply(
-            this,
-            concatty(args, arguments)
-          );
-          if (Object(result) === result) {
-            return result;
-          }
-          return this;
-        }
-        return target.apply(
-          that,
-          concatty(args, arguments)
-        );
-      };
-      var boundLength = max(0, target.length - args.length);
-      var boundArgs = [];
-      for (var i3 = 0; i3 < boundLength; i3++) {
-        boundArgs[i3] = "$" + i3;
-      }
-      bound = Function("binder", "return function (" + joiny(boundArgs, ",") + "){ return binder.apply(this,arguments); }")(binder);
-      if (target.prototype) {
-        var Empty = function Empty2() {
-        };
-        Empty.prototype = target.prototype;
-        bound.prototype = new Empty();
-        Empty.prototype = null;
-      }
-      return bound;
-    };
-  }
-});
-
-// node_modules/function-bind/index.js
-var require_function_bind = __commonJS({
-  "node_modules/function-bind/index.js"(exports, module2) {
-    "use strict";
-    var implementation = require_implementation();
-    module2.exports = Function.prototype.bind || implementation;
-  }
-});
-
-// node_modules/hasown/index.js
-var require_hasown = __commonJS({
-  "node_modules/hasown/index.js"(exports, module2) {
-    "use strict";
-    var call = Function.prototype.call;
-    var $hasOwn = Object.prototype.hasOwnProperty;
-    var bind2 = require_function_bind();
-    module2.exports = bind2.call(call, $hasOwn);
-  }
-});
-
-// node_modules/get-intrinsic/index.js
-var require_get_intrinsic = __commonJS({
-  "node_modules/get-intrinsic/index.js"(exports, module2) {
-    "use strict";
-    var undefined2;
-    var $Error = require_es_errors();
-    var $EvalError = require_eval();
-    var $RangeError = require_range();
-    var $ReferenceError = require_ref();
-    var $SyntaxError = require_syntax();
-    var $TypeError = require_type();
-    var $URIError = require_uri();
-    var $Function = Function;
-    var getEvalledConstructor = function(expressionSyntax) {
-      try {
-        return $Function('"use strict"; return (' + expressionSyntax + ").constructor;")();
-      } catch (e3) {
-      }
-    };
-    var $gOPD = Object.getOwnPropertyDescriptor;
-    if ($gOPD) {
-      try {
-        $gOPD({}, "");
-      } catch (e3) {
-        $gOPD = null;
-      }
-    }
-    var throwTypeError = function() {
-      throw new $TypeError();
-    };
-    var ThrowTypeError = $gOPD ? function() {
-      try {
-        arguments.callee;
-        return throwTypeError;
-      } catch (calleeThrows) {
-        try {
-          return $gOPD(arguments, "callee").get;
-        } catch (gOPDthrows) {
-          return throwTypeError;
-        }
-      }
-    }() : throwTypeError;
-    var hasSymbols = require_has_symbols()();
-    var hasProto = require_has_proto()();
-    var getProto = Object.getPrototypeOf || (hasProto ? function(x5) {
-      return x5.__proto__;
-    } : null);
-    var needsEval = {};
-    var TypedArray = typeof Uint8Array === "undefined" || !getProto ? undefined2 : getProto(Uint8Array);
-    var INTRINSICS = {
-      __proto__: null,
-      "%AggregateError%": typeof AggregateError === "undefined" ? undefined2 : AggregateError,
-      "%Array%": Array,
-      "%ArrayBuffer%": typeof ArrayBuffer === "undefined" ? undefined2 : ArrayBuffer,
-      "%ArrayIteratorPrototype%": hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined2,
-      "%AsyncFromSyncIteratorPrototype%": undefined2,
-      "%AsyncFunction%": needsEval,
-      "%AsyncGenerator%": needsEval,
-      "%AsyncGeneratorFunction%": needsEval,
-      "%AsyncIteratorPrototype%": needsEval,
-      "%Atomics%": typeof Atomics === "undefined" ? undefined2 : Atomics,
-      "%BigInt%": typeof BigInt === "undefined" ? undefined2 : BigInt,
-      "%BigInt64Array%": typeof BigInt64Array === "undefined" ? undefined2 : BigInt64Array,
-      "%BigUint64Array%": typeof BigUint64Array === "undefined" ? undefined2 : BigUint64Array,
-      "%Boolean%": Boolean,
-      "%DataView%": typeof DataView === "undefined" ? undefined2 : DataView,
-      "%Date%": Date,
-      "%decodeURI%": decodeURI,
-      "%decodeURIComponent%": decodeURIComponent,
-      "%encodeURI%": encodeURI,
-      "%encodeURIComponent%": encodeURIComponent,
-      "%Error%": $Error,
-      "%eval%": eval,
-      "%EvalError%": $EvalError,
-      "%Float32Array%": typeof Float32Array === "undefined" ? undefined2 : Float32Array,
-      "%Float64Array%": typeof Float64Array === "undefined" ? undefined2 : Float64Array,
-      "%FinalizationRegistry%": typeof FinalizationRegistry === "undefined" ? undefined2 : FinalizationRegistry,
-      "%Function%": $Function,
-      "%GeneratorFunction%": needsEval,
-      "%Int8Array%": typeof Int8Array === "undefined" ? undefined2 : Int8Array,
-      "%Int16Array%": typeof Int16Array === "undefined" ? undefined2 : Int16Array,
-      "%Int32Array%": typeof Int32Array === "undefined" ? undefined2 : Int32Array,
-      "%isFinite%": isFinite,
-      "%isNaN%": isNaN,
-      "%IteratorPrototype%": hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined2,
-      "%JSON%": typeof JSON === "object" ? JSON : undefined2,
-      "%Map%": typeof Map === "undefined" ? undefined2 : Map,
-      "%MapIteratorPrototype%": typeof Map === "undefined" || !hasSymbols || !getProto ? undefined2 : getProto((/* @__PURE__ */ new Map())[Symbol.iterator]()),
-      "%Math%": Math,
-      "%Number%": Number,
-      "%Object%": Object,
-      "%parseFloat%": parseFloat,
-      "%parseInt%": parseInt,
-      "%Promise%": typeof Promise === "undefined" ? undefined2 : Promise,
-      "%Proxy%": typeof Proxy === "undefined" ? undefined2 : Proxy,
-      "%RangeError%": $RangeError,
-      "%ReferenceError%": $ReferenceError,
-      "%Reflect%": typeof Reflect === "undefined" ? undefined2 : Reflect,
-      "%RegExp%": RegExp,
-      "%Set%": typeof Set === "undefined" ? undefined2 : Set,
-      "%SetIteratorPrototype%": typeof Set === "undefined" || !hasSymbols || !getProto ? undefined2 : getProto((/* @__PURE__ */ new Set())[Symbol.iterator]()),
-      "%SharedArrayBuffer%": typeof SharedArrayBuffer === "undefined" ? undefined2 : SharedArrayBuffer,
-      "%String%": String,
-      "%StringIteratorPrototype%": hasSymbols && getProto ? getProto(""[Symbol.iterator]()) : undefined2,
-      "%Symbol%": hasSymbols ? Symbol : undefined2,
-      "%SyntaxError%": $SyntaxError,
-      "%ThrowTypeError%": ThrowTypeError,
-      "%TypedArray%": TypedArray,
-      "%TypeError%": $TypeError,
-      "%Uint8Array%": typeof Uint8Array === "undefined" ? undefined2 : Uint8Array,
-      "%Uint8ClampedArray%": typeof Uint8ClampedArray === "undefined" ? undefined2 : Uint8ClampedArray,
-      "%Uint16Array%": typeof Uint16Array === "undefined" ? undefined2 : Uint16Array,
-      "%Uint32Array%": typeof Uint32Array === "undefined" ? undefined2 : Uint32Array,
-      "%URIError%": $URIError,
-      "%WeakMap%": typeof WeakMap === "undefined" ? undefined2 : WeakMap,
-      "%WeakRef%": typeof WeakRef === "undefined" ? undefined2 : WeakRef,
-      "%WeakSet%": typeof WeakSet === "undefined" ? undefined2 : WeakSet
-    };
-    if (getProto) {
-      try {
-        null.error;
-      } catch (e3) {
-        errorProto = getProto(getProto(e3));
-        INTRINSICS["%Error.prototype%"] = errorProto;
-      }
-    }
-    var errorProto;
-    var doEval = function doEval2(name) {
-      var value;
-      if (name === "%AsyncFunction%") {
-        value = getEvalledConstructor("async function () {}");
-      } else if (name === "%GeneratorFunction%") {
-        value = getEvalledConstructor("function* () {}");
-      } else if (name === "%AsyncGeneratorFunction%") {
-        value = getEvalledConstructor("async function* () {}");
-      } else if (name === "%AsyncGenerator%") {
-        var fn = doEval2("%AsyncGeneratorFunction%");
-        if (fn) {
-          value = fn.prototype;
-        }
-      } else if (name === "%AsyncIteratorPrototype%") {
-        var gen = doEval2("%AsyncGenerator%");
-        if (gen && getProto) {
-          value = getProto(gen.prototype);
-        }
-      }
-      INTRINSICS[name] = value;
-      return value;
-    };
-    var LEGACY_ALIASES = {
-      __proto__: null,
-      "%ArrayBufferPrototype%": ["ArrayBuffer", "prototype"],
-      "%ArrayPrototype%": ["Array", "prototype"],
-      "%ArrayProto_entries%": ["Array", "prototype", "entries"],
-      "%ArrayProto_forEach%": ["Array", "prototype", "forEach"],
-      "%ArrayProto_keys%": ["Array", "prototype", "keys"],
-      "%ArrayProto_values%": ["Array", "prototype", "values"],
-      "%AsyncFunctionPrototype%": ["AsyncFunction", "prototype"],
-      "%AsyncGenerator%": ["AsyncGeneratorFunction", "prototype"],
-      "%AsyncGeneratorPrototype%": ["AsyncGeneratorFunction", "prototype", "prototype"],
-      "%BooleanPrototype%": ["Boolean", "prototype"],
-      "%DataViewPrototype%": ["DataView", "prototype"],
-      "%DatePrototype%": ["Date", "prototype"],
-      "%ErrorPrototype%": ["Error", "prototype"],
-      "%EvalErrorPrototype%": ["EvalError", "prototype"],
-      "%Float32ArrayPrototype%": ["Float32Array", "prototype"],
-      "%Float64ArrayPrototype%": ["Float64Array", "prototype"],
-      "%FunctionPrototype%": ["Function", "prototype"],
-      "%Generator%": ["GeneratorFunction", "prototype"],
-      "%GeneratorPrototype%": ["GeneratorFunction", "prototype", "prototype"],
-      "%Int8ArrayPrototype%": ["Int8Array", "prototype"],
-      "%Int16ArrayPrototype%": ["Int16Array", "prototype"],
-      "%Int32ArrayPrototype%": ["Int32Array", "prototype"],
-      "%JSONParse%": ["JSON", "parse"],
-      "%JSONStringify%": ["JSON", "stringify"],
-      "%MapPrototype%": ["Map", "prototype"],
-      "%NumberPrototype%": ["Number", "prototype"],
-      "%ObjectPrototype%": ["Object", "prototype"],
-      "%ObjProto_toString%": ["Object", "prototype", "toString"],
-      "%ObjProto_valueOf%": ["Object", "prototype", "valueOf"],
-      "%PromisePrototype%": ["Promise", "prototype"],
-      "%PromiseProto_then%": ["Promise", "prototype", "then"],
-      "%Promise_all%": ["Promise", "all"],
-      "%Promise_reject%": ["Promise", "reject"],
-      "%Promise_resolve%": ["Promise", "resolve"],
-      "%RangeErrorPrototype%": ["RangeError", "prototype"],
-      "%ReferenceErrorPrototype%": ["ReferenceError", "prototype"],
-      "%RegExpPrototype%": ["RegExp", "prototype"],
-      "%SetPrototype%": ["Set", "prototype"],
-      "%SharedArrayBufferPrototype%": ["SharedArrayBuffer", "prototype"],
-      "%StringPrototype%": ["String", "prototype"],
-      "%SymbolPrototype%": ["Symbol", "prototype"],
-      "%SyntaxErrorPrototype%": ["SyntaxError", "prototype"],
-      "%TypedArrayPrototype%": ["TypedArray", "prototype"],
-      "%TypeErrorPrototype%": ["TypeError", "prototype"],
-      "%Uint8ArrayPrototype%": ["Uint8Array", "prototype"],
-      "%Uint8ClampedArrayPrototype%": ["Uint8ClampedArray", "prototype"],
-      "%Uint16ArrayPrototype%": ["Uint16Array", "prototype"],
-      "%Uint32ArrayPrototype%": ["Uint32Array", "prototype"],
-      "%URIErrorPrototype%": ["URIError", "prototype"],
-      "%WeakMapPrototype%": ["WeakMap", "prototype"],
-      "%WeakSetPrototype%": ["WeakSet", "prototype"]
-    };
-    var bind2 = require_function_bind();
-    var hasOwn3 = require_hasown();
-    var $concat = bind2.call(Function.call, Array.prototype.concat);
-    var $spliceApply = bind2.call(Function.apply, Array.prototype.splice);
-    var $replace = bind2.call(Function.call, String.prototype.replace);
-    var $strSlice = bind2.call(Function.call, String.prototype.slice);
-    var $exec = bind2.call(Function.call, RegExp.prototype.exec);
-    var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
-    var reEscapeChar = /\\(\\)?/g;
-    var stringToPath = function stringToPath2(string) {
-      var first = $strSlice(string, 0, 1);
-      var last = $strSlice(string, -1);
-      if (first === "%" && last !== "%") {
-        throw new $SyntaxError("invalid intrinsic syntax, expected closing `%`");
-      } else if (last === "%" && first !== "%") {
-        throw new $SyntaxError("invalid intrinsic syntax, expected opening `%`");
-      }
-      var result = [];
-      $replace(string, rePropName, function(match, number, quote, subString) {
-        result[result.length] = quote ? $replace(subString, reEscapeChar, "$1") : number || match;
-      });
-      return result;
-    };
-    var getBaseIntrinsic = function getBaseIntrinsic2(name, allowMissing) {
-      var intrinsicName = name;
-      var alias;
-      if (hasOwn3(LEGACY_ALIASES, intrinsicName)) {
-        alias = LEGACY_ALIASES[intrinsicName];
-        intrinsicName = "%" + alias[0] + "%";
-      }
-      if (hasOwn3(INTRINSICS, intrinsicName)) {
-        var value = INTRINSICS[intrinsicName];
-        if (value === needsEval) {
-          value = doEval(intrinsicName);
-        }
-        if (typeof value === "undefined" && !allowMissing) {
-          throw new $TypeError("intrinsic " + name + " exists, but is not available. Please file an issue!");
-        }
-        return {
-          alias,
-          name: intrinsicName,
-          value
-        };
-      }
-      throw new $SyntaxError("intrinsic " + name + " does not exist!");
-    };
-    module2.exports = function GetIntrinsic(name, allowMissing) {
-      if (typeof name !== "string" || name.length === 0) {
-        throw new $TypeError("intrinsic name must be a non-empty string");
-      }
-      if (arguments.length > 1 && typeof allowMissing !== "boolean") {
-        throw new $TypeError('"allowMissing" argument must be a boolean');
-      }
-      if ($exec(/^%?[^%]*%?$/, name) === null) {
-        throw new $SyntaxError("`%` may not be present anywhere but at the beginning and end of the intrinsic name");
-      }
-      var parts = stringToPath(name);
-      var intrinsicBaseName = parts.length > 0 ? parts[0] : "";
-      var intrinsic = getBaseIntrinsic("%" + intrinsicBaseName + "%", allowMissing);
-      var intrinsicRealName = intrinsic.name;
-      var value = intrinsic.value;
-      var skipFurtherCaching = false;
-      var alias = intrinsic.alias;
-      if (alias) {
-        intrinsicBaseName = alias[0];
-        $spliceApply(parts, $concat([0, 1], alias));
-      }
-      for (var i3 = 1, isOwn = true; i3 < parts.length; i3 += 1) {
-        var part = parts[i3];
-        var first = $strSlice(part, 0, 1);
-        var last = $strSlice(part, -1);
-        if ((first === '"' || first === "'" || first === "`" || (last === '"' || last === "'" || last === "`")) && first !== last) {
-          throw new $SyntaxError("property names with quotes must have matching quotes");
-        }
-        if (part === "constructor" || !isOwn) {
-          skipFurtherCaching = true;
-        }
-        intrinsicBaseName += "." + part;
-        intrinsicRealName = "%" + intrinsicBaseName + "%";
-        if (hasOwn3(INTRINSICS, intrinsicRealName)) {
-          value = INTRINSICS[intrinsicRealName];
-        } else if (value != null) {
-          if (!(part in value)) {
-            if (!allowMissing) {
-              throw new $TypeError("base intrinsic for " + name + " exists, but the property is not available.");
-            }
-            return void 0;
-          }
-          if ($gOPD && i3 + 1 >= parts.length) {
-            var desc = $gOPD(value, part);
-            isOwn = !!desc;
-            if (isOwn && "get" in desc && !("originalValue" in desc.get)) {
-              value = desc.get;
-            } else {
-              value = value[part];
-            }
-          } else {
-            isOwn = hasOwn3(value, part);
-            value = value[part];
-          }
-          if (isOwn && !skipFurtherCaching) {
-            INTRINSICS[intrinsicRealName] = value;
-          }
-        }
-      }
-      return value;
-    };
-  }
-});
-
-// node_modules/es-define-property/index.js
-var require_es_define_property = __commonJS({
-  "node_modules/es-define-property/index.js"(exports, module2) {
-    "use strict";
-    var GetIntrinsic = require_get_intrinsic();
-    var $defineProperty = GetIntrinsic("%Object.defineProperty%", true) || false;
-    if ($defineProperty) {
-      try {
-        $defineProperty({}, "a", { value: 1 });
-      } catch (e3) {
-        $defineProperty = false;
-      }
-    }
-    module2.exports = $defineProperty;
-  }
-});
-
-// node_modules/gopd/index.js
-var require_gopd = __commonJS({
-  "node_modules/gopd/index.js"(exports, module2) {
-    "use strict";
-    var GetIntrinsic = require_get_intrinsic();
-    var $gOPD = GetIntrinsic("%Object.getOwnPropertyDescriptor%", true);
-    if ($gOPD) {
-      try {
-        $gOPD([], "length");
-      } catch (e3) {
-        $gOPD = null;
-      }
-    }
-    module2.exports = $gOPD;
-  }
-});
-
-// node_modules/define-data-property/index.js
-var require_define_data_property = __commonJS({
-  "node_modules/define-data-property/index.js"(exports, module2) {
-    "use strict";
-    var $defineProperty = require_es_define_property();
-    var $SyntaxError = require_syntax();
-    var $TypeError = require_type();
-    var gopd = require_gopd();
-    module2.exports = function defineDataProperty(obj, property, value) {
-      if (!obj || typeof obj !== "object" && typeof obj !== "function") {
-        throw new $TypeError("`obj` must be an object or a function`");
-      }
-      if (typeof property !== "string" && typeof property !== "symbol") {
-        throw new $TypeError("`property` must be a string or a symbol`");
-      }
-      if (arguments.length > 3 && typeof arguments[3] !== "boolean" && arguments[3] !== null) {
-        throw new $TypeError("`nonEnumerable`, if provided, must be a boolean or null");
-      }
-      if (arguments.length > 4 && typeof arguments[4] !== "boolean" && arguments[4] !== null) {
-        throw new $TypeError("`nonWritable`, if provided, must be a boolean or null");
-      }
-      if (arguments.length > 5 && typeof arguments[5] !== "boolean" && arguments[5] !== null) {
-        throw new $TypeError("`nonConfigurable`, if provided, must be a boolean or null");
-      }
-      if (arguments.length > 6 && typeof arguments[6] !== "boolean") {
-        throw new $TypeError("`loose`, if provided, must be a boolean");
-      }
-      var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
-      var nonWritable = arguments.length > 4 ? arguments[4] : null;
-      var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
-      var loose = arguments.length > 6 ? arguments[6] : false;
-      var desc = !!gopd && gopd(obj, property);
-      if ($defineProperty) {
-        $defineProperty(obj, property, {
-          configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
-          enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
-          value,
-          writable: nonWritable === null && desc ? desc.writable : !nonWritable
-        });
-      } else if (loose || !nonEnumerable && !nonWritable && !nonConfigurable) {
-        obj[property] = value;
-      } else {
-        throw new $SyntaxError("This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.");
-      }
-    };
-  }
-});
-
-// node_modules/has-property-descriptors/index.js
-var require_has_property_descriptors = __commonJS({
-  "node_modules/has-property-descriptors/index.js"(exports, module2) {
-    "use strict";
-    var $defineProperty = require_es_define_property();
-    var hasPropertyDescriptors = function hasPropertyDescriptors2() {
-      return !!$defineProperty;
-    };
-    hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBug() {
-      if (!$defineProperty) {
-        return null;
-      }
-      try {
-        return $defineProperty([], "length", { value: 1 }).length !== 1;
-      } catch (e3) {
-        return true;
-      }
-    };
-    module2.exports = hasPropertyDescriptors;
-  }
-});
-
-// node_modules/set-function-length/index.js
-var require_set_function_length = __commonJS({
-  "node_modules/set-function-length/index.js"(exports, module2) {
-    "use strict";
-    var GetIntrinsic = require_get_intrinsic();
-    var define2 = require_define_data_property();
-    var hasDescriptors = require_has_property_descriptors()();
-    var gOPD = require_gopd();
-    var $TypeError = require_type();
-    var $floor = GetIntrinsic("%Math.floor%");
-    module2.exports = function setFunctionLength(fn, length) {
-      if (typeof fn !== "function") {
-        throw new $TypeError("`fn` is not a function");
-      }
-      if (typeof length !== "number" || length < 0 || length > 4294967295 || $floor(length) !== length) {
-        throw new $TypeError("`length` must be a positive 32-bit integer");
-      }
-      var loose = arguments.length > 2 && !!arguments[2];
-      var functionLengthIsConfigurable = true;
-      var functionLengthIsWritable = true;
-      if ("length" in fn && gOPD) {
-        var desc = gOPD(fn, "length");
-        if (desc && !desc.configurable) {
-          functionLengthIsConfigurable = false;
-        }
-        if (desc && !desc.writable) {
-          functionLengthIsWritable = false;
-        }
-      }
-      if (functionLengthIsConfigurable || functionLengthIsWritable || !loose) {
-        if (hasDescriptors) {
-          define2(fn, "length", length, true, true);
-        } else {
-          define2(fn, "length", length);
-        }
-      }
-      return fn;
-    };
-  }
-});
-
-// node_modules/call-bind/index.js
-var require_call_bind = __commonJS({
-  "node_modules/call-bind/index.js"(exports, module2) {
-    "use strict";
-    var bind2 = require_function_bind();
-    var GetIntrinsic = require_get_intrinsic();
-    var setFunctionLength = require_set_function_length();
-    var $TypeError = require_type();
-    var $apply = GetIntrinsic("%Function.prototype.apply%");
-    var $call = GetIntrinsic("%Function.prototype.call%");
-    var $reflectApply = GetIntrinsic("%Reflect.apply%", true) || bind2.call($call, $apply);
-    var $defineProperty = require_es_define_property();
-    var $max = GetIntrinsic("%Math.max%");
-    module2.exports = function callBind(originalFunction) {
-      if (typeof originalFunction !== "function") {
-        throw new $TypeError("a function is required");
-      }
-      var func = $reflectApply(bind2, $call, arguments);
-      return setFunctionLength(
-        func,
-        1 + $max(0, originalFunction.length - (arguments.length - 1)),
-        true
-      );
-    };
-    var applyBind = function applyBind2() {
-      return $reflectApply(bind2, $apply, arguments);
-    };
-    if ($defineProperty) {
-      $defineProperty(module2.exports, "apply", { value: applyBind });
-    } else {
-      module2.exports.apply = applyBind;
-    }
-  }
-});
-
-// node_modules/call-bind/callBound.js
-var require_callBound = __commonJS({
-  "node_modules/call-bind/callBound.js"(exports, module2) {
-    "use strict";
-    var GetIntrinsic = require_get_intrinsic();
-    var callBind = require_call_bind();
-    var $indexOf = callBind(GetIntrinsic("String.prototype.indexOf"));
-    module2.exports = function callBoundIntrinsic(name, allowMissing) {
-      var intrinsic = GetIntrinsic(name, !!allowMissing);
-      if (typeof intrinsic === "function" && $indexOf(name, ".prototype.") > -1) {
-        return callBind(intrinsic);
-      }
-      return intrinsic;
-    };
-  }
-});
-
-// node_modules/object-inspect/util.inspect.js
-var require_util_inspect = __commonJS({
-  "node_modules/object-inspect/util.inspect.js"(exports, module2) {
-    module2.exports = require("util").inspect;
-  }
-});
-
-// node_modules/object-inspect/index.js
-var require_object_inspect = __commonJS({
-  "node_modules/object-inspect/index.js"(exports, module2) {
-    var hasMap = typeof Map === "function" && Map.prototype;
-    var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, "size") : null;
-    var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === "function" ? mapSizeDescriptor.get : null;
-    var mapForEach = hasMap && Map.prototype.forEach;
-    var hasSet = typeof Set === "function" && Set.prototype;
-    var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, "size") : null;
-    var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === "function" ? setSizeDescriptor.get : null;
-    var setForEach = hasSet && Set.prototype.forEach;
-    var hasWeakMap = typeof WeakMap === "function" && WeakMap.prototype;
-    var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
-    var hasWeakSet = typeof WeakSet === "function" && WeakSet.prototype;
-    var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
-    var hasWeakRef = typeof WeakRef === "function" && WeakRef.prototype;
-    var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
-    var booleanValueOf = Boolean.prototype.valueOf;
-    var objectToString = Object.prototype.toString;
-    var functionToString = Function.prototype.toString;
-    var $match = String.prototype.match;
-    var $slice = String.prototype.slice;
-    var $replace = String.prototype.replace;
-    var $toUpperCase = String.prototype.toUpperCase;
-    var $toLowerCase = String.prototype.toLowerCase;
-    var $test = RegExp.prototype.test;
-    var $concat = Array.prototype.concat;
-    var $join = Array.prototype.join;
-    var $arrSlice = Array.prototype.slice;
-    var $floor = Math.floor;
-    var bigIntValueOf = typeof BigInt === "function" ? BigInt.prototype.valueOf : null;
-    var gOPS = Object.getOwnPropertySymbols;
-    var symToString = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? Symbol.prototype.toString : null;
-    var hasShammedSymbols = typeof Symbol === "function" && typeof Symbol.iterator === "object";
-    var toStringTag = typeof Symbol === "function" && Symbol.toStringTag && (typeof Symbol.toStringTag === hasShammedSymbols ? "object" : "symbol") ? Symbol.toStringTag : null;
-    var isEnumerable = Object.prototype.propertyIsEnumerable;
-    var gPO = (typeof Reflect === "function" ? Reflect.getPrototypeOf : Object.getPrototypeOf) || ([].__proto__ === Array.prototype ? function(O5) {
-      return O5.__proto__;
-    } : null);
-    function addNumericSeparator(num, str2) {
-      if (num === Infinity || num === -Infinity || num !== num || num && num > -1e3 && num < 1e3 || $test.call(/e/, str2)) {
-        return str2;
-      }
-      var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
-      if (typeof num === "number") {
-        var int = num < 0 ? -$floor(-num) : $floor(num);
-        if (int !== num) {
-          var intStr = String(int);
-          var dec = $slice.call(str2, intStr.length + 1);
-          return $replace.call(intStr, sepRegex, "$&_") + "." + $replace.call($replace.call(dec, /([0-9]{3})/g, "$&_"), /_$/, "");
-        }
-      }
-      return $replace.call(str2, sepRegex, "$&_");
-    }
-    var utilInspect = require_util_inspect();
-    var inspectCustom = utilInspect.custom;
-    var inspectSymbol = isSymbol(inspectCustom) ? inspectCustom : null;
-    module2.exports = function inspect_(obj, options, depth, seen) {
-      var opts = options || {};
-      if (has(opts, "quoteStyle") && (opts.quoteStyle !== "single" && opts.quoteStyle !== "double")) {
-        throw new TypeError('option "quoteStyle" must be "single" or "double"');
-      }
-      if (has(opts, "maxStringLength") && (typeof opts.maxStringLength === "number" ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity : opts.maxStringLength !== null)) {
-        throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
-      }
-      var customInspect = has(opts, "customInspect") ? opts.customInspect : true;
-      if (typeof customInspect !== "boolean" && customInspect !== "symbol") {
-        throw new TypeError("option \"customInspect\", if provided, must be `true`, `false`, or `'symbol'`");
-      }
-      if (has(opts, "indent") && opts.indent !== null && opts.indent !== "	" && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)) {
-        throw new TypeError('option "indent" must be "\\t", an integer > 0, or `null`');
-      }
-      if (has(opts, "numericSeparator") && typeof opts.numericSeparator !== "boolean") {
-        throw new TypeError('option "numericSeparator", if provided, must be `true` or `false`');
-      }
-      var numericSeparator = opts.numericSeparator;
-      if (typeof obj === "undefined") {
-        return "undefined";
-      }
-      if (obj === null) {
-        return "null";
-      }
-      if (typeof obj === "boolean") {
-        return obj ? "true" : "false";
-      }
-      if (typeof obj === "string") {
-        return inspectString(obj, opts);
-      }
-      if (typeof obj === "number") {
-        if (obj === 0) {
-          return Infinity / obj > 0 ? "0" : "-0";
-        }
-        var str2 = String(obj);
-        return numericSeparator ? addNumericSeparator(obj, str2) : str2;
-      }
-      if (typeof obj === "bigint") {
-        var bigIntStr = String(obj) + "n";
-        return numericSeparator ? addNumericSeparator(obj, bigIntStr) : bigIntStr;
-      }
-      var maxDepth = typeof opts.depth === "undefined" ? 5 : opts.depth;
-      if (typeof depth === "undefined") {
-        depth = 0;
-      }
-      if (depth >= maxDepth && maxDepth > 0 && typeof obj === "object") {
-        return isArray2(obj) ? "[Array]" : "[Object]";
-      }
-      var indent = getIndent(opts, depth);
-      if (typeof seen === "undefined") {
-        seen = [];
-      } else if (indexOf(seen, obj) >= 0) {
-        return "[Circular]";
-      }
-      function inspect3(value, from, noIndent) {
-        if (from) {
-          seen = $arrSlice.call(seen);
-          seen.push(from);
-        }
-        if (noIndent) {
-          var newOpts = {
-            depth: opts.depth
-          };
-          if (has(opts, "quoteStyle")) {
-            newOpts.quoteStyle = opts.quoteStyle;
-          }
-          return inspect_(value, newOpts, depth + 1, seen);
-        }
-        return inspect_(value, opts, depth + 1, seen);
-      }
-      if (typeof obj === "function" && !isRegExp2(obj)) {
-        var name = nameOf(obj);
-        var keys = arrObjKeys(obj, inspect3);
-        return "[Function" + (name ? ": " + name : " (anonymous)") + "]" + (keys.length > 0 ? " { " + $join.call(keys, ", ") + " }" : "");
-      }
-      if (isSymbol(obj)) {
-        var symString = hasShammedSymbols ? $replace.call(String(obj), /^(Symbol\(.*\))_[^)]*$/, "$1") : symToString.call(obj);
-        return typeof obj === "object" && !hasShammedSymbols ? markBoxed(symString) : symString;
-      }
-      if (isElement(obj)) {
-        var s2 = "<" + $toLowerCase.call(String(obj.nodeName));
-        var attrs = obj.attributes || [];
-        for (var i3 = 0; i3 < attrs.length; i3++) {
-          s2 += " " + attrs[i3].name + "=" + wrapQuotes(quote(attrs[i3].value), "double", opts);
-        }
-        s2 += ">";
-        if (obj.childNodes && obj.childNodes.length) {
-          s2 += "...";
-        }
-        s2 += "</" + $toLowerCase.call(String(obj.nodeName)) + ">";
-        return s2;
-      }
-      if (isArray2(obj)) {
-        if (obj.length === 0) {
-          return "[]";
-        }
-        var xs = arrObjKeys(obj, inspect3);
-        if (indent && !singleLineValues(xs)) {
-          return "[" + indentedJoin(xs, indent) + "]";
-        }
-        return "[ " + $join.call(xs, ", ") + " ]";
-      }
-      if (isError2(obj)) {
-        var parts = arrObjKeys(obj, inspect3);
-        if (!("cause" in Error.prototype) && "cause" in obj && !isEnumerable.call(obj, "cause")) {
-          return "{ [" + String(obj) + "] " + $join.call($concat.call("[cause]: " + inspect3(obj.cause), parts), ", ") + " }";
-        }
-        if (parts.length === 0) {
-          return "[" + String(obj) + "]";
-        }
-        return "{ [" + String(obj) + "] " + $join.call(parts, ", ") + " }";
-      }
-      if (typeof obj === "object" && customInspect) {
-        if (inspectSymbol && typeof obj[inspectSymbol] === "function" && utilInspect) {
-          return utilInspect(obj, { depth: maxDepth - depth });
-        } else if (customInspect !== "symbol" && typeof obj.inspect === "function") {
-          return obj.inspect();
-        }
-      }
-      if (isMap(obj)) {
-        var mapParts = [];
-        if (mapForEach) {
-          mapForEach.call(obj, function(value, key) {
-            mapParts.push(inspect3(key, obj, true) + " => " + inspect3(value, obj));
-          });
-        }
-        return collectionOf("Map", mapSize.call(obj), mapParts, indent);
-      }
-      if (isSet(obj)) {
-        var setParts = [];
-        if (setForEach) {
-          setForEach.call(obj, function(value) {
-            setParts.push(inspect3(value, obj));
-          });
-        }
-        return collectionOf("Set", setSize.call(obj), setParts, indent);
-      }
-      if (isWeakMap(obj)) {
-        return weakCollectionOf("WeakMap");
-      }
-      if (isWeakSet(obj)) {
-        return weakCollectionOf("WeakSet");
-      }
-      if (isWeakRef(obj)) {
-        return weakCollectionOf("WeakRef");
-      }
-      if (isNumber2(obj)) {
-        return markBoxed(inspect3(Number(obj)));
-      }
-      if (isBigInt(obj)) {
-        return markBoxed(inspect3(bigIntValueOf.call(obj)));
-      }
-      if (isBoolean2(obj)) {
-        return markBoxed(booleanValueOf.call(obj));
-      }
-      if (isString2(obj)) {
-        return markBoxed(inspect3(String(obj)));
-      }
-      if (typeof window !== "undefined" && obj === window) {
-        return "{ [object Window] }";
-      }
-      if (typeof globalThis !== "undefined" && obj === globalThis || typeof global !== "undefined" && obj === global) {
-        return "{ [object globalThis] }";
-      }
-      if (!isDate2(obj) && !isRegExp2(obj)) {
-        var ys = arrObjKeys(obj, inspect3);
-        var isPlainObject4 = gPO ? gPO(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
-        var protoTag = obj instanceof Object ? "" : "null prototype";
-        var stringTag = !isPlainObject4 && toStringTag && Object(obj) === obj && toStringTag in obj ? $slice.call(toStr(obj), 8, -1) : protoTag ? "Object" : "";
-        var constructorTag = isPlainObject4 || typeof obj.constructor !== "function" ? "" : obj.constructor.name ? obj.constructor.name + " " : "";
-        var tag = constructorTag + (stringTag || protoTag ? "[" + $join.call($concat.call([], stringTag || [], protoTag || []), ": ") + "] " : "");
-        if (ys.length === 0) {
-          return tag + "{}";
-        }
-        if (indent) {
-          return tag + "{" + indentedJoin(ys, indent) + "}";
-        }
-        return tag + "{ " + $join.call(ys, ", ") + " }";
-      }
-      return String(obj);
-    };
-    function wrapQuotes(s2, defaultStyle, opts) {
-      var quoteChar = (opts.quoteStyle || defaultStyle) === "double" ? '"' : "'";
-      return quoteChar + s2 + quoteChar;
-    }
-    function quote(s2) {
-      return $replace.call(String(s2), /"/g, "&quot;");
-    }
-    function isArray2(obj) {
-      return toStr(obj) === "[object Array]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isDate2(obj) {
-      return toStr(obj) === "[object Date]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isRegExp2(obj) {
-      return toStr(obj) === "[object RegExp]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isError2(obj) {
-      return toStr(obj) === "[object Error]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isString2(obj) {
-      return toStr(obj) === "[object String]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isNumber2(obj) {
-      return toStr(obj) === "[object Number]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isBoolean2(obj) {
-      return toStr(obj) === "[object Boolean]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
-    }
-    function isSymbol(obj) {
-      if (hasShammedSymbols) {
-        return obj && typeof obj === "object" && obj instanceof Symbol;
-      }
-      if (typeof obj === "symbol") {
-        return true;
-      }
-      if (!obj || typeof obj !== "object" || !symToString) {
-        return false;
-      }
-      try {
-        symToString.call(obj);
-        return true;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isBigInt(obj) {
-      if (!obj || typeof obj !== "object" || !bigIntValueOf) {
-        return false;
-      }
-      try {
-        bigIntValueOf.call(obj);
-        return true;
-      } catch (e3) {
-      }
-      return false;
-    }
-    var hasOwn3 = Object.prototype.hasOwnProperty || function(key) {
-      return key in this;
-    };
-    function has(obj, key) {
-      return hasOwn3.call(obj, key);
-    }
-    function toStr(obj) {
-      return objectToString.call(obj);
-    }
-    function nameOf(f4) {
-      if (f4.name) {
-        return f4.name;
-      }
-      var m5 = $match.call(functionToString.call(f4), /^function\s*([\w$]+)/);
-      if (m5) {
-        return m5[1];
-      }
-      return null;
-    }
-    function indexOf(xs, x5) {
-      if (xs.indexOf) {
-        return xs.indexOf(x5);
-      }
-      for (var i3 = 0, l3 = xs.length; i3 < l3; i3++) {
-        if (xs[i3] === x5) {
-          return i3;
-        }
-      }
-      return -1;
-    }
-    function isMap(x5) {
-      if (!mapSize || !x5 || typeof x5 !== "object") {
-        return false;
-      }
-      try {
-        mapSize.call(x5);
-        try {
-          setSize.call(x5);
-        } catch (s2) {
-          return true;
-        }
-        return x5 instanceof Map;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isWeakMap(x5) {
-      if (!weakMapHas || !x5 || typeof x5 !== "object") {
-        return false;
-      }
-      try {
-        weakMapHas.call(x5, weakMapHas);
-        try {
-          weakSetHas.call(x5, weakSetHas);
-        } catch (s2) {
-          return true;
-        }
-        return x5 instanceof WeakMap;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isWeakRef(x5) {
-      if (!weakRefDeref || !x5 || typeof x5 !== "object") {
-        return false;
-      }
-      try {
-        weakRefDeref.call(x5);
-        return true;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isSet(x5) {
-      if (!setSize || !x5 || typeof x5 !== "object") {
-        return false;
-      }
-      try {
-        setSize.call(x5);
-        try {
-          mapSize.call(x5);
-        } catch (m5) {
-          return true;
-        }
-        return x5 instanceof Set;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isWeakSet(x5) {
-      if (!weakSetHas || !x5 || typeof x5 !== "object") {
-        return false;
-      }
-      try {
-        weakSetHas.call(x5, weakSetHas);
-        try {
-          weakMapHas.call(x5, weakMapHas);
-        } catch (s2) {
-          return true;
-        }
-        return x5 instanceof WeakSet;
-      } catch (e3) {
-      }
-      return false;
-    }
-    function isElement(x5) {
-      if (!x5 || typeof x5 !== "object") {
-        return false;
-      }
-      if (typeof HTMLElement !== "undefined" && x5 instanceof HTMLElement) {
-        return true;
-      }
-      return typeof x5.nodeName === "string" && typeof x5.getAttribute === "function";
-    }
-    function inspectString(str2, opts) {
-      if (str2.length > opts.maxStringLength) {
-        var remaining = str2.length - opts.maxStringLength;
-        var trailer = "... " + remaining + " more character" + (remaining > 1 ? "s" : "");
-        return inspectString($slice.call(str2, 0, opts.maxStringLength), opts) + trailer;
-      }
-      var s2 = $replace.call($replace.call(str2, /(['\\])/g, "\\$1"), /[\x00-\x1f]/g, lowbyte);
-      return wrapQuotes(s2, "single", opts);
-    }
-    function lowbyte(c3) {
-      var n2 = c3.charCodeAt(0);
-      var x5 = {
-        8: "b",
-        9: "t",
-        10: "n",
-        12: "f",
-        13: "r"
-      }[n2];
-      if (x5) {
-        return "\\" + x5;
-      }
-      return "\\x" + (n2 < 16 ? "0" : "") + $toUpperCase.call(n2.toString(16));
-    }
-    function markBoxed(str2) {
-      return "Object(" + str2 + ")";
-    }
-    function weakCollectionOf(type2) {
-      return type2 + " { ? }";
-    }
-    function collectionOf(type2, size, entries, indent) {
-      var joinedEntries = indent ? indentedJoin(entries, indent) : $join.call(entries, ", ");
-      return type2 + " (" + size + ") {" + joinedEntries + "}";
-    }
-    function singleLineValues(xs) {
-      for (var i3 = 0; i3 < xs.length; i3++) {
-        if (indexOf(xs[i3], "\n") >= 0) {
-          return false;
-        }
-      }
-      return true;
-    }
-    function getIndent(opts, depth) {
-      var baseIndent;
-      if (opts.indent === "	") {
-        baseIndent = "	";
-      } else if (typeof opts.indent === "number" && opts.indent > 0) {
-        baseIndent = $join.call(Array(opts.indent + 1), " ");
-      } else {
-        return null;
-      }
-      return {
-        base: baseIndent,
-        prev: $join.call(Array(depth + 1), baseIndent)
-      };
-    }
-    function indentedJoin(xs, indent) {
-      if (xs.length === 0) {
-        return "";
-      }
-      var lineJoiner = "\n" + indent.prev + indent.base;
-      return lineJoiner + $join.call(xs, "," + lineJoiner) + "\n" + indent.prev;
-    }
-    function arrObjKeys(obj, inspect3) {
-      var isArr = isArray2(obj);
-      var xs = [];
-      if (isArr) {
-        xs.length = obj.length;
-        for (var i3 = 0; i3 < obj.length; i3++) {
-          xs[i3] = has(obj, i3) ? inspect3(obj[i3], obj) : "";
-        }
-      }
-      var syms = typeof gOPS === "function" ? gOPS(obj) : [];
-      var symMap;
-      if (hasShammedSymbols) {
-        symMap = {};
-        for (var k7 = 0; k7 < syms.length; k7++) {
-          symMap["$" + syms[k7]] = syms[k7];
-        }
-      }
-      for (var key in obj) {
-        if (!has(obj, key)) {
-          continue;
-        }
-        if (isArr && String(Number(key)) === key && key < obj.length) {
-          continue;
-        }
-        if (hasShammedSymbols && symMap["$" + key] instanceof Symbol) {
-          continue;
-        } else if ($test.call(/[^\w$]/, key)) {
-          xs.push(inspect3(key, obj) + ": " + inspect3(obj[key], obj));
-        } else {
-          xs.push(key + ": " + inspect3(obj[key], obj));
-        }
-      }
-      if (typeof gOPS === "function") {
-        for (var j4 = 0; j4 < syms.length; j4++) {
-          if (isEnumerable.call(obj, syms[j4])) {
-            xs.push("[" + inspect3(syms[j4]) + "]: " + inspect3(obj[syms[j4]], obj));
-          }
-        }
-      }
-      return xs;
-    }
-  }
-});
-
-// node_modules/side-channel/index.js
-var require_side_channel = __commonJS({
-  "node_modules/side-channel/index.js"(exports, module2) {
-    "use strict";
-    var GetIntrinsic = require_get_intrinsic();
-    var callBound = require_callBound();
-    var inspect3 = require_object_inspect();
-    var $TypeError = require_type();
-    var $WeakMap = GetIntrinsic("%WeakMap%", true);
-    var $Map = GetIntrinsic("%Map%", true);
-    var $weakMapGet = callBound("WeakMap.prototype.get", true);
-    var $weakMapSet = callBound("WeakMap.prototype.set", true);
-    var $weakMapHas = callBound("WeakMap.prototype.has", true);
-    var $mapGet = callBound("Map.prototype.get", true);
-    var $mapSet = callBound("Map.prototype.set", true);
-    var $mapHas = callBound("Map.prototype.has", true);
-    var listGetNode = function(list, key) {
-      var prev = list;
-      var curr;
-      for (; (curr = prev.next) !== null; prev = curr) {
-        if (curr.key === key) {
-          prev.next = curr.next;
-          curr.next = list.next;
-          list.next = curr;
-          return curr;
-        }
-      }
-    };
-    var listGet = function(objects, key) {
-      var node = listGetNode(objects, key);
-      return node && node.value;
-    };
-    var listSet = function(objects, key, value) {
-      var node = listGetNode(objects, key);
-      if (node) {
-        node.value = value;
-      } else {
-        objects.next = {
-          key,
-          next: objects.next,
-          value
-        };
-      }
-    };
-    var listHas = function(objects, key) {
-      return !!listGetNode(objects, key);
-    };
-    module2.exports = function getSideChannel() {
-      var $wm;
-      var $m;
-      var $o;
-      var channel = {
-        assert: function(key) {
-          if (!channel.has(key)) {
-            throw new $TypeError("Side channel does not contain " + inspect3(key));
-          }
-        },
-        get: function(key) {
-          if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
-            if ($wm) {
-              return $weakMapGet($wm, key);
-            }
-          } else if ($Map) {
-            if ($m) {
-              return $mapGet($m, key);
-            }
-          } else {
-            if ($o) {
-              return listGet($o, key);
-            }
-          }
-        },
-        has: function(key) {
-          if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
-            if ($wm) {
-              return $weakMapHas($wm, key);
-            }
-          } else if ($Map) {
-            if ($m) {
-              return $mapHas($m, key);
-            }
-          } else {
-            if ($o) {
-              return listHas($o, key);
-            }
-          }
-          return false;
-        },
-        set: function(key, value) {
-          if ($WeakMap && key && (typeof key === "object" || typeof key === "function")) {
-            if (!$wm) {
-              $wm = new $WeakMap();
-            }
-            $weakMapSet($wm, key, value);
-          } else if ($Map) {
-            if (!$m) {
-              $m = new $Map();
-            }
-            $mapSet($m, key, value);
-          } else {
-            if (!$o) {
-              $o = { key: {}, next: null };
-            }
-            listSet($o, key, value);
-          }
-        }
-      };
-      return channel;
-    };
-  }
-});
-
-// node_modules/qs/lib/formats.js
-var require_formats = __commonJS({
-  "node_modules/qs/lib/formats.js"(exports, module2) {
-    "use strict";
-    var replace = String.prototype.replace;
-    var percentTwenties = /%20/g;
-    var Format = {
-      RFC1738: "RFC1738",
-      RFC3986: "RFC3986"
-    };
-    module2.exports = {
-      "default": Format.RFC3986,
-      formatters: {
-        RFC1738: function(value) {
-          return replace.call(value, percentTwenties, "+");
-        },
-        RFC3986: function(value) {
-          return String(value);
-        }
-      },
-      RFC1738: Format.RFC1738,
-      RFC3986: Format.RFC3986
-    };
-  }
-});
-
-// node_modules/qs/lib/utils.js
-var require_utils2 = __commonJS({
-  "node_modules/qs/lib/utils.js"(exports, module2) {
-    "use strict";
-    var formats = require_formats();
-    var has = Object.prototype.hasOwnProperty;
-    var isArray2 = Array.isArray;
-    var hexTable = function() {
-      var array = [];
-      for (var i3 = 0; i3 < 256; ++i3) {
-        array.push("%" + ((i3 < 16 ? "0" : "") + i3.toString(16)).toUpperCase());
-      }
-      return array;
-    }();
-    var compactQueue = function compactQueue2(queue) {
-      while (queue.length > 1) {
-        var item = queue.pop();
-        var obj = item.obj[item.prop];
-        if (isArray2(obj)) {
-          var compacted = [];
-          for (var j4 = 0; j4 < obj.length; ++j4) {
-            if (typeof obj[j4] !== "undefined") {
-              compacted.push(obj[j4]);
-            }
-          }
-          item.obj[item.prop] = compacted;
-        }
-      }
-    };
-    var arrayToObject2 = function arrayToObject3(source, options) {
-      var obj = options && options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
-      for (var i3 = 0; i3 < source.length; ++i3) {
-        if (typeof source[i3] !== "undefined") {
-          obj[i3] = source[i3];
-        }
-      }
-      return obj;
-    };
-    var merge2 = function merge3(target, source, options) {
-      if (!source) {
-        return target;
-      }
-      if (typeof source !== "object") {
-        if (isArray2(target)) {
-          target.push(source);
-        } else if (target && typeof target === "object") {
-          if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {
-            target[source] = true;
-          }
-        } else {
-          return [target, source];
-        }
-        return target;
-      }
-      if (!target || typeof target !== "object") {
-        return [target].concat(source);
-      }
-      var mergeTarget = target;
-      if (isArray2(target) && !isArray2(source)) {
-        mergeTarget = arrayToObject2(target, options);
-      }
-      if (isArray2(target) && isArray2(source)) {
-        source.forEach(function(item, i3) {
-          if (has.call(target, i3)) {
-            var targetItem = target[i3];
-            if (targetItem && typeof targetItem === "object" && item && typeof item === "object") {
-              target[i3] = merge3(targetItem, item, options);
-            } else {
-              target.push(item);
-            }
-          } else {
-            target[i3] = item;
-          }
-        });
-        return target;
-      }
-      return Object.keys(source).reduce(function(acc, key) {
-        var value = source[key];
-        if (has.call(acc, key)) {
-          acc[key] = merge3(acc[key], value, options);
-        } else {
-          acc[key] = value;
-        }
-        return acc;
-      }, mergeTarget);
-    };
-    var assign = function assignSingleSource(target, source) {
-      return Object.keys(source).reduce(function(acc, key) {
-        acc[key] = source[key];
-        return acc;
-      }, target);
-    };
-    var decode = function(str2, decoder, charset) {
-      var strWithoutPlus = str2.replace(/\+/g, " ");
-      if (charset === "iso-8859-1") {
-        return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);
-      }
-      try {
-        return decodeURIComponent(strWithoutPlus);
-      } catch (e3) {
-        return strWithoutPlus;
-      }
-    };
-    var limit = 1024;
-    var encode3 = function encode4(str2, defaultEncoder, charset, kind3, format) {
-      if (str2.length === 0) {
-        return str2;
-      }
-      var string = str2;
-      if (typeof str2 === "symbol") {
-        string = Symbol.prototype.toString.call(str2);
-      } else if (typeof str2 !== "string") {
-        string = String(str2);
-      }
-      if (charset === "iso-8859-1") {
-        return escape(string).replace(/%u[0-9a-f]{4}/gi, function($0) {
-          return "%26%23" + parseInt($0.slice(2), 16) + "%3B";
-        });
-      }
-      var out = "";
-      for (var j4 = 0; j4 < string.length; j4 += limit) {
-        var segment = string.length >= limit ? string.slice(j4, j4 + limit) : string;
-        var arr = [];
-        for (var i3 = 0; i3 < segment.length; ++i3) {
-          var c3 = segment.charCodeAt(i3);
-          if (c3 === 45 || c3 === 46 || c3 === 95 || c3 === 126 || c3 >= 48 && c3 <= 57 || c3 >= 65 && c3 <= 90 || c3 >= 97 && c3 <= 122 || format === formats.RFC1738 && (c3 === 40 || c3 === 41)) {
-            arr[arr.length] = segment.charAt(i3);
-            continue;
-          }
-          if (c3 < 128) {
-            arr[arr.length] = hexTable[c3];
-            continue;
-          }
-          if (c3 < 2048) {
-            arr[arr.length] = hexTable[192 | c3 >> 6] + hexTable[128 | c3 & 63];
-            continue;
-          }
-          if (c3 < 55296 || c3 >= 57344) {
-            arr[arr.length] = hexTable[224 | c3 >> 12] + hexTable[128 | c3 >> 6 & 63] + hexTable[128 | c3 & 63];
-            continue;
-          }
-          i3 += 1;
-          c3 = 65536 + ((c3 & 1023) << 10 | segment.charCodeAt(i3) & 1023);
-          arr[arr.length] = hexTable[240 | c3 >> 18] + hexTable[128 | c3 >> 12 & 63] + hexTable[128 | c3 >> 6 & 63] + hexTable[128 | c3 & 63];
-        }
-        out += arr.join("");
-      }
-      return out;
-    };
-    var compact = function compact2(value) {
-      var queue = [{ obj: { o: value }, prop: "o" }];
-      var refs = [];
-      for (var i3 = 0; i3 < queue.length; ++i3) {
-        var item = queue[i3];
-        var obj = item.obj[item.prop];
-        var keys = Object.keys(obj);
-        for (var j4 = 0; j4 < keys.length; ++j4) {
-          var key = keys[j4];
-          var val = obj[key];
-          if (typeof val === "object" && val !== null && refs.indexOf(val) === -1) {
-            queue.push({ obj, prop: key });
-            refs.push(val);
-          }
-        }
-      }
-      compactQueue(queue);
-      return value;
-    };
-    var isRegExp2 = function isRegExp3(obj) {
-      return Object.prototype.toString.call(obj) === "[object RegExp]";
-    };
-    var isBuffer2 = function isBuffer3(obj) {
-      if (!obj || typeof obj !== "object") {
-        return false;
-      }
-      return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
-    };
-    var combine = function combine2(a4, b7) {
-      return [].concat(a4, b7);
-    };
-    var maybeMap = function maybeMap2(val, fn) {
-      if (isArray2(val)) {
-        var mapped = [];
-        for (var i3 = 0; i3 < val.length; i3 += 1) {
-          mapped.push(fn(val[i3]));
-        }
-        return mapped;
-      }
-      return fn(val);
-    };
-    module2.exports = {
-      arrayToObject: arrayToObject2,
-      assign,
-      combine,
-      compact,
-      decode,
-      encode: encode3,
-      isBuffer: isBuffer2,
-      isRegExp: isRegExp2,
-      maybeMap,
-      merge: merge2
-    };
-  }
-});
-
-// node_modules/qs/lib/stringify.js
-var require_stringify = __commonJS({
-  "node_modules/qs/lib/stringify.js"(exports, module2) {
-    "use strict";
-    var getSideChannel = require_side_channel();
-    var utils = require_utils2();
-    var formats = require_formats();
-    var has = Object.prototype.hasOwnProperty;
-    var arrayPrefixGenerators = {
-      brackets: function brackets(prefix) {
-        return prefix + "[]";
-      },
-      comma: "comma",
-      indices: function indices(prefix, key) {
-        return prefix + "[" + key + "]";
-      },
-      repeat: function repeat(prefix) {
-        return prefix;
-      }
-    };
-    var isArray2 = Array.isArray;
-    var push = Array.prototype.push;
-    var pushToArray = function(arr, valueOrArray) {
-      push.apply(arr, isArray2(valueOrArray) ? valueOrArray : [valueOrArray]);
-    };
-    var toISO = Date.prototype.toISOString;
-    var defaultFormat = formats["default"];
-    var defaults2 = {
-      addQueryPrefix: false,
-      allowDots: false,
-      allowEmptyArrays: false,
-      arrayFormat: "indices",
-      charset: "utf-8",
-      charsetSentinel: false,
-      delimiter: "&",
-      encode: true,
-      encodeDotInKeys: false,
-      encoder: utils.encode,
-      encodeValuesOnly: false,
-      format: defaultFormat,
-      formatter: formats.formatters[defaultFormat],
-      indices: false,
-      serializeDate: function serializeDate(date) {
-        return toISO.call(date);
-      },
-      skipNulls: false,
-      strictNullHandling: false
-    };
-    var isNonNullishPrimitive = function isNonNullishPrimitive2(v5) {
-      return typeof v5 === "string" || typeof v5 === "number" || typeof v5 === "boolean" || typeof v5 === "symbol" || typeof v5 === "bigint";
-    };
-    var sentinel = {};
-    var stringify2 = function stringify3(object, prefix, generateArrayPrefix, commaRoundTrip, allowEmptyArrays, strictNullHandling, skipNulls, encodeDotInKeys, encoder, filter2, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel) {
-      var obj = object;
-      var tmpSc = sideChannel;
-      var step = 0;
-      var findFlag = false;
-      while ((tmpSc = tmpSc.get(sentinel)) !== void 0 && !findFlag) {
-        var pos = tmpSc.get(object);
-        step += 1;
-        if (typeof pos !== "undefined") {
-          if (pos === step) {
-            throw new RangeError("Cyclic object value");
-          } else {
-            findFlag = true;
-          }
-        }
-        if (typeof tmpSc.get(sentinel) === "undefined") {
-          step = 0;
-        }
-      }
-      if (typeof filter2 === "function") {
-        obj = filter2(prefix, obj);
-      } else if (obj instanceof Date) {
-        obj = serializeDate(obj);
-      } else if (generateArrayPrefix === "comma" && isArray2(obj)) {
-        obj = utils.maybeMap(obj, function(value2) {
-          if (value2 instanceof Date) {
-            return serializeDate(value2);
-          }
-          return value2;
-        });
-      }
-      if (obj === null) {
-        if (strictNullHandling) {
-          return encoder && !encodeValuesOnly ? encoder(prefix, defaults2.encoder, charset, "key", format) : prefix;
-        }
-        obj = "";
-      }
-      if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {
-        if (encoder) {
-          var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults2.encoder, charset, "key", format);
-          return [formatter(keyValue) + "=" + formatter(encoder(obj, defaults2.encoder, charset, "value", format))];
-        }
-        return [formatter(prefix) + "=" + formatter(String(obj))];
-      }
-      var values = [];
-      if (typeof obj === "undefined") {
-        return values;
-      }
-      var objKeys;
-      if (generateArrayPrefix === "comma" && isArray2(obj)) {
-        if (encodeValuesOnly && encoder) {
-          obj = utils.maybeMap(obj, encoder);
-        }
-        objKeys = [{ value: obj.length > 0 ? obj.join(",") || null : void 0 }];
-      } else if (isArray2(filter2)) {
-        objKeys = filter2;
-      } else {
-        var keys = Object.keys(obj);
-        objKeys = sort ? keys.sort(sort) : keys;
-      }
-      var encodedPrefix = encodeDotInKeys ? prefix.replace(/\./g, "%2E") : prefix;
-      var adjustedPrefix = commaRoundTrip && isArray2(obj) && obj.length === 1 ? encodedPrefix + "[]" : encodedPrefix;
-      if (allowEmptyArrays && isArray2(obj) && obj.length === 0) {
-        return adjustedPrefix + "[]";
-      }
-      for (var j4 = 0; j4 < objKeys.length; ++j4) {
-        var key = objKeys[j4];
-        var value = typeof key === "object" && typeof key.value !== "undefined" ? key.value : obj[key];
-        if (skipNulls && value === null) {
-          continue;
-        }
-        var encodedKey = allowDots && encodeDotInKeys ? key.replace(/\./g, "%2E") : key;
-        var keyPrefix = isArray2(obj) ? typeof generateArrayPrefix === "function" ? generateArrayPrefix(adjustedPrefix, encodedKey) : adjustedPrefix : adjustedPrefix + (allowDots ? "." + encodedKey : "[" + encodedKey + "]");
-        sideChannel.set(object, step);
-        var valueSideChannel = getSideChannel();
-        valueSideChannel.set(sentinel, sideChannel);
-        pushToArray(values, stringify3(
-          value,
-          keyPrefix,
-          generateArrayPrefix,
-          commaRoundTrip,
-          allowEmptyArrays,
-          strictNullHandling,
-          skipNulls,
-          encodeDotInKeys,
-          generateArrayPrefix === "comma" && encodeValuesOnly && isArray2(obj) ? null : encoder,
-          filter2,
-          sort,
-          allowDots,
-          serializeDate,
-          format,
-          formatter,
-          encodeValuesOnly,
-          charset,
-          valueSideChannel
-        ));
-      }
-      return values;
-    };
-    var normalizeStringifyOptions = function normalizeStringifyOptions2(opts) {
-      if (!opts) {
-        return defaults2;
-      }
-      if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
-        throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
-      }
-      if (typeof opts.encodeDotInKeys !== "undefined" && typeof opts.encodeDotInKeys !== "boolean") {
-        throw new TypeError("`encodeDotInKeys` option can only be `true` or `false`, when provided");
-      }
-      if (opts.encoder !== null && typeof opts.encoder !== "undefined" && typeof opts.encoder !== "function") {
-        throw new TypeError("Encoder has to be a function.");
-      }
-      var charset = opts.charset || defaults2.charset;
-      if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
-        throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
-      }
-      var format = formats["default"];
-      if (typeof opts.format !== "undefined") {
-        if (!has.call(formats.formatters, opts.format)) {
-          throw new TypeError("Unknown format option provided.");
-        }
-        format = opts.format;
-      }
-      var formatter = formats.formatters[format];
-      var filter2 = defaults2.filter;
-      if (typeof opts.filter === "function" || isArray2(opts.filter)) {
-        filter2 = opts.filter;
-      }
-      var arrayFormat;
-      if (opts.arrayFormat in arrayPrefixGenerators) {
-        arrayFormat = opts.arrayFormat;
-      } else if ("indices" in opts) {
-        arrayFormat = opts.indices ? "indices" : "repeat";
-      } else {
-        arrayFormat = defaults2.arrayFormat;
-      }
-      if ("commaRoundTrip" in opts && typeof opts.commaRoundTrip !== "boolean") {
-        throw new TypeError("`commaRoundTrip` must be a boolean, or absent");
-      }
-      var allowDots = typeof opts.allowDots === "undefined" ? opts.encodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
-      return {
-        addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults2.addQueryPrefix,
-        allowDots,
-        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
-        arrayFormat,
-        charset,
-        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
-        commaRoundTrip: opts.commaRoundTrip,
-        delimiter: typeof opts.delimiter === "undefined" ? defaults2.delimiter : opts.delimiter,
-        encode: typeof opts.encode === "boolean" ? opts.encode : defaults2.encode,
-        encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults2.encodeDotInKeys,
-        encoder: typeof opts.encoder === "function" ? opts.encoder : defaults2.encoder,
-        encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults2.encodeValuesOnly,
-        filter: filter2,
-        format,
-        formatter,
-        serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults2.serializeDate,
-        skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults2.skipNulls,
-        sort: typeof opts.sort === "function" ? opts.sort : null,
-        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
-      };
-    };
-    module2.exports = function(object, opts) {
-      var obj = object;
-      var options = normalizeStringifyOptions(opts);
-      var objKeys;
-      var filter2;
-      if (typeof options.filter === "function") {
-        filter2 = options.filter;
-        obj = filter2("", obj);
-      } else if (isArray2(options.filter)) {
-        filter2 = options.filter;
-        objKeys = filter2;
-      }
-      var keys = [];
-      if (typeof obj !== "object" || obj === null) {
-        return "";
-      }
-      var generateArrayPrefix = arrayPrefixGenerators[options.arrayFormat];
-      var commaRoundTrip = generateArrayPrefix === "comma" && options.commaRoundTrip;
-      if (!objKeys) {
-        objKeys = Object.keys(obj);
-      }
-      if (options.sort) {
-        objKeys.sort(options.sort);
-      }
-      var sideChannel = getSideChannel();
-      for (var i3 = 0; i3 < objKeys.length; ++i3) {
-        var key = objKeys[i3];
-        if (options.skipNulls && obj[key] === null) {
-          continue;
-        }
-        pushToArray(keys, stringify2(
-          obj[key],
-          key,
-          generateArrayPrefix,
-          commaRoundTrip,
-          options.allowEmptyArrays,
-          options.strictNullHandling,
-          options.skipNulls,
-          options.encodeDotInKeys,
-          options.encode ? options.encoder : null,
-          options.filter,
-          options.sort,
-          options.allowDots,
-          options.serializeDate,
-          options.format,
-          options.formatter,
-          options.encodeValuesOnly,
-          options.charset,
-          sideChannel
-        ));
-      }
-      var joined = keys.join(options.delimiter);
-      var prefix = options.addQueryPrefix === true ? "?" : "";
-      if (options.charsetSentinel) {
-        if (options.charset === "iso-8859-1") {
-          prefix += "utf8=%26%2310003%3B&";
-        } else {
-          prefix += "utf8=%E2%9C%93&";
-        }
-      }
-      return joined.length > 0 ? prefix + joined : "";
-    };
-  }
-});
-
-// node_modules/qs/lib/parse.js
-var require_parse2 = __commonJS({
-  "node_modules/qs/lib/parse.js"(exports, module2) {
-    "use strict";
-    var utils = require_utils2();
-    var has = Object.prototype.hasOwnProperty;
-    var isArray2 = Array.isArray;
-    var defaults2 = {
-      allowDots: false,
-      allowEmptyArrays: false,
-      allowPrototypes: false,
-      allowSparse: false,
-      arrayLimit: 20,
-      charset: "utf-8",
-      charsetSentinel: false,
-      comma: false,
-      decodeDotInKeys: false,
-      decoder: utils.decode,
-      delimiter: "&",
-      depth: 5,
-      duplicates: "combine",
-      ignoreQueryPrefix: false,
-      interpretNumericEntities: false,
-      parameterLimit: 1e3,
-      parseArrays: true,
-      plainObjects: false,
-      strictDepth: false,
-      strictNullHandling: false
-    };
-    var interpretNumericEntities = function(str2) {
-      return str2.replace(/&#(\d+);/g, function($0, numberStr) {
-        return String.fromCharCode(parseInt(numberStr, 10));
-      });
-    };
-    var parseArrayValue = function(val, options) {
-      if (val && typeof val === "string" && options.comma && val.indexOf(",") > -1) {
-        return val.split(",");
-      }
-      return val;
-    };
-    var isoSentinel = "utf8=%26%2310003%3B";
-    var charsetSentinel = "utf8=%E2%9C%93";
-    var parseValues = function parseQueryStringValues(str2, options) {
-      var obj = { __proto__: null };
-      var cleanStr = options.ignoreQueryPrefix ? str2.replace(/^\?/, "") : str2;
-      cleanStr = cleanStr.replace(/%5B/gi, "[").replace(/%5D/gi, "]");
-      var limit = options.parameterLimit === Infinity ? void 0 : options.parameterLimit;
-      var parts = cleanStr.split(options.delimiter, limit);
-      var skipIndex = -1;
-      var i3;
-      var charset = options.charset;
-      if (options.charsetSentinel) {
-        for (i3 = 0; i3 < parts.length; ++i3) {
-          if (parts[i3].indexOf("utf8=") === 0) {
-            if (parts[i3] === charsetSentinel) {
-              charset = "utf-8";
-            } else if (parts[i3] === isoSentinel) {
-              charset = "iso-8859-1";
-            }
-            skipIndex = i3;
-            i3 = parts.length;
-          }
-        }
-      }
-      for (i3 = 0; i3 < parts.length; ++i3) {
-        if (i3 === skipIndex) {
-          continue;
-        }
-        var part = parts[i3];
-        var bracketEqualsPos = part.indexOf("]=");
-        var pos = bracketEqualsPos === -1 ? part.indexOf("=") : bracketEqualsPos + 1;
-        var key, val;
-        if (pos === -1) {
-          key = options.decoder(part, defaults2.decoder, charset, "key");
-          val = options.strictNullHandling ? null : "";
-        } else {
-          key = options.decoder(part.slice(0, pos), defaults2.decoder, charset, "key");
-          val = utils.maybeMap(
-            parseArrayValue(part.slice(pos + 1), options),
-            function(encodedVal) {
-              return options.decoder(encodedVal, defaults2.decoder, charset, "value");
-            }
-          );
-        }
-        if (val && options.interpretNumericEntities && charset === "iso-8859-1") {
-          val = interpretNumericEntities(val);
-        }
-        if (part.indexOf("[]=") > -1) {
-          val = isArray2(val) ? [val] : val;
-        }
-        var existing = has.call(obj, key);
-        if (existing && options.duplicates === "combine") {
-          obj[key] = utils.combine(obj[key], val);
-        } else if (!existing || options.duplicates === "last") {
-          obj[key] = val;
-        }
-      }
-      return obj;
-    };
-    var parseObject = function(chain, val, options, valuesParsed) {
-      var leaf = valuesParsed ? val : parseArrayValue(val, options);
-      for (var i3 = chain.length - 1; i3 >= 0; --i3) {
-        var obj;
-        var root = chain[i3];
-        if (root === "[]" && options.parseArrays) {
-          obj = options.allowEmptyArrays && (leaf === "" || options.strictNullHandling && leaf === null) ? [] : [].concat(leaf);
-        } else {
-          obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
-          var cleanRoot = root.charAt(0) === "[" && root.charAt(root.length - 1) === "]" ? root.slice(1, -1) : root;
-          var decodedRoot = options.decodeDotInKeys ? cleanRoot.replace(/%2E/g, ".") : cleanRoot;
-          var index = parseInt(decodedRoot, 10);
-          if (!options.parseArrays && decodedRoot === "") {
-            obj = { 0: leaf };
-          } else if (!isNaN(index) && root !== decodedRoot && String(index) === decodedRoot && index >= 0 && (options.parseArrays && index <= options.arrayLimit)) {
-            obj = [];
-            obj[index] = leaf;
-          } else if (decodedRoot !== "__proto__") {
-            obj[decodedRoot] = leaf;
-          }
-        }
-        leaf = obj;
-      }
-      return leaf;
-    };
-    var parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {
-      if (!givenKey) {
-        return;
-      }
-      var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, "[$1]") : givenKey;
-      var brackets = /(\[[^[\]]*])/;
-      var child = /(\[[^[\]]*])/g;
-      var segment = options.depth > 0 && brackets.exec(key);
-      var parent = segment ? key.slice(0, segment.index) : key;
-      var keys = [];
-      if (parent) {
-        if (!options.plainObjects && has.call(Object.prototype, parent)) {
-          if (!options.allowPrototypes) {
-            return;
-          }
-        }
-        keys.push(parent);
-      }
-      var i3 = 0;
-      while (options.depth > 0 && (segment = child.exec(key)) !== null && i3 < options.depth) {
-        i3 += 1;
-        if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
-          if (!options.allowPrototypes) {
-            return;
-          }
-        }
-        keys.push(segment[1]);
-      }
-      if (segment) {
-        if (options.strictDepth === true) {
-          throw new RangeError("Input depth exceeded depth option of " + options.depth + " and strictDepth is true");
-        }
-        keys.push("[" + key.slice(segment.index) + "]");
-      }
-      return parseObject(keys, val, options, valuesParsed);
-    };
-    var normalizeParseOptions = function normalizeParseOptions2(opts) {
-      if (!opts) {
-        return defaults2;
-      }
-      if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
-        throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
-      }
-      if (typeof opts.decodeDotInKeys !== "undefined" && typeof opts.decodeDotInKeys !== "boolean") {
-        throw new TypeError("`decodeDotInKeys` option can only be `true` or `false`, when provided");
-      }
-      if (opts.decoder !== null && typeof opts.decoder !== "undefined" && typeof opts.decoder !== "function") {
-        throw new TypeError("Decoder has to be a function.");
-      }
-      if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
-        throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
-      }
-      var charset = typeof opts.charset === "undefined" ? defaults2.charset : opts.charset;
-      var duplicates = typeof opts.duplicates === "undefined" ? defaults2.duplicates : opts.duplicates;
-      if (duplicates !== "combine" && duplicates !== "first" && duplicates !== "last") {
-        throw new TypeError("The duplicates option must be either combine, first, or last");
-      }
-      var allowDots = typeof opts.allowDots === "undefined" ? opts.decodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
-      return {
-        allowDots,
-        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
-        allowPrototypes: typeof opts.allowPrototypes === "boolean" ? opts.allowPrototypes : defaults2.allowPrototypes,
-        allowSparse: typeof opts.allowSparse === "boolean" ? opts.allowSparse : defaults2.allowSparse,
-        arrayLimit: typeof opts.arrayLimit === "number" ? opts.arrayLimit : defaults2.arrayLimit,
-        charset,
-        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
-        comma: typeof opts.comma === "boolean" ? opts.comma : defaults2.comma,
-        decodeDotInKeys: typeof opts.decodeDotInKeys === "boolean" ? opts.decodeDotInKeys : defaults2.decodeDotInKeys,
-        decoder: typeof opts.decoder === "function" ? opts.decoder : defaults2.decoder,
-        delimiter: typeof opts.delimiter === "string" || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults2.delimiter,
-        depth: typeof opts.depth === "number" || opts.depth === false ? +opts.depth : defaults2.depth,
-        duplicates,
-        ignoreQueryPrefix: opts.ignoreQueryPrefix === true,
-        interpretNumericEntities: typeof opts.interpretNumericEntities === "boolean" ? opts.interpretNumericEntities : defaults2.interpretNumericEntities,
-        parameterLimit: typeof opts.parameterLimit === "number" ? opts.parameterLimit : defaults2.parameterLimit,
-        parseArrays: opts.parseArrays !== false,
-        plainObjects: typeof opts.plainObjects === "boolean" ? opts.plainObjects : defaults2.plainObjects,
-        strictDepth: typeof opts.strictDepth === "boolean" ? !!opts.strictDepth : defaults2.strictDepth,
-        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
-      };
-    };
-    module2.exports = function(str2, opts) {
-      var options = normalizeParseOptions(opts);
-      if (str2 === "" || str2 === null || typeof str2 === "undefined") {
-        return options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
-      }
-      var tempObj = typeof str2 === "string" ? parseValues(str2, options) : str2;
-      var obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
-      var keys = Object.keys(tempObj);
-      for (var i3 = 0; i3 < keys.length; ++i3) {
-        var key = keys[i3];
-        var newObj = parseKeys(key, tempObj[key], options, typeof str2 === "string");
-        obj = utils.merge(obj, newObj, options);
-      }
-      if (options.allowSparse === true) {
-        return obj;
-      }
-      return utils.compact(obj);
-    };
-  }
-});
-
-// node_modules/qs/lib/index.js
-var require_lib3 = __commonJS({
-  "node_modules/qs/lib/index.js"(exports, module2) {
-    "use strict";
-    var stringify2 = require_stringify();
-    var parse = require_parse2();
-    var formats = require_formats();
-    module2.exports = {
-      formats,
-      parse,
-      stringify: stringify2
     };
   }
 });
@@ -26237,7 +24099,7 @@ var require_load = __commonJS({
 });
 
 // node_modules/@commitlint/types/lib/parse.js
-var require_parse3 = __commonJS({
+var require_parse2 = __commonJS({
   "node_modules/@commitlint/types/lib/parse.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -26273,7 +24135,7 @@ var require_rules = __commonJS({
 });
 
 // node_modules/@commitlint/types/lib/index.js
-var require_lib4 = __commonJS({
+var require_lib3 = __commonJS({
   "node_modules/@commitlint/types/lib/index.js"(exports) {
     "use strict";
     var __createBinding2 = exports && exports.__createBinding || (Object.create ? function(o3, m5, k7, k22) {
@@ -26302,7 +24164,7 @@ var require_lib4 = __commonJS({
     __exportStar2(require_is_ignored(), exports);
     __exportStar2(require_lint(), exports);
     __exportStar2(require_load(), exports);
-    __exportStar2(require_parse3(), exports);
+    __exportStar2(require_parse2(), exports);
     __exportStar2(require_prompt(), exports);
     __exportStar2(require_rules(), exports);
   }
@@ -26381,7 +24243,7 @@ var require_ignore = __commonJS({
       ],
       [
         /\\\/\\\*\\\*(?=\\\/|$)/g,
-        (_7, index, str2) => index + 6 < str2.length ? "(?:\\/[^\\/]+)*" : "\\/.+"
+        (_7, index, str) => index + 6 < str.length ? "(?:\\/[^\\/]+)*" : "\\/.+"
       ],
       [
         /(^|[^\\]+)(\\\*)+(?=.+)/g,
@@ -26585,7 +24447,7 @@ var require_ignore = __commonJS({
     factory.default = factory;
     module2.exports = factory;
     if (typeof process !== "undefined" && (process.env && process.env.IGNORE_TEST_WIN32 || process.platform === "win32")) {
-      const makePosix = (str2) => /^\\\\\?\\/.test(str2) || /["<>|\u0000-\u001F]+/u.test(str2) ? str2 : str2.replace(/\\/g, "/");
+      const makePosix = (str) => /^\\\\\?\\/.test(str) || /["<>|\u0000-\u001F]+/u.test(str) ? str : str.replace(/\\/g, "/");
       checkPath.convert = makePosix;
       const REGIX_IS_WINDOWS_PATH_ABSOLUTE = /^[a-z]:\//i;
       checkPath.isNotRelative = (path5) => REGIX_IS_WINDOWS_PATH_ABSOLUTE.test(path5) || isNotRelative(path5);
@@ -27418,11 +25280,14 @@ var package_default = {
     "@clack/prompts": "^0.6.1",
     "@dqbd/tiktoken": "^1.0.2",
     "@google/generative-ai": "^0.11.4",
+    "@napi-rs/clipboard": "^1.1.2",
     "@octokit/webhooks-schemas": "^6.11.0",
     "@octokit/webhooks-types": "^6.11.0",
     axios: "^1.3.4",
     chalk: "^5.2.0",
     cleye: "^1.3.2",
+    clipboardy: "^4.0.0",
+    "copy-to-clipboard": "^3.3.3",
     crypto: "^1.0.1",
     execa: "^7.0.0",
     ignore: "^5.2.4",
@@ -27794,32 +25659,6 @@ var gD2 = class extends x3 {
     this.value = u3 ? this.value.filter((F5) => F5 !== this._value) : [...this.value, this._value];
   }
 };
-var bD2 = Object.defineProperty;
-var wD2 = (t2, u3, F5) => u3 in t2 ? bD2(t2, u3, { enumerable: true, configurable: true, writable: true, value: F5 }) : t2[u3] = F5;
-var Z3 = (t2, u3, F5) => (wD2(t2, typeof u3 != "symbol" ? u3 + "" : u3, F5), F5);
-var yD = class extends x3 {
-  constructor(u3) {
-    super(u3, false), Z3(this, "options"), Z3(this, "cursor", 0), this.options = u3.options, this.cursor = this.options.findIndex(({ value: F5 }) => F5 === u3.initialValue), this.cursor === -1 && (this.cursor = 0), this.changeValue(), this.on("cursor", (F5) => {
-      switch (F5) {
-        case "left":
-        case "up":
-          this.cursor = this.cursor === 0 ? this.options.length - 1 : this.cursor - 1;
-          break;
-        case "down":
-        case "right":
-          this.cursor = this.cursor === this.options.length - 1 ? 0 : this.cursor + 1;
-          break;
-      }
-      this.changeValue();
-    });
-  }
-  get _value() {
-    return this.options[this.cursor];
-  }
-  changeValue() {
-    this.value = this._value.value;
-  }
-};
 var PD = globalThis.process.platform.startsWith("win");
 function WD({ input: t2 = import_node_process.stdin, output: u3 = import_node_process.stdout, overwrite: F5 = true, hideCursor: e3 = true } = {}) {
   const s2 = f.createInterface({ input: t2, output: u3, prompt: "", tabSize: 1 });
@@ -27866,7 +25705,7 @@ var G4 = u("\u256E", "+");
 var H3 = u("\u251C", "+");
 var K4 = u("\u256F", "+");
 var U5 = u("\u25CF", "\u2022");
-var Z4 = u("\u25C6", "*");
+var Z3 = u("\u25C6", "*");
 var z4 = u("\u25B2", "!");
 var X3 = u("\u25A0", "x");
 var h2 = (r3) => {
@@ -27896,29 +25735,6 @@ ${h2(this.state)}  ${r3.message}
 ${import_picocolors.default.gray(a2)}`;
       default:
         return `${t2}${import_picocolors.default.cyan(a2)}  ${this.value ? `${import_picocolors.default.green(w5)} ${n2}` : `${import_picocolors.default.dim(S4)} ${import_picocolors.default.dim(n2)}`} ${import_picocolors.default.dim("/")} ${this.value ? `${import_picocolors.default.dim(S4)} ${import_picocolors.default.dim(s2)}` : `${import_picocolors.default.green(w5)} ${s2}`}
-${import_picocolors.default.cyan(o)}
-`;
-    }
-  } }).prompt();
-};
-var ee = (r3) => {
-  const n2 = (s2, t2) => {
-    const i3 = s2.label ?? String(s2.value);
-    return t2 === "active" ? `${import_picocolors.default.green(w5)} ${i3} ${s2.hint ? import_picocolors.default.dim(`(${s2.hint})`) : ""}` : t2 === "selected" ? `${import_picocolors.default.dim(i3)}` : t2 === "cancelled" ? `${import_picocolors.default.strikethrough(import_picocolors.default.dim(i3))}` : `${import_picocolors.default.dim(S4)} ${import_picocolors.default.dim(i3)}`;
-  };
-  return new yD({ options: r3.options, initialValue: r3.initialValue, render() {
-    const s2 = `${import_picocolors.default.gray(a2)}
-${h2(this.state)}  ${r3.message}
-`;
-    switch (this.state) {
-      case "submit":
-        return `${s2}${import_picocolors.default.gray(a2)}  ${n2(this.options[this.cursor], "selected")}`;
-      case "cancel":
-        return `${s2}${import_picocolors.default.gray(a2)}  ${n2(this.options[this.cursor], "cancelled")}
-${import_picocolors.default.gray(a2)}`;
-      default:
-        return `${s2}${import_picocolors.default.cyan(a2)}  ${this.options.map((t2, i3) => n2(t2, i3 === this.cursor ? "active" : "inactive")).join(`
-${import_picocolors.default.cyan(a2)}  `)}
 ${import_picocolors.default.cyan(o)}
 `;
     }
@@ -30111,6 +27927,7 @@ var OCO_AI_PROVIDER_ENUM = /* @__PURE__ */ ((OCO_AI_PROVIDER_ENUM2) => {
   OCO_AI_PROVIDER_ENUM2["TEST"] = "test";
   OCO_AI_PROVIDER_ENUM2["FLOWISE"] = "flowise";
   OCO_AI_PROVIDER_ENUM2["GROQ"] = "groq";
+  OCO_AI_PROVIDER_ENUM2["MDENGIN"] = "md";
   return OCO_AI_PROVIDER_ENUM2;
 })(OCO_AI_PROVIDER_ENUM || {});
 var defaultConfigPath = (0, import_path.join)((0, import_os.homedir)(), ".opencommit");
@@ -30341,12 +28158,12 @@ var deprecateConstructorEntries = (0, import_util.deprecate)(() => {
 }, 'Constructor "entries" argument is not spec-compliant and will be removed in next major release.');
 
 // node_modules/formdata-node/lib/esm/FormData.js
-var __classPrivateFieldGet3 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
+var __classPrivateFieldGet3 = function(receiver, state2, kind2, f4) {
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a getter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+  return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
 };
 var _FormData_instances;
 var _FormData_entries;
@@ -30501,8 +28318,8 @@ function isPlainObject(value) {
 var isPlainObject_default = isPlainObject;
 
 // node_modules/form-data-encoder/lib/esm/util/normalizeValue.js
-var normalizeValue = (value) => String(value).replace(/\r|\n/g, (match, i3, str2) => {
-  if (match === "\r" && str2[i3 + 1] !== "\n" || match === "\n" && str2[i3 - 1] !== "\r") {
+var normalizeValue = (value) => String(value).replace(/\r|\n/g, (match, i3, str) => {
+  if (match === "\r" && str[i3 + 1] !== "\n" || match === "\n" && str[i3 - 1] !== "\r") {
     return "\r\n";
   }
   return match;
@@ -30524,21 +28341,21 @@ var isFileLike = (value) => Boolean(value && typeof value === "object" && isFunc
 var isFormData = (value) => Boolean(value && isFunction_default(value.constructor) && value[Symbol.toStringTag] === "FormData" && isFunction_default(value.append) && isFunction_default(value.getAll) && isFunction_default(value.entries) && isFunction_default(value[Symbol.iterator]));
 
 // node_modules/form-data-encoder/lib/esm/FormDataEncoder.js
-var __classPrivateFieldSet3 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
+var __classPrivateFieldSet3 = function(receiver, state2, value, kind2, f4) {
+  if (kind2 === "m")
     throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a setter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+  return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
 };
-var __classPrivateFieldGet4 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
+var __classPrivateFieldGet4 = function(receiver, state2, kind2, f4) {
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a getter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+  return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
 };
 var _FormDataEncoder_instances;
 var _FormDataEncoder_CRLF;
@@ -31158,12 +28975,12 @@ var LineDecoder = class {
 };
 LineDecoder.NEWLINE_CHARS = /* @__PURE__ */ new Set(["\n", "\r"]);
 LineDecoder.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
-function partition(str2, delimiter) {
-  const index = str2.indexOf(delimiter);
+function partition(str, delimiter) {
+  const index = str.indexOf(delimiter);
   if (index !== -1) {
-    return [str2.substring(0, index), delimiter, str2.substring(index + delimiter.length)];
+    return [str.substring(0, index), delimiter, str.substring(index + delimiter.length)];
   }
-  return [str2, "", ""];
+  return [str, "", ""];
 }
 function readableStreamAsyncIterable(stream4) {
   if (stream4[Symbol.asyncIterator])
@@ -31248,21 +29065,21 @@ var isAsyncIterableIterator = (value) => value != null && typeof value === "obje
 var isMultipartBody = (body) => body && typeof body === "object" && body.body && body[Symbol.toStringTag] === "MultipartBody";
 
 // node_modules/@anthropic-ai/sdk/core.mjs
-var __classPrivateFieldSet5 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
+var __classPrivateFieldSet5 = function(receiver, state2, value, kind2, f4) {
+  if (kind2 === "m")
     throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a setter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+  return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
 };
-var __classPrivateFieldGet6 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
+var __classPrivateFieldGet6 = function(receiver, state2, kind2, f4) {
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a getter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+  return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
 };
 var _AbstractPage_client;
 async function defaultParseResponse(props) {
@@ -31374,8 +29191,8 @@ var APIClient = class {
   methodRequest(method, path5, opts) {
     return this.request(Promise.resolve(opts).then((opts2) => ({ method, path: path5, ...opts2 })));
   }
-  getAPIList(path5, Page2, opts) {
-    return this.requestAPIList(Page2, { method: "get", path: path5, ...opts });
+  getAPIList(path5, Page, opts) {
+    return this.requestAPIList(Page, { method: "get", path: path5, ...opts });
   }
   calculateContentLength(body) {
     if (typeof body === "string") {
@@ -31488,9 +29305,9 @@ var APIClient = class {
     }
     return { response, options, controller };
   }
-  requestAPIList(Page2, options) {
+  requestAPIList(Page, options) {
     const request3 = this.makeRequest(options, null);
-    return new PagePromise(this, request3, Page2);
+    return new PagePromise(this, request3, Page);
   }
   buildURL(path5, query) {
     const url2 = isAbsoluteURL(path5) ? new URL(path5) : new URL(this.baseURL + (this.baseURL.endsWith("/") && path5.startsWith("/") ? path5.slice(1) : path5));
@@ -31628,8 +29445,8 @@ var AbstractPage = class {
   }
 };
 var PagePromise = class extends APIPromise {
-  constructor(client, request3, Page2) {
-    super(request3, async (props) => new Page2(client, props.response, await defaultParseResponse(props), props.options));
+  constructor(client, request3, Page) {
+    super(request3, async (props) => new Page(client, props.response, await defaultParseResponse(props), props.options));
   }
   async *[Symbol.asyncIterator]() {
     const page = await this;
@@ -31850,25 +29667,25 @@ var Completions = class extends APIResource {
     });
   }
 };
-(function(Completions5) {
+(function(Completions2) {
 })(Completions || (Completions = {}));
 
 // node_modules/@anthropic-ai/sdk/lib/MessageStream.mjs
-var __classPrivateFieldSet6 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
+var __classPrivateFieldSet6 = function(receiver, state2, value, kind2, f4) {
+  if (kind2 === "m")
     throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a setter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
+  return kind2 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
 };
-var __classPrivateFieldGet7 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
+var __classPrivateFieldGet7 = function(receiver, state2, kind2, f4) {
+  if (kind2 === "a" && !f4)
     throw new TypeError("Private accessor was defined without a getter");
   if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
     throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
+  return kind2 === "m" ? f4 : kind2 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
 };
 var _MessageStream_instances;
 var _MessageStream_currentMessageSnapshot;
@@ -32265,7 +30082,7 @@ var Messages = class extends APIResource {
     return MessageStream.createMessage(this, body, options);
   }
 };
-(function(Messages3) {
+(function(Messages2) {
 })(Messages || (Messages = {}));
 
 // node_modules/@anthropic-ai/sdk/index.mjs
@@ -32378,8 +30195,8 @@ function bind(fn, thisArg) {
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
 var kindOf = ((cache) => (thing) => {
-  const str2 = toString.call(thing);
-  return cache[str2] || (cache[str2] = str2.slice(8, -1).toLowerCase());
+  const str = toString.call(thing);
+  return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
 })(/* @__PURE__ */ Object.create(null));
 var kindOfTest = (type2) => {
   type2 = type2.toLowerCase();
@@ -32419,12 +30236,12 @@ var isBlob2 = kindOfTest("Blob");
 var isFileList = kindOfTest("FileList");
 var isStream2 = (val) => isObject(val) && isFunction3(val.pipe);
 var isFormData2 = (thing) => {
-  let kind3;
-  return thing && (typeof FormData === "function" && thing instanceof FormData || isFunction3(thing.append) && ((kind3 = kindOf(thing)) === "formdata" || kind3 === "object" && isFunction3(thing.toString) && thing.toString() === "[object FormData]"));
+  let kind2;
+  return thing && (typeof FormData === "function" && thing instanceof FormData || isFunction3(thing.append) && ((kind2 = kindOf(thing)) === "formdata" || kind2 === "object" && isFunction3(thing.toString) && thing.toString() === "[object FormData]"));
 };
 var isURLSearchParams = kindOfTest("URLSearchParams");
 var [isReadableStream, isRequest, isResponse, isHeaders] = ["ReadableStream", "Request", "Response", "Headers"].map(kindOfTest);
-var trim = (str2) => str2.trim ? str2.trim() : str2.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+var trim = (str) => str.trim ? str.trim() : str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
 function forEach(obj, fn, { allOwnKeys = false } = {}) {
   if (obj === null || typeof obj === "undefined") {
     return;
@@ -32533,13 +30350,13 @@ var toFlatObject = (sourceObj, destObj, filter2, propFilter) => {
   } while (sourceObj && (!filter2 || filter2(sourceObj, destObj)) && sourceObj !== Object.prototype);
   return destObj;
 };
-var endsWith = (str2, searchString, position) => {
-  str2 = String(str2);
-  if (position === void 0 || position > str2.length) {
-    position = str2.length;
+var endsWith = (str, searchString, position) => {
+  str = String(str);
+  if (position === void 0 || position > str.length) {
+    position = str.length;
   }
   position -= searchString.length;
-  const lastIndex = str2.indexOf(searchString, position);
+  const lastIndex = str.indexOf(searchString, position);
   return lastIndex !== -1 && lastIndex === position;
 };
 var toArray = (thing) => {
@@ -32570,17 +30387,17 @@ var forEachEntry = (obj, fn) => {
     fn.call(obj, pair[0], pair[1]);
   }
 };
-var matchAll = (regExp, str2) => {
+var matchAll = (regExp, str) => {
   let matches;
   const arr = [];
-  while ((matches = regExp.exec(str2)) !== null) {
+  while ((matches = regExp.exec(str)) !== null) {
     arr.push(matches);
   }
   return arr;
 };
 var isHTMLForm = kindOfTest("HTMLFormElement");
-var toCamelCase = (str2) => {
-  return str2.toLowerCase().replace(
+var toCamelCase = (str) => {
+  return str.toLowerCase().replace(
     /[-_\s]([a-z\d])(\w*)/g,
     function replacer(m5, p1, p22) {
       return p1.toUpperCase() + p22;
@@ -32643,12 +30460,12 @@ var ALPHABET = {
   ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
 };
 var generateString = (size = 16, alphabet2 = ALPHABET.ALPHA_DIGIT) => {
-  let str2 = "";
+  let str = "";
   const { length } = alphabet2;
   while (size--) {
-    str2 += alphabet2[Math.random() * length | 0];
+    str += alphabet2[Math.random() * length | 0];
   }
-  return str2;
+  return str;
 };
 function isSpecCompliantForm(thing) {
   return !!(thing && isFunction3(thing.append) && thing[Symbol.toStringTag] === "FormData" && thing[Symbol.iterator]);
@@ -32943,7 +30760,7 @@ function toFormData(obj, formData, options) {
 var toFormData_default = toFormData;
 
 // node_modules/axios/lib/helpers/AxiosURLSearchParams.js
-function encode(str2) {
+function encode(str) {
   const charMap = {
     "!": "%21",
     "'": "%27",
@@ -32953,7 +30770,7 @@ function encode(str2) {
     "%20": "+",
     "%00": "\0"
   };
-  return encodeURIComponent(str2).replace(/[!'()~]|%20|%00/g, function replacer(match) {
+  return encodeURIComponent(str).replace(/[!'()~]|%20|%00/g, function replacer(match) {
     return charMap[match];
   });
 }
@@ -33308,16 +31125,16 @@ function normalizeValue2(value) {
   }
   return utils_default.isArray(value) ? value.map(normalizeValue2) : String(value);
 }
-function parseTokens(str2) {
+function parseTokens(str) {
   const tokens = /* @__PURE__ */ Object.create(null);
   const tokensRE = /([^\s,;=]+)\s*(?:=\s*([^,;]+))?/g;
   let match;
-  while (match = tokensRE.exec(str2)) {
+  while (match = tokensRE.exec(str)) {
     tokens[match[1]] = match[2];
   }
   return tokens;
 }
-var isValidHeaderName = (str2) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str2.trim());
+var isValidHeaderName = (str) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
 function matchHeaderValue(context, value, header, filter2, isHeaderNameFilter) {
   if (utils_default.isFunction(filter2)) {
     return filter2.call(this, value, header);
@@ -33335,8 +31152,8 @@ function matchHeaderValue(context, value, header, filter2, isHeaderNameFilter) {
   }
 }
 function formatHeader(header) {
-  return header.trim().toLowerCase().replace(/([a-z\d])(\w*)/g, (w7, char, str2) => {
-    return char.toUpperCase() + str2;
+  return header.trim().toLowerCase().replace(/([a-z\d])(\w*)/g, (w7, char, str) => {
+    return char.toUpperCase() + str;
   });
 }
 function buildAccessors(obj, header) {
@@ -34891,7 +32708,7 @@ var trackStream = (stream4, chunkSize, onProgress, onFinish, encode3) => {
 // node_modules/axios/lib/adapters/fetch.js
 var isFetchSupported = typeof fetch === "function" && typeof Request === "function" && typeof Response === "function";
 var isReadableStreamSupported = isFetchSupported && typeof ReadableStream === "function";
-var encodeText = isFetchSupported && (typeof TextEncoder === "function" ? ((encoder) => (str2) => encoder.encode(str2))(new TextEncoder()) : async (str2) => new Uint8Array(await new Response(str2).arrayBuffer()));
+var encodeText = isFetchSupported && (typeof TextEncoder === "function" ? ((encoder) => (str) => encoder.encode(str))(new TextEncoder()) : async (str) => new Uint8Array(await new Response(str).arrayBuffer()));
 var test = (fn, ...args) => {
   try {
     return !!fn(...args);
@@ -35771,9 +33588,9 @@ var {
 var ValidPhaseNames = /* @__PURE__ */ new Set(["Deserialize", "Serialize", "Retry", "Sign"]);
 var HttpPipeline = class {
   constructor(policies) {
-    var _a5;
+    var _a4;
     this._policies = [];
-    this._policies = (_a5 = policies === null || policies === void 0 ? void 0 : policies.slice(0)) !== null && _a5 !== void 0 ? _a5 : [];
+    this._policies = (_a4 = policies === null || policies === void 0 ? void 0 : policies.slice(0)) !== null && _a4 !== void 0 ? _a4 : [];
     this._orderedPolicies = void 0;
   }
   addPolicy(policy, options = {}) {
@@ -36012,14 +33829,14 @@ function disable() {
   return result;
 }
 function createDebugger(namespace) {
-  const newDebugger = Object.assign(debug3, {
+  const newDebugger = Object.assign(debug2, {
     enabled: enabled(namespace),
     destroy,
     log: debugObj.log,
     namespace,
     extend: extend2
   });
-  function debug3(...args) {
+  function debug2(...args) {
     if (!newDebugger.enabled) {
       return;
     }
@@ -36241,8 +34058,8 @@ var Sanitizer = class {
 // node_modules/@azure/core-rest-pipeline/dist/esm/policies/logPolicy.js
 var logPolicyName = "logPolicy";
 function logPolicy(options = {}) {
-  var _a5;
-  const logger3 = (_a5 = options.logger) !== null && _a5 !== void 0 ? _a5 : logger.info;
+  var _a4;
+  const logger3 = (_a4 = options.logger) !== null && _a4 !== void 0 ? _a4 : logger.info;
   const sanitizer = new Sanitizer({
     additionalAllowedHeaderNames: options.additionalAllowedHeaderNames,
     additionalAllowedQueryParameters: options.additionalAllowedQueryParameters
@@ -36384,9 +34201,9 @@ function getRawContent(blob) {
   }
 }
 function createFile(content, name, options = {}) {
-  var _a5, _b2, _c2;
+  var _a4, _b2, _c2;
   if (isNode) {
-    return Object.assign(Object.assign({}, unimplementedMethods), { type: (_a5 = options.type) !== null && _a5 !== void 0 ? _a5 : "", lastModified: (_b2 = options.lastModified) !== null && _b2 !== void 0 ? _b2 : new Date().getTime(), webkitRelativePath: (_c2 = options.webkitRelativePath) !== null && _c2 !== void 0 ? _c2 : "", size: content.byteLength, name, arrayBuffer: async () => content.buffer, stream: () => new Blob([content]).stream(), [rawContent]: () => content });
+    return Object.assign(Object.assign({}, unimplementedMethods), { type: (_a4 = options.type) !== null && _a4 !== void 0 ? _a4 : "", lastModified: (_b2 = options.lastModified) !== null && _b2 !== void 0 ? _b2 : new Date().getTime(), webkitRelativePath: (_c2 = options.webkitRelativePath) !== null && _c2 !== void 0 ? _c2 : "", size: content.byteLength, name, arrayBuffer: async () => content.buffer, stream: () => new Blob([content]).stream(), [rawContent]: () => content });
   } else {
     return new File([content], name, options);
   }
@@ -36439,10 +34256,10 @@ async function concat(sources) {
     const streams = sources.map((x5) => typeof x5 === "function" ? x5() : x5).map(toStream);
     return import_node_stream2.Readable.from(function() {
       return __asyncGenerator(this, arguments, function* () {
-        var _a5, e_1, _b2, _c2;
+        var _a4, e_1, _b2, _c2;
         for (const stream4 of streams) {
           try {
-            for (var _d2 = true, stream_1 = (e_1 = void 0, __asyncValues(stream4)), stream_1_1; stream_1_1 = yield __await(stream_1.next()), _a5 = stream_1_1.done, !_a5; _d2 = true) {
+            for (var _d2 = true, stream_1 = (e_1 = void 0, __asyncValues(stream4)), stream_1_1; stream_1_1 = yield __await(stream_1.next()), _a4 = stream_1_1.done, !_a4; _d2 = true) {
               _c2 = stream_1_1.value;
               _d2 = false;
               const chunk = _c2;
@@ -36452,7 +34269,7 @@ async function concat(sources) {
             e_1 = { error: e_1_1 };
           } finally {
             try {
-              if (!_d2 && !_a5 && (_b2 = stream_1.return))
+              if (!_d2 && !_a4 && (_b2 = stream_1.return))
                 yield __await(_b2.call(stream_1));
             } finally {
               if (e_1)
@@ -36532,7 +34349,7 @@ function multipartPolicy() {
   return {
     name: multipartPolicyName,
     async sendRequest(request3, next) {
-      var _a5;
+      var _a4;
       if (!request3.multipartBody) {
         return next(request3);
       }
@@ -36540,7 +34357,7 @@ function multipartPolicy() {
         throw new Error("multipartBody and regular body cannot be set at the same time");
       }
       let boundary = request3.multipartBody.boundary;
-      const contentTypeHeader = (_a5 = request3.headers.get("Content-Type")) !== null && _a5 !== void 0 ? _a5 : "multipart/mixed";
+      const contentTypeHeader = (_a4 = request3.headers.get("Content-Type")) !== null && _a4 !== void 0 ? _a4 : "multipart/mixed";
       const parsedHeader = contentTypeHeader.match(/^(multipart\/[^ ;]+)(?:; *boundary=(.+))?$/);
       if (!parsedHeader) {
         throw new Error(`Got multipart request body, but content-type header was not multipart: ${contentTypeHeader}`);
@@ -36666,8 +34483,8 @@ function throttlingRetryStrategy() {
 var DEFAULT_CLIENT_RETRY_INTERVAL = 1e3;
 var DEFAULT_CLIENT_MAX_RETRY_INTERVAL = 1e3 * 64;
 function exponentialRetryStrategy(options = {}) {
-  var _a5, _b2;
-  const retryInterval = (_a5 = options.retryDelayInMs) !== null && _a5 !== void 0 ? _a5 : DEFAULT_CLIENT_RETRY_INTERVAL;
+  var _a4, _b2;
+  const retryInterval = (_a4 = options.retryDelayInMs) !== null && _a4 !== void 0 ? _a4 : DEFAULT_CLIENT_RETRY_INTERVAL;
   const maxRetryInterval = (_b2 = options.maxRetryDelayInMs) !== null && _b2 !== void 0 ? _b2 : DEFAULT_CLIENT_MAX_RETRY_INTERVAL;
   let retryAfterInMs = retryInterval;
   return {
@@ -36709,7 +34526,7 @@ function retryPolicy(strategies, options = { maxRetries: DEFAULT_RETRY_POLICY_CO
   return {
     name: retryPolicyName,
     async sendRequest(request3, next) {
-      var _a5, _b2;
+      var _a4, _b2;
       let response;
       let responseError;
       let retryCount = -1;
@@ -36730,7 +34547,7 @@ function retryPolicy(strategies, options = { maxRetries: DEFAULT_RETRY_POLICY_CO
             }
             response = responseError.response;
           }
-          if ((_a5 = request3.abortSignal) === null || _a5 === void 0 ? void 0 : _a5.aborted) {
+          if ((_a4 = request3.abortSignal) === null || _a4 === void 0 ? void 0 : _a4.aborted) {
             logger3.error(`Retry ${retryCount}: Request aborted.`);
             const abortError = new AbortError();
             throw abortError;
@@ -36791,11 +34608,11 @@ function retryPolicy(strategies, options = { maxRetries: DEFAULT_RETRY_POLICY_CO
 // node_modules/@azure/core-rest-pipeline/dist/esm/policies/defaultRetryPolicy.js
 var defaultRetryPolicyName = "defaultRetryPolicy";
 function defaultRetryPolicy(options = {}) {
-  var _a5;
+  var _a4;
   return {
     name: defaultRetryPolicyName,
     sendRequest: retryPolicy([throttlingRetryStrategy(), exponentialRetryStrategy(options)], {
-      maxRetries: (_a5 = options.maxRetries) !== null && _a5 !== void 0 ? _a5 : DEFAULT_RETRY_POLICY_COUNT
+      maxRetries: (_a4 = options.maxRetries) !== null && _a4 !== void 0 ? _a4 : DEFAULT_RETRY_POLICY_COUNT
     }).sendRequest
   };
 }
@@ -36822,8 +34639,8 @@ var HttpHeadersImpl = class {
     this._headersMap.set(normalizeName(name), { name, value: String(value).trim() });
   }
   get(name) {
-    var _a5;
-    return (_a5 = this._headersMap.get(normalizeName(name))) === null || _a5 === void 0 ? void 0 : _a5.value;
+    var _a4;
+    return (_a4 = this._headersMap.get(normalizeName(name))) === null || _a4 === void 0 ? void 0 : _a4.value;
   }
   has(name) {
     return this._headersMap.has(normalizeName(name));
@@ -37034,8 +34851,8 @@ function proxyPolicy(proxySettings, options) {
   return {
     name: proxyPolicyName,
     async sendRequest(request3, next) {
-      var _a5;
-      if (!request3.proxySettings && defaultProxy && !isBypassed(request3.url, (_a5 = options === null || options === void 0 ? void 0 : options.customNoProxyList) !== null && _a5 !== void 0 ? _a5 : globalNoProxyList, (options === null || options === void 0 ? void 0 : options.customNoProxyList) ? void 0 : globalBypassedMap)) {
+      var _a4;
+      if (!request3.proxySettings && defaultProxy && !isBypassed(request3.url, (_a4 = options === null || options === void 0 ? void 0 : options.customNoProxyList) !== null && _a4 !== void 0 ? _a4 : globalNoProxyList, (options === null || options === void 0 ? void 0 : options.customNoProxyList) ? void 0 : globalBypassedMap)) {
         setProxyAgentOnRequest(request3, cachedAgents, defaultProxy);
       } else if (request3.proxySettings) {
         setProxyAgentOnRequest(request3, cachedAgents, getUrlFromProxySettings(request3.proxySettings));
@@ -37155,8 +34972,8 @@ function getInstrumenter() {
 function createTracingClient(options) {
   const { namespace, packageName, packageVersion } = options;
   function startSpan(name, operationOptions, spanOptions) {
-    var _a5;
-    const startSpanResult = getInstrumenter().startSpan(name, Object.assign(Object.assign({}, spanOptions), { packageName, packageVersion, tracingContext: (_a5 = operationOptions === null || operationOptions === void 0 ? void 0 : operationOptions.tracingOptions) === null || _a5 === void 0 ? void 0 : _a5.tracingContext }));
+    var _a4;
+    const startSpanResult = getInstrumenter().startSpan(name, Object.assign(Object.assign({}, spanOptions), { packageName, packageVersion, tracingContext: (_a4 = operationOptions === null || operationOptions === void 0 ? void 0 : operationOptions.tracingOptions) === null || _a4 === void 0 ? void 0 : _a4.tracingContext }));
     let tracingContext = startSpanResult.tracingContext;
     const span = startSpanResult.span;
     if (!tracingContext.getValue(knownContextKeys.namespace)) {
@@ -37240,8 +35057,8 @@ function tracingPolicy(options = {}) {
   return {
     name: tracingPolicyName,
     async sendRequest(request3, next) {
-      var _a5, _b2;
-      if (!tracingClient || !((_a5 = request3.tracingOptions) === null || _a5 === void 0 ? void 0 : _a5.tracingContext)) {
+      var _a4, _b2;
+      if (!tracingClient || !((_a4 = request3.tracingOptions) === null || _a4 === void 0 ? void 0 : _a4.tracingContext)) {
         return next(request3);
       }
       const { span, tracingContext } = (_b2 = tryCreateSpan(tracingClient, request3, userAgent)) !== null && _b2 !== void 0 ? _b2 : {};
@@ -37330,7 +35147,7 @@ function tryProcessResponse(span, response) {
 
 // node_modules/@azure/core-rest-pipeline/dist/esm/createPipelineFromOptions.js
 function createPipelineFromOptions(options) {
-  var _a5;
+  var _a4;
   const pipeline = createEmptyPipeline();
   if (isNode) {
     if (options.tlsOptions) {
@@ -37341,7 +35158,7 @@ function createPipelineFromOptions(options) {
   }
   pipeline.addPolicy(formDataPolicy(), { beforePolicies: [multipartPolicyName] });
   pipeline.addPolicy(userAgentPolicy(options.userAgentOptions));
-  pipeline.addPolicy(setClientRequestIdPolicy((_a5 = options.telemetryOptions) === null || _a5 === void 0 ? void 0 : _a5.clientRequestIdHeaderName));
+  pipeline.addPolicy(setClientRequestIdPolicy((_a4 = options.telemetryOptions) === null || _a4 === void 0 ? void 0 : _a4.clientRequestIdHeaderName));
   pipeline.addPolicy(multipartPolicy(), { afterPhase: "Deserialize" });
   pipeline.addPolicy(defaultRetryPolicy(options.retryOptions), { phase: "Retry" });
   pipeline.addPolicy(tracingPolicy(options.userAgentOptions), { afterPhase: "Retry" });
@@ -37393,7 +35210,7 @@ var NodeHttpClient = class {
     this.cachedHttpsAgents = /* @__PURE__ */ new WeakMap();
   }
   async sendRequest(request3) {
-    var _a5, _b2, _c2;
+    var _a4, _b2, _c2;
     const abortController = new AbortController();
     let abortListener;
     if (request3.abortSignal) {
@@ -37438,7 +35255,7 @@ var NodeHttpClient = class {
       }
       const res = await this.makeRequest(request3, abortController, body);
       const headers = getResponseHeaders(res);
-      const status = (_a5 = res.statusCode) !== null && _a5 !== void 0 ? _a5 : 0;
+      const status = (_a4 = res.statusCode) !== null && _a4 !== void 0 ? _a4 : 0;
       const response = {
         status,
         headers,
@@ -37475,9 +35292,9 @@ var NodeHttpClient = class {
           downloadStreamDone = isStreamComplete(responseStream);
         }
         Promise.all([uploadStreamDone, downloadStreamDone]).then(() => {
-          var _a6;
+          var _a5;
           if (abortListener) {
-            (_a6 = request3.abortSignal) === null || _a6 === void 0 ? void 0 : _a6.removeEventListener("abort", abortListener);
+            (_a5 = request3.abortSignal) === null || _a5 === void 0 ? void 0 : _a5.removeEventListener("abort", abortListener);
           }
         }).catch((e3) => {
           logger.warning("Error when cleaning up abortListener on httpRequest", e3);
@@ -37486,13 +35303,13 @@ var NodeHttpClient = class {
     }
   }
   makeRequest(request3, abortController, body) {
-    var _a5;
+    var _a4;
     const url2 = new URL(request3.url);
     const isInsecure = url2.protocol !== "https:";
     if (isInsecure && !request3.allowInsecureConnection) {
       throw new Error(`Cannot connect to ${request3.url} while allowInsecureConnection is false.`);
     }
-    const agent = (_a5 = request3.agent) !== null && _a5 !== void 0 ? _a5 : this.getOrCreateAgent(request3, isInsecure);
+    const agent = (_a4 = request3.agent) !== null && _a4 !== void 0 ? _a4 : this.getOrCreateAgent(request3, isInsecure);
     const options = {
       agent,
       hostname: url2.hostname,
@@ -37504,8 +35321,8 @@ var NodeHttpClient = class {
     return new Promise((resolve, reject) => {
       const req = isInsecure ? http2.request(options, resolve) : https2.request(options, resolve);
       req.once("error", (err) => {
-        var _a6;
-        reject(new RestError(err.message, { code: (_a6 = err.code) !== null && _a6 !== void 0 ? _a6 : RestError.REQUEST_SEND_ERROR, request: request3 }));
+        var _a5;
+        reject(new RestError(err.message, { code: (_a5 = err.code) !== null && _a5 !== void 0 ? _a5 : RestError.REQUEST_SEND_ERROR, request: request3 }));
       });
       abortController.signal.addEventListener("abort", () => {
         const abortError = new AbortError("The operation was aborted.");
@@ -37529,7 +35346,7 @@ var NodeHttpClient = class {
     });
   }
   getOrCreateAgent(request3, isInsecure) {
-    var _a5;
+    var _a4;
     const disableKeepAlive = request3.disableKeepAlive;
     if (isInsecure) {
       if (disableKeepAlive) {
@@ -37543,7 +35360,7 @@ var NodeHttpClient = class {
       if (disableKeepAlive && !request3.tlsSettings) {
         return https2.globalAgent;
       }
-      const tlsSettings = (_a5 = request3.tlsSettings) !== null && _a5 !== void 0 ? _a5 : DEFAULT_TLS_SETTINGS;
+      const tlsSettings = (_a4 = request3.tlsSettings) !== null && _a4 !== void 0 ? _a4 : DEFAULT_TLS_SETTINGS;
       let agent = this.cachedHttpsAgents.get(tlsSettings);
       if (agent && agent.options.keepAlive === !disableKeepAlive) {
         return agent;
@@ -37635,10 +35452,10 @@ function createDefaultHttpClient() {
 // node_modules/@azure/core-rest-pipeline/dist/esm/pipelineRequest.js
 var PipelineRequestImpl = class {
   constructor(options) {
-    var _a5, _b2, _c2, _d2, _e2, _f, _g;
+    var _a4, _b2, _c2, _d2, _e2, _f, _g;
     this.url = options.url;
     this.body = options.body;
-    this.headers = (_a5 = options.headers) !== null && _a5 !== void 0 ? _a5 : createHttpHeaders();
+    this.headers = (_a4 = options.headers) !== null && _a4 !== void 0 ? _a4 : createHttpHeaders();
     this.method = (_b2 = options.method) !== null && _b2 !== void 0 ? _b2 : "GET";
     this.timeout = (_c2 = options.timeout) !== null && _c2 !== void 0 ? _c2 : 0;
     this.multipartBody = options.multipartBody;
@@ -37671,7 +35488,7 @@ async function beginRefresh(getAccessToken, retryIntervalInMs, refreshTimeout) {
     if (Date.now() < refreshTimeout) {
       try {
         return await getAccessToken();
-      } catch (_a5) {
+      } catch (_a4) {
         return null;
       }
     } else {
@@ -37699,21 +35516,21 @@ function createTokenCycler(credential, tokenCyclerOptions) {
       return refreshWorker !== null;
     },
     get shouldRefresh() {
-      var _a5;
-      return !cycler.isRefreshing && ((_a5 = token === null || token === void 0 ? void 0 : token.expiresOnTimestamp) !== null && _a5 !== void 0 ? _a5 : 0) - options.refreshWindowInMs < Date.now();
+      var _a4;
+      return !cycler.isRefreshing && ((_a4 = token === null || token === void 0 ? void 0 : token.expiresOnTimestamp) !== null && _a4 !== void 0 ? _a4 : 0) - options.refreshWindowInMs < Date.now();
     },
     get mustRefresh() {
       return token === null || token.expiresOnTimestamp - options.forcedRefreshWindowInMs < Date.now();
     }
   };
   function refresh(scopes, getTokenOptions) {
-    var _a5;
+    var _a4;
     if (!cycler.isRefreshing) {
       const tryGetAccessToken = () => credential.getToken(scopes, getTokenOptions);
       refreshWorker = beginRefresh(
         tryGetAccessToken,
         options.retryIntervalInMs,
-        (_a5 = token === null || token === void 0 ? void 0 : token.expiresOnTimestamp) !== null && _a5 !== void 0 ? _a5 : Date.now()
+        (_a4 = token === null || token === void 0 ? void 0 : token.expiresOnTimestamp) !== null && _a4 !== void 0 ? _a4 : Date.now()
       ).then((_token) => {
         refreshWorker = null;
         token = _token;
@@ -37760,10 +35577,10 @@ function getChallenge(response) {
   return;
 }
 function bearerTokenAuthenticationPolicy(options) {
-  var _a5;
+  var _a4;
   const { credential, scopes, challengeCallbacks } = options;
   const logger3 = options.logger || logger;
-  const callbacks = Object.assign({ authorizeRequest: (_a5 = challengeCallbacks === null || challengeCallbacks === void 0 ? void 0 : challengeCallbacks.authorizeRequest) !== null && _a5 !== void 0 ? _a5 : defaultAuthorizeRequest, authorizeRequestOnChallenge: challengeCallbacks === null || challengeCallbacks === void 0 ? void 0 : challengeCallbacks.authorizeRequestOnChallenge }, challengeCallbacks);
+  const callbacks = Object.assign({ authorizeRequest: (_a4 = challengeCallbacks === null || challengeCallbacks === void 0 ? void 0 : challengeCallbacks.authorizeRequest) !== null && _a4 !== void 0 ? _a4 : defaultAuthorizeRequest, authorizeRequestOnChallenge: challengeCallbacks === null || challengeCallbacks === void 0 ? void 0 : challengeCallbacks.authorizeRequestOnChallenge }, challengeCallbacks);
   const getAccessToken = credential ? createTokenCycler(credential) : () => Promise.resolve(null);
   return {
     name: bearerTokenAuthenticationPolicyName,
@@ -37836,7 +35653,7 @@ function keyCredentialAuthenticationPolicy(credential, apiKeyHeaderName) {
 // node_modules/@azure-rest/core-client/dist/esm/clientHelpers.js
 var cachedHttpClient;
 function addCredentialPipelinePolicy(pipeline, endpoint, options = {}) {
-  var _a5, _b2, _c2, _d2;
+  var _a4, _b2, _c2, _d2;
   const { credential, clientOptions } = options;
   if (!credential) {
     return;
@@ -37844,7 +35661,7 @@ function addCredentialPipelinePolicy(pipeline, endpoint, options = {}) {
   if (isTokenCredential(credential)) {
     const tokenPolicy = bearerTokenAuthenticationPolicy({
       credential,
-      scopes: (_b2 = (_a5 = clientOptions === null || clientOptions === void 0 ? void 0 : clientOptions.credentials) === null || _a5 === void 0 ? void 0 : _a5.scopes) !== null && _b2 !== void 0 ? _b2 : `${endpoint}/.default`
+      scopes: (_b2 = (_a4 = clientOptions === null || clientOptions === void 0 ? void 0 : clientOptions.credentials) === null || _a4 === void 0 ? void 0 : _a4.scopes) !== null && _b2 !== void 0 ? _b2 : `${endpoint}/.default`
     });
     pipeline.addPolicy(tokenPolicy);
   } else if (isKeyCredential2(credential)) {
@@ -37873,9 +35690,9 @@ function getCachedDefaultHttpsClient() {
 
 // node_modules/@azure-rest/core-client/dist/esm/operationOptionHelpers.js
 function operationOptionsToRequestParameters(options) {
-  var _a5, _b2, _c2, _d2, _e2, _f;
+  var _a4, _b2, _c2, _d2, _e2, _f;
   return {
-    allowInsecureConnection: (_a5 = options.requestOptions) === null || _a5 === void 0 ? void 0 : _a5.allowInsecureConnection,
+    allowInsecureConnection: (_a4 = options.requestOptions) === null || _a4 === void 0 ? void 0 : _a4.allowInsecureConnection,
     timeout: (_b2 = options.requestOptions) === null || _b2 === void 0 ? void 0 : _b2.timeout,
     skipUrlEncoding: (_c2 = options.requestOptions) === null || _c2 === void 0 ? void 0 : _c2.skipUrlEncoding,
     abortSignal: options.abortSignal,
@@ -37894,12 +35711,12 @@ function isReadableStream3(body) {
 
 // node_modules/@azure-rest/core-client/dist/esm/sendRequest.js
 async function sendRequest(method, url2, pipeline, options = {}, customHttpClient) {
-  var _a5;
+  var _a4;
   const httpClient = customHttpClient !== null && customHttpClient !== void 0 ? customHttpClient : getCachedDefaultHttpsClient();
   const request3 = buildPipelineRequest(method, url2, options);
   const response = await pipeline.sendRequest(httpClient, request3);
   const headers = response.headers.toJSON();
-  const stream4 = (_a5 = response.readableStreamBody) !== null && _a5 !== void 0 ? _a5 : response.browserStreamBody;
+  const stream4 = (_a4 = response.readableStreamBody) !== null && _a4 !== void 0 ? _a4 : response.browserStreamBody;
   const parsedBody = options.responseAsStream || stream4 !== void 0 ? void 0 : getResponseBody(response);
   const body = stream4 !== null && stream4 !== void 0 ? stream4 : parsedBody;
   if (options === null || options === void 0 ? void 0 : options.onResponse) {
@@ -37913,8 +35730,8 @@ async function sendRequest(method, url2, pipeline, options = {}, customHttpClien
   };
 }
 function getRequestContentType(options = {}) {
-  var _a5, _b2, _c2;
-  return (_c2 = (_a5 = options.contentType) !== null && _a5 !== void 0 ? _a5 : (_b2 = options.headers) === null || _b2 === void 0 ? void 0 : _b2["content-type"]) !== null && _c2 !== void 0 ? _c2 : getContentType(options.body);
+  var _a4, _b2, _c2;
+  return (_c2 = (_a4 = options.contentType) !== null && _a4 !== void 0 ? _a4 : (_b2 = options.headers) === null || _b2 === void 0 ? void 0 : _b2["content-type"]) !== null && _c2 !== void 0 ? _c2 : getContentType(options.body);
 }
 function getContentType(body) {
   if (ArrayBuffer.isView(body)) {
@@ -37931,11 +35748,11 @@ function getContentType(body) {
   return "application/json; charset=UTF-8";
 }
 function buildPipelineRequest(method, url2, options = {}) {
-  var _a5, _b2, _c2;
+  var _a4, _b2, _c2;
   const requestContentType = getRequestContentType(options);
   const { body, formData } = getRequestBody(options.body, requestContentType);
   const hasContent = body !== void 0 || formData !== void 0;
-  const headers = createHttpHeaders(Object.assign(Object.assign(Object.assign({}, options.headers ? options.headers : {}), { accept: (_c2 = (_a5 = options.accept) !== null && _a5 !== void 0 ? _a5 : (_b2 = options.headers) === null || _b2 === void 0 ? void 0 : _b2.accept) !== null && _c2 !== void 0 ? _c2 : "application/json" }), hasContent && requestContentType && {
+  const headers = createHttpHeaders(Object.assign(Object.assign(Object.assign({}, options.headers ? options.headers : {}), { accept: (_c2 = (_a4 = options.accept) !== null && _a4 !== void 0 ? _a4 : (_b2 = options.headers) === null || _b2 === void 0 ? void 0 : _b2.accept) !== null && _c2 !== void 0 ? _c2 : "application/json" }), hasContent && requestContentType && {
     "content-type": requestContentType
   }));
   return createPipelineRequest({
@@ -37998,8 +35815,8 @@ function processFormData(formData) {
   return processedFormData;
 }
 function getResponseBody(response) {
-  var _a5, _b2;
-  const contentType = (_a5 = response.headers.get("content-type")) !== null && _a5 !== void 0 ? _a5 : "";
+  var _a4, _b2;
+  const contentType = (_a4 = response.headers.get("content-type")) !== null && _a4 !== void 0 ? _a4 : "";
   const firstType = contentType.split(";")[0];
   const bodyToParse = (_b2 = response.bodyAsText) !== null && _b2 !== void 0 ? _b2 : "";
   if (firstType === "text/plain") {
@@ -38015,9 +35832,9 @@ function getResponseBody(response) {
   }
 }
 function createParseError(response, err) {
-  var _a5;
+  var _a4;
   const msg = `Error "${err}" occurred while parsing the response body - ${response.bodyAsText}.`;
-  const errCode = (_a5 = err.code) !== null && _a5 !== void 0 ? _a5 : RestError.PARSE_ERROR;
+  const errCode = (_a4 = err.code) !== null && _a4 !== void 0 ? _a4 : RestError.PARSE_ERROR;
   return new RestError(msg, {
     code: errCode,
     statusCode: response.status,
@@ -38071,7 +35888,7 @@ function skipQueryParameterEncoding(url2) {
   return url2;
 }
 function buildBaseUrl(endpoint, options) {
-  var _a5;
+  var _a4;
   if (!options.pathParameters) {
     return endpoint;
   }
@@ -38087,7 +35904,7 @@ function buildBaseUrl(endpoint, options) {
     if (!options.skipUrlEncoding) {
       value = encodeURIComponent(param);
     }
-    endpoint = (_a5 = replaceAll(endpoint, `{${key}}`, value)) !== null && _a5 !== void 0 ? _a5 : "";
+    endpoint = (_a4 = replaceAll(endpoint, `{${key}}`, value)) !== null && _a4 !== void 0 ? _a4 : "";
   }
   return endpoint;
 }
@@ -38107,7 +35924,7 @@ function replaceAll(value, searchValue, replaceValue) {
 
 // node_modules/@azure-rest/core-client/dist/esm/getClient.js
 function getClient(endpoint, credentialsOrPipelineOptions, clientOptions = {}) {
-  var _a5, _b2;
+  var _a4, _b2;
   let credentials;
   if (credentialsOrPipelineOptions) {
     if (isCredential(credentialsOrPipelineOptions)) {
@@ -38117,7 +35934,7 @@ function getClient(endpoint, credentialsOrPipelineOptions, clientOptions = {}) {
     }
   }
   const pipeline = createDefaultPipeline(endpoint, credentials, clientOptions);
-  if ((_a5 = clientOptions.additionalPolicies) === null || _a5 === void 0 ? void 0 : _a5.length) {
+  if ((_a4 = clientOptions.additionalPolicies) === null || _a4 === void 0 ? void 0 : _a4.length) {
     for (const { policy, position } of clientOptions.additionalPolicies) {
       const afterPhase = position === "perRetry" ? "Sign" : void 0;
       pipeline.addPolicy(policy, {
@@ -38163,8 +35980,8 @@ function getClient(endpoint, credentialsOrPipelineOptions, clientOptions = {}) {
   };
 }
 function buildOperation(method, url2, pipeline, options, allowInsecureConnection, httpClient) {
-  var _a5;
-  allowInsecureConnection = (_a5 = options.allowInsecureConnection) !== null && _a5 !== void 0 ? _a5 : allowInsecureConnection;
+  var _a4;
+  allowInsecureConnection = (_a4 = options.allowInsecureConnection) !== null && _a4 !== void 0 ? _a4 : allowInsecureConnection;
   return {
     then: function(onFulfilled, onrejected) {
       return sendRequest(method, url2, pipeline, Object.assign(Object.assign({}, options), { allowInsecureConnection }), httpClient).then(onFulfilled, onrejected);
@@ -38189,8 +36006,8 @@ var logger2 = createClientLogger("openai");
 
 // node_modules/@azure/openai/dist-esm/src/rest/openAIClient.js
 function createClient(endpoint, credentials, options = {}) {
-  var _a5, _b2, _c2, _d2, _e2, _f, _g, _h;
-  const baseUrl = (_a5 = options.baseUrl) !== null && _a5 !== void 0 ? _a5 : `${endpoint}/openai`;
+  var _a4, _b2, _c2, _d2, _e2, _f, _g, _h;
+  const baseUrl = (_a4 = options.baseUrl) !== null && _a4 !== void 0 ? _a4 : `${endpoint}/openai`;
   options.apiVersion = (_b2 = options.apiVersion) !== null && _b2 !== void 0 ? _b2 : "2024-03-01-preview";
   const userAgentInfo = `azsdk-js-openai-rest/1.0.0-beta.12`;
   const userAgentPrefix = options.userAgentOptions && options.userAgentOptions.userAgentPrefix ? `${options.userAgentOptions.userAgentPrefix} ${userAgentInfo}` : `${userAgentInfo}`;
@@ -38229,7 +36046,7 @@ function isUnexpected(response) {
   return !pathDetails.includes(response.status);
 }
 function getParametrizedPathSuccess(method, path5) {
-  var _a5, _b2, _c2, _d2;
+  var _a4, _b2, _c2, _d2;
   const pathParts = path5.split("/");
   let matchedLen = -1, matchedValue = [];
   for (const [key, value] of Object.entries(responseMap)) {
@@ -38240,7 +36057,7 @@ function getParametrizedPathSuccess(method, path5) {
     const candidateParts = candidatePath.split("/");
     let found = true;
     for (let i3 = candidateParts.length - 1, j4 = pathParts.length - 1; i3 >= 1 && j4 >= 1; i3--, j4--) {
-      if (((_a5 = candidateParts[i3]) === null || _a5 === void 0 ? void 0 : _a5.startsWith("{")) && ((_b2 = candidateParts[i3]) === null || _b2 === void 0 ? void 0 : _b2.indexOf("}")) !== -1) {
+      if (((_a4 = candidateParts[i3]) === null || _a4 === void 0 ? void 0 : _a4.startsWith("{")) && ((_b2 = candidateParts[i3]) === null || _b2 === void 0 ? void 0 : _b2.indexOf("}")) !== -1) {
         const start = candidateParts[i3].indexOf("}") + 1, end = (_c2 = candidateParts[i3]) === null || _c2 === void 0 ? void 0 : _c2.length;
         const isMatched = new RegExp(`${(_d2 = candidateParts[i3]) === null || _d2 === void 0 ? void 0 : _d2.slice(start, end)}`).test(pathParts[j4] || "");
         if (!isMatched) {
@@ -38318,11 +36135,11 @@ function snakeCaseKeys(obj) {
     return obj;
   }
 }
-function tocamelCase(str2) {
-  return str2.toLowerCase().replace(/([_][a-z])/g, (group) => group.toUpperCase().replace("_", ""));
+function tocamelCase(str) {
+  return str.toLowerCase().replace(/([_][a-z])/g, (group) => group.toUpperCase().replace("_", ""));
 }
-function toSnakeCase(str2) {
-  return str2.replace(/([A-Z])/g, (group) => `_${group.toLowerCase()}`).replace(/^_/, "");
+function toSnakeCase(str) {
+  return str.replace(/([A-Z])/g, (group) => `_${group.toLowerCase()}`).replace(/^_/, "");
 }
 
 // node_modules/@azure/openai/dist-esm/src/utils/serializeUtil.js
@@ -38374,7 +36191,7 @@ function serializeChatMessageImageContentItem(obj) {
   };
 }
 function serializeAzureSearchChatExtensionConfiguration(obj) {
-  var _a5, _b2, _c2, _d2, _e2, _f, _g;
+  var _a4, _b2, _c2, _d2, _e2, _f, _g;
   return {
     type: obj["type"],
     parameters: {
@@ -38386,7 +36203,7 @@ function serializeAzureSearchChatExtensionConfiguration(obj) {
       endpoint: obj["endpoint"],
       index_name: obj["indexName"],
       fields_mapping: !obj.fieldsMapping ? void 0 : {
-        title_field: (_a5 = obj.fieldsMapping) === null || _a5 === void 0 ? void 0 : _a5["titleField"],
+        title_field: (_a4 = obj.fieldsMapping) === null || _a4 === void 0 ? void 0 : _a4["titleField"],
         url_field: (_b2 = obj.fieldsMapping) === null || _b2 === void 0 ? void 0 : _b2["urlField"],
         filepath_field: (_c2 = obj.fieldsMapping) === null || _c2 === void 0 ? void 0 : _c2["filepathField"],
         content_fields: (_d2 = obj.fieldsMapping) === null || _d2 === void 0 ? void 0 : _d2["contentFields"],
@@ -38442,7 +36259,7 @@ function serializeAzureCosmosDBChatExtensionConfiguration(obj) {
   };
 }
 function serializeElasticsearchChatExtensionConfiguration(obj) {
-  var _a5, _b2, _c2, _d2, _e2, _f;
+  var _a4, _b2, _c2, _d2, _e2, _f;
   return {
     type: obj["type"],
     parameters: {
@@ -38454,7 +36271,7 @@ function serializeElasticsearchChatExtensionConfiguration(obj) {
       endpoint: obj["endpoint"],
       index_name: obj["indexName"],
       fields_mapping: !obj.fieldsMapping ? void 0 : {
-        title_field: (_a5 = obj.fieldsMapping) === null || _a5 === void 0 ? void 0 : _a5["titleField"],
+        title_field: (_a4 = obj.fieldsMapping) === null || _a4 === void 0 ? void 0 : _a4["titleField"],
         url_field: (_b2 = obj.fieldsMapping) === null || _b2 === void 0 ? void 0 : _b2["urlField"],
         filepath_field: (_c2 = obj.fieldsMapping) === null || _c2 === void 0 ? void 0 : _c2["filepathField"],
         content_fields: (_d2 = obj.fieldsMapping) === null || _d2 === void 0 ? void 0 : _d2["contentFields"],
@@ -38611,8 +36428,8 @@ function polyfillStream(stream4, dispose) {
   return stream4;
 }
 function makeAsyncDisposable(webStream, dispose) {
-  var _a5;
-  (_a5 = Symbol.asyncDispose) !== null && _a5 !== void 0 ? _a5 : Symbol.asyncDispose = Symbol("Symbol.asyncDispose");
+  var _a4;
+  (_a4 = Symbol.asyncDispose) !== null && _a4 !== void 0 ? _a4 : Symbol.asyncDispose = Symbol("Symbol.asyncDispose");
   if (!webStream[Symbol.asyncDispose]) {
     webStream[Symbol.asyncDispose] = () => dispose();
   }
@@ -38705,13 +36522,13 @@ function createMessage() {
 }
 function toLine(chunkIter) {
   return __asyncGenerator(this, arguments, function* toLine_1() {
-    var _a5, e_1, _b2, _c2;
+    var _a4, e_1, _b2, _c2;
     let buf;
     let bufIdx = 0;
     let fieldLen = -1;
     let discardTrailingNewline = false;
     try {
-      for (var _d2 = true, chunkIter_1 = __asyncValues(chunkIter), chunkIter_1_1; chunkIter_1_1 = yield __await(chunkIter_1.next()), _a5 = chunkIter_1_1.done, !_a5; _d2 = true) {
+      for (var _d2 = true, chunkIter_1 = __asyncValues(chunkIter), chunkIter_1_1; chunkIter_1_1 = yield __await(chunkIter_1.next()), _a4 = chunkIter_1_1.done, !_a4; _d2 = true) {
         _c2 = chunkIter_1_1.value;
         _d2 = false;
         const chunk = _c2;
@@ -38766,7 +36583,7 @@ function toLine(chunkIter) {
       e_1 = { error: e_1_1 };
     } finally {
       try {
-        if (!_d2 && !_a5 && (_b2 = chunkIter_1.return))
+        if (!_d2 && !_a4 && (_b2 = chunkIter_1.return))
           yield __await(_b2.call(chunkIter_1));
       } finally {
         if (e_1)
@@ -38777,11 +36594,11 @@ function toLine(chunkIter) {
 }
 function toMessage(lineIter) {
   return __asyncGenerator(this, arguments, function* toMessage_1() {
-    var _a5, e_2, _b2, _c2;
+    var _a4, e_2, _b2, _c2;
     let message = createMessage();
     const decoder = new TextDecoder();
     try {
-      for (var _d2 = true, lineIter_1 = __asyncValues(lineIter), lineIter_1_1; lineIter_1_1 = yield __await(lineIter_1.next()), _a5 = lineIter_1_1.done, !_a5; _d2 = true) {
+      for (var _d2 = true, lineIter_1 = __asyncValues(lineIter), lineIter_1_1; lineIter_1_1 = yield __await(lineIter_1.next()), _a4 = lineIter_1_1.done, !_a4; _d2 = true) {
         _c2 = lineIter_1_1.value;
         _d2 = false;
         const { line, fieldLen } = _c2;
@@ -38816,7 +36633,7 @@ function toMessage(lineIter) {
       e_2 = { error: e_2_1 };
     } finally {
       try {
-        if (!_d2 && !_a5 && (_b2 = lineIter_1.return))
+        if (!_d2 && !_a4 && (_b2 = lineIter_1.return))
           yield __await(_b2.call(lineIter_1));
       } finally {
         if (e_2)
@@ -38937,8 +36754,8 @@ function getCompletionsResult(body) {
       prompt_filter_results,
       prompt_annotations
     })
-  }), { choices: choices.map((_a5) => {
-    var { content_filter_results } = _a5, choice = __rest(_a5, ["content_filter_results"]);
+  }), { choices: choices.map((_a4) => {
+    var { content_filter_results } = _a4, choice = __rest(_a4, ["content_filter_results"]);
     return Object.assign(Object.assign({}, camelCaseKeys(choice)), !content_filter_results ? {} : {
       contentFilterResults: parseContentFilterResultsForChoiceOutput(content_filter_results)
     });
@@ -38954,7 +36771,7 @@ function streamCompletions(context, deploymentName, prompt, options = { requestO
   return getOaiSSEs(response, getCompletionsResult);
 }
 function _getChatCompletionsSend(context, deploymentId, body, options = { requestOptions: {} }) {
-  var _a5, _b2, _c2, _d2, _e2, _f, _g;
+  var _a4, _b2, _c2, _d2, _e2, _f, _g;
   return context.path("/deployments/{deploymentId}/chat/completions", deploymentId).post(Object.assign(Object.assign({}, operationOptionsToRequestParameters(options)), { body: {
     model: body["model"],
     stream: body["stream"],
@@ -38969,7 +36786,7 @@ function _getChatCompletionsSend(context, deploymentId, body, options = { reques
     frequency_penalty: body["frequencyPenalty"],
     data_sources: body["dataSources"] === void 0 ? body["dataSources"] : body["dataSources"].map((p4) => serializeAzureChatExtensionConfigurationUnion(p4)),
     enhancements: !body.enhancements ? void 0 : {
-      grounding: !((_a5 = body.enhancements) === null || _a5 === void 0 ? void 0 : _a5.grounding) ? void 0 : { enabled: (_c2 = (_b2 = body.enhancements) === null || _b2 === void 0 ? void 0 : _b2.grounding) === null || _c2 === void 0 ? void 0 : _c2["enabled"] },
+      grounding: !((_a4 = body.enhancements) === null || _a4 === void 0 ? void 0 : _a4.grounding) ? void 0 : { enabled: (_c2 = (_b2 = body.enhancements) === null || _b2 === void 0 ? void 0 : _b2.grounding) === null || _c2 === void 0 ? void 0 : _c2["enabled"] },
       ocr: !((_d2 = body.enhancements) === null || _d2 === void 0 ? void 0 : _d2.ocr) ? void 0 : { enabled: (_f = (_e2 = body.enhancements) === null || _e2 === void 0 ? void 0 : _e2.ocr) === null || _f === void 0 ? void 0 : _f["enabled"] }
     },
     seed: body["seed"],
@@ -39006,8 +36823,8 @@ function getChatCompletionsResult(body) {
       promptTokens: usage["prompt_tokens"],
       totalTokens: usage["total_tokens"]
     }
-  }), { choices: !choices ? [] : choices.map((_a5) => {
-    var { content_filter_results } = _a5, choice = __rest(_a5, ["content_filter_results"]);
+  }), { choices: !choices ? [] : choices.map((_a4) => {
+    var { content_filter_results } = _a4, choice = __rest(_a4, ["content_filter_results"]);
     return Object.assign(Object.assign({}, camelCaseKeys(choice)), !content_filter_results ? {} : {
       contentFilterResults: parseContentFilterResultsForChoiceOutput(content_filter_results)
     });
@@ -39051,12 +36868,12 @@ async function _getImageGenerationsDeserialize(result) {
   return {
     created: new Date(result.body["created"]),
     data: result.body["data"].map((p4) => {
-      var _a5, _b2, _c2, _d2, _e2, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r2, _s, _t2, _u, _v, _w, _x, _y, _z, _0, _1, _22, _32, _42, _52, _62, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _222, _23, _24, _25;
+      var _a4, _b2, _c2, _d2, _e2, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r2, _s, _t2, _u, _v, _w, _x, _y, _z, _0, _1, _22, _32, _42, _52, _62, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _222, _23, _24, _25;
       return {
         url: p4["url"],
         base64Data: p4["b64_json"],
         contentFilterResults: !p4.content_filter_results ? void 0 : {
-          sexual: !((_a5 = p4.content_filter_results) === null || _a5 === void 0 ? void 0 : _a5.sexual) ? void 0 : {
+          sexual: !((_a4 = p4.content_filter_results) === null || _a4 === void 0 ? void 0 : _a4.sexual) ? void 0 : {
             severity: (_c2 = (_b2 = p4.content_filter_results) === null || _b2 === void 0 ? void 0 : _b2.sexual) === null || _c2 === void 0 ? void 0 : _c2["severity"],
             filtered: (_e2 = (_d2 = p4.content_filter_results) === null || _d2 === void 0 ? void 0 : _d2.sexual) === null || _e2 === void 0 ? void 0 : _e2["filtered"]
           },
@@ -39137,24 +36954,24 @@ async function getEmbeddings(context, deploymentId, body, options = { requestOpt
 }
 function getContentFilterResultsForPrompt({ prompt_annotations, prompt_filter_results }) {
   const res = prompt_filter_results !== null && prompt_filter_results !== void 0 ? prompt_filter_results : prompt_annotations;
-  return res === null || res === void 0 ? void 0 : res.map((_a5) => {
-    var { content_filter_results } = _a5, rest = __rest(_a5, ["content_filter_results"]);
+  return res === null || res === void 0 ? void 0 : res.map((_a4) => {
+    var { content_filter_results } = _a4, rest = __rest(_a4, ["content_filter_results"]);
     return Object.assign(Object.assign({}, camelCaseKeys(rest)), { contentFilterResults: parseContentFilterResultDetailsForPromptOutput(content_filter_results) });
   });
 }
-function parseContentFilterResultDetailsForPromptOutput(_a5 = {}) {
-  var { error } = _a5, rest = __rest(_a5, ["error"]);
+function parseContentFilterResultDetailsForPromptOutput(_a4 = {}) {
+  var { error } = _a4, rest = __rest(_a4, ["error"]);
   return error ? parseError(error) : camelCaseKeys(rest);
 }
 function parseError(error) {
-  var _a5;
+  var _a4;
   return {
-    error: Object.assign(Object.assign({}, error), { details: (_a5 = error["details"]) !== null && _a5 !== void 0 ? _a5 : [] })
+    error: Object.assign(Object.assign({}, error), { details: (_a4 = error["details"]) !== null && _a4 !== void 0 ? _a4 : [] })
   };
 }
-function parseContentFilterResultsForChoiceOutput(_a5 = {}) {
+function parseContentFilterResultsForChoiceOutput(_a4 = {}) {
   var _b2;
-  var { error } = _a5, successResult = __rest(_a5, ["error"]);
+  var { error } = _a4, successResult = __rest(_a4, ["error"]);
   return error ? {
     error: Object.assign(Object.assign({}, error), { details: (_b2 = error["details"]) !== null && _b2 !== void 0 ? _b2 : [] })
   } : camelCaseKeys(successResult);
@@ -39209,7 +37026,7 @@ function isCred(cred) {
 }
 var OpenAIClient = class {
   constructor(endpointOrOpenAiKey, credOrOptions = {}, options = {}) {
-    var _a5, _b2;
+    var _a4, _b2;
     this._isAzure = false;
     let opts;
     let endpoint;
@@ -39224,7 +37041,7 @@ var OpenAIClient = class {
       cred = endpointOrOpenAiKey;
       const { credentials } = credOrOptions, restOpts = __rest(credOrOptions, ["credentials"]);
       opts = Object.assign({ credentials: {
-        apiKeyHeaderName: (_a5 = credentials === null || credentials === void 0 ? void 0 : credentials.apiKeyHeaderName) !== null && _a5 !== void 0 ? _a5 : "Authorization",
+        apiKeyHeaderName: (_a4 = credentials === null || credentials === void 0 ? void 0 : credentials.apiKeyHeaderName) !== null && _a4 !== void 0 ? _a4 : "Authorization",
         scopes: credentials === null || credentials === void 0 ? void 0 : credentials.scopes
       } }, restOpts);
     }
@@ -39468,8 +37285,8 @@ var RequestUrl = class {
     this.requestOptions = requestOptions;
   }
   toString() {
-    var _a5, _b2;
-    const apiVersion = ((_a5 = this.requestOptions) === null || _a5 === void 0 ? void 0 : _a5.apiVersion) || DEFAULT_API_VERSION;
+    var _a4, _b2;
+    const apiVersion = ((_a4 = this.requestOptions) === null || _a4 === void 0 ? void 0 : _a4.apiVersion) || DEFAULT_API_VERSION;
     const baseUrl = ((_b2 = this.requestOptions) === null || _b2 === void 0 ? void 0 : _b2.baseUrl) || DEFAULT_BASE_URL;
     let url2 = `${baseUrl}/${apiVersion}/${this.model}:${this.task}`;
     if (this.stream) {
@@ -39608,9 +37425,9 @@ function addHelpers(response) {
   return response;
 }
 function getText(response) {
-  var _a5, _b2, _c2, _d2;
+  var _a4, _b2, _c2, _d2;
   const textStrings = [];
-  if ((_b2 = (_a5 = response.candidates) === null || _a5 === void 0 ? void 0 : _a5[0].content) === null || _b2 === void 0 ? void 0 : _b2.parts) {
+  if ((_b2 = (_a4 = response.candidates) === null || _a4 === void 0 ? void 0 : _a4[0].content) === null || _b2 === void 0 ? void 0 : _b2.parts) {
     for (const part of (_d2 = (_c2 = response.candidates) === null || _c2 === void 0 ? void 0 : _c2[0].content) === null || _d2 === void 0 ? void 0 : _d2.parts) {
       if (part.text) {
         textStrings.push(part.text);
@@ -39624,9 +37441,9 @@ function getText(response) {
   }
 }
 function getFunctionCalls(response) {
-  var _a5, _b2, _c2, _d2;
+  var _a4, _b2, _c2, _d2;
   const functionCalls = [];
-  if ((_b2 = (_a5 = response.candidates) === null || _a5 === void 0 ? void 0 : _a5[0].content) === null || _b2 === void 0 ? void 0 : _b2.parts) {
+  if ((_b2 = (_a4 = response.candidates) === null || _a4 === void 0 ? void 0 : _a4[0].content) === null || _b2 === void 0 ? void 0 : _b2.parts) {
     for (const part of (_d2 = (_c2 = response.candidates) === null || _c2 === void 0 ? void 0 : _c2[0].content) === null || _d2 === void 0 ? void 0 : _d2.parts) {
       if (part.functionCall) {
         functionCalls.push(part.functionCall);
@@ -39644,11 +37461,11 @@ function hadBadFinishReason(candidate) {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
 }
 function formatBlockErrorMessage(response) {
-  var _a5, _b2, _c2;
+  var _a4, _b2, _c2;
   let message = "";
   if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
     message += "Response was blocked";
-    if ((_a5 = response.promptFeedback) === null || _a5 === void 0 ? void 0 : _a5.blockReason) {
+    if ((_a4 = response.promptFeedback) === null || _a4 === void 0 ? void 0 : _a4.blockReason) {
       message += ` due to ${response.promptFeedback.blockReason}`;
     }
     if ((_b2 = response.promptFeedback) === null || _b2 === void 0 ? void 0 : _b2.blockReasonMessage) {
@@ -39992,11 +37809,11 @@ var ChatSession = class {
     return this._history;
   }
   async sendMessage(request3) {
-    var _a5, _b2, _c2, _d2, _e2;
+    var _a4, _b2, _c2, _d2, _e2;
     await this._sendPromise;
     const newContent = formatNewContent(request3);
     const generateContentRequest = {
-      safetySettings: (_a5 = this.params) === null || _a5 === void 0 ? void 0 : _a5.safetySettings,
+      safetySettings: (_a4 = this.params) === null || _a4 === void 0 ? void 0 : _a4.safetySettings,
       generationConfig: (_b2 = this.params) === null || _b2 === void 0 ? void 0 : _b2.generationConfig,
       tools: (_c2 = this.params) === null || _c2 === void 0 ? void 0 : _c2.tools,
       toolConfig: (_d2 = this.params) === null || _d2 === void 0 ? void 0 : _d2.toolConfig,
@@ -40005,13 +37822,13 @@ var ChatSession = class {
     };
     let finalResult;
     this._sendPromise = this._sendPromise.then(() => generateContent(this._apiKey, this.model, generateContentRequest, this.requestOptions)).then((result) => {
-      var _a6;
+      var _a5;
       if (result.response.candidates && result.response.candidates.length > 0) {
         this._history.push(newContent);
         const responseContent = Object.assign({
           parts: [],
           role: "model"
-        }, (_a6 = result.response.candidates) === null || _a6 === void 0 ? void 0 : _a6[0].content);
+        }, (_a5 = result.response.candidates) === null || _a5 === void 0 ? void 0 : _a5[0].content);
         this._history.push(responseContent);
       } else {
         const blockErrorMessage = formatBlockErrorMessage(result.response);
@@ -40025,11 +37842,11 @@ var ChatSession = class {
     return finalResult;
   }
   async sendMessageStream(request3) {
-    var _a5, _b2, _c2, _d2, _e2;
+    var _a4, _b2, _c2, _d2, _e2;
     await this._sendPromise;
     const newContent = formatNewContent(request3);
     const generateContentRequest = {
-      safetySettings: (_a5 = this.params) === null || _a5 === void 0 ? void 0 : _a5.safetySettings,
+      safetySettings: (_a4 = this.params) === null || _a4 === void 0 ? void 0 : _a4.safetySettings,
       generationConfig: (_b2 = this.params) === null || _b2 === void 0 ? void 0 : _b2.generationConfig,
       tools: (_c2 = this.params) === null || _c2 === void 0 ? void 0 : _c2.tools,
       toolConfig: (_d2 = this.params) === null || _d2 === void 0 ? void 0 : _d2.toolConfig,
@@ -40214,4271 +38031,6 @@ var OllamaEngine = class {
   }
 };
 
-// node_modules/openai/error.mjs
-var error_exports2 = {};
-__export(error_exports2, {
-  APIConnectionError: () => APIConnectionError3,
-  APIConnectionTimeoutError: () => APIConnectionTimeoutError3,
-  APIError: () => APIError3,
-  APIUserAbortError: () => APIUserAbortError3,
-  AuthenticationError: () => AuthenticationError3,
-  BadRequestError: () => BadRequestError3,
-  ConflictError: () => ConflictError3,
-  ContentFilterFinishReasonError: () => ContentFilterFinishReasonError,
-  InternalServerError: () => InternalServerError3,
-  LengthFinishReasonError: () => LengthFinishReasonError,
-  NotFoundError: () => NotFoundError3,
-  OpenAIError: () => OpenAIError,
-  PermissionDeniedError: () => PermissionDeniedError3,
-  RateLimitError: () => RateLimitError3,
-  UnprocessableEntityError: () => UnprocessableEntityError3
-});
-
-// node_modules/openai/version.mjs
-var VERSION4 = "4.57.0";
-
-// node_modules/openai/_shims/registry.mjs
-var auto2 = false;
-var kind2 = void 0;
-var fetch3 = void 0;
-var Request4 = void 0;
-var Response4 = void 0;
-var Headers4 = void 0;
-var FormData5 = void 0;
-var Blob4 = void 0;
-var File4 = void 0;
-var ReadableStream5 = void 0;
-var getMultipartRequestOptions3 = void 0;
-var getDefaultAgent2 = void 0;
-var fileFromPath4 = void 0;
-var isFsReadStream2 = void 0;
-function setShims2(shims, options = { auto: false }) {
-  if (auto2) {
-    throw new Error(`you must \`import 'openai/shims/${shims.kind}'\` before importing anything else from openai`);
-  }
-  if (kind2) {
-    throw new Error(`can't \`import 'openai/shims/${shims.kind}'\` after \`import 'openai/shims/${kind2}'\``);
-  }
-  auto2 = options.auto;
-  kind2 = shims.kind;
-  fetch3 = shims.fetch;
-  Request4 = shims.Request;
-  Response4 = shims.Response;
-  Headers4 = shims.Headers;
-  FormData5 = shims.FormData;
-  Blob4 = shims.Blob;
-  File4 = shims.File;
-  ReadableStream5 = shims.ReadableStream;
-  getMultipartRequestOptions3 = shims.getMultipartRequestOptions;
-  getDefaultAgent2 = shims.getDefaultAgent;
-  fileFromPath4 = shims.fileFromPath;
-  isFsReadStream2 = shims.isFsReadStream;
-}
-
-// node_modules/openai/_shims/node-runtime.mjs
-var nf2 = __toESM(require_lib2(), 1);
-var import_agentkeepalive2 = __toESM(require_agentkeepalive(), 1);
-var import_abort_controller6 = __toESM(require_abort_controller(), 1);
-var import_node_fs4 = require("node:fs");
-var import_node_stream4 = require("node:stream");
-
-// node_modules/openai/_shims/MultipartBody.mjs
-var MultipartBody2 = class {
-  constructor(body) {
-    this.body = body;
-  }
-  get [Symbol.toStringTag]() {
-    return "MultipartBody";
-  }
-};
-
-// node_modules/openai/_shims/node-runtime.mjs
-var import_web = require("node:stream/web");
-var fileFromPathWarned2 = false;
-async function fileFromPath5(path5, ...args) {
-  const { fileFromPath: _fileFromPath } = await Promise.resolve().then(() => (init_fileFromPath(), fileFromPath_exports));
-  if (!fileFromPathWarned2) {
-    console.warn(`fileFromPath is deprecated; use fs.createReadStream(${JSON.stringify(path5)}) instead`);
-    fileFromPathWarned2 = true;
-  }
-  return await _fileFromPath(path5, ...args);
-}
-var defaultHttpAgent2 = new import_agentkeepalive2.default({ keepAlive: true, timeout: 5 * 60 * 1e3 });
-var defaultHttpsAgent2 = new import_agentkeepalive2.default.HttpsAgent({ keepAlive: true, timeout: 5 * 60 * 1e3 });
-async function getMultipartRequestOptions4(form, opts) {
-  const encoder = new FormDataEncoder(form);
-  const readable = import_node_stream4.Readable.from(encoder);
-  const body = new MultipartBody2(readable);
-  const headers = {
-    ...opts.headers,
-    ...encoder.headers,
-    "Content-Length": encoder.contentLength
-  };
-  return { ...opts, body, headers };
-}
-function getRuntime2() {
-  if (typeof AbortController === "undefined") {
-    globalThis.AbortController = import_abort_controller6.AbortController;
-  }
-  return {
-    kind: "node",
-    fetch: nf2.default,
-    Request: nf2.Request,
-    Response: nf2.Response,
-    Headers: nf2.Headers,
-    FormData: FormData3,
-    Blob: Blob3,
-    File: File3,
-    ReadableStream: import_web.ReadableStream,
-    getMultipartRequestOptions: getMultipartRequestOptions4,
-    getDefaultAgent: (url2) => url2.startsWith("https") ? defaultHttpsAgent2 : defaultHttpAgent2,
-    fileFromPath: fileFromPath5,
-    isFsReadStream: (value) => value instanceof import_node_fs4.ReadStream
-  };
-}
-
-// node_modules/openai/_shims/index.mjs
-if (!kind2)
-  setShims2(getRuntime2(), { auto: true });
-
-// node_modules/openai/streaming.mjs
-var Stream2 = class {
-  constructor(iterator, controller) {
-    this.iterator = iterator;
-    this.controller = controller;
-  }
-  static fromSSEResponse(response, controller) {
-    let consumed = false;
-    async function* iterator() {
-      if (consumed) {
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      }
-      consumed = true;
-      let done = false;
-      try {
-        for await (const sse of _iterSSEMessages2(response, controller)) {
-          if (done)
-            continue;
-          if (sse.data.startsWith("[DONE]")) {
-            done = true;
-            continue;
-          }
-          if (sse.event === null) {
-            let data;
-            try {
-              data = JSON.parse(sse.data);
-            } catch (e3) {
-              console.error(`Could not parse message into JSON:`, sse.data);
-              console.error(`From chunk:`, sse.raw);
-              throw e3;
-            }
-            if (data && data.error) {
-              throw new APIError3(void 0, data.error, void 0, void 0);
-            }
-            yield data;
-          } else {
-            let data;
-            try {
-              data = JSON.parse(sse.data);
-            } catch (e3) {
-              console.error(`Could not parse message into JSON:`, sse.data);
-              console.error(`From chunk:`, sse.raw);
-              throw e3;
-            }
-            if (sse.event == "error") {
-              throw new APIError3(void 0, data.error, data.message, void 0);
-            }
-            yield { event: sse.event, data };
-          }
-        }
-        done = true;
-      } catch (e3) {
-        if (e3 instanceof Error && e3.name === "AbortError")
-          return;
-        throw e3;
-      } finally {
-        if (!done)
-          controller.abort();
-      }
-    }
-    return new Stream2(iterator, controller);
-  }
-  static fromReadableStream(readableStream, controller) {
-    let consumed = false;
-    async function* iterLines() {
-      const lineDecoder = new LineDecoder2();
-      const iter = readableStreamAsyncIterable2(readableStream);
-      for await (const chunk of iter) {
-        for (const line of lineDecoder.decode(chunk)) {
-          yield line;
-        }
-      }
-      for (const line of lineDecoder.flush()) {
-        yield line;
-      }
-    }
-    async function* iterator() {
-      if (consumed) {
-        throw new Error("Cannot iterate over a consumed stream, use `.tee()` to split the stream.");
-      }
-      consumed = true;
-      let done = false;
-      try {
-        for await (const line of iterLines()) {
-          if (done)
-            continue;
-          if (line)
-            yield JSON.parse(line);
-        }
-        done = true;
-      } catch (e3) {
-        if (e3 instanceof Error && e3.name === "AbortError")
-          return;
-        throw e3;
-      } finally {
-        if (!done)
-          controller.abort();
-      }
-    }
-    return new Stream2(iterator, controller);
-  }
-  [Symbol.asyncIterator]() {
-    return this.iterator();
-  }
-  tee() {
-    const left = [];
-    const right = [];
-    const iterator = this.iterator();
-    const teeIterator = (queue) => {
-      return {
-        next: () => {
-          if (queue.length === 0) {
-            const result = iterator.next();
-            left.push(result);
-            right.push(result);
-          }
-          return queue.shift();
-        }
-      };
-    };
-    return [
-      new Stream2(() => teeIterator(left), this.controller),
-      new Stream2(() => teeIterator(right), this.controller)
-    ];
-  }
-  toReadableStream() {
-    const self2 = this;
-    let iter;
-    const encoder = new TextEncoder();
-    return new ReadableStream5({
-      async start() {
-        iter = self2[Symbol.asyncIterator]();
-      },
-      async pull(ctrl) {
-        try {
-          const { value, done } = await iter.next();
-          if (done)
-            return ctrl.close();
-          const bytes = encoder.encode(JSON.stringify(value) + "\n");
-          ctrl.enqueue(bytes);
-        } catch (err) {
-          ctrl.error(err);
-        }
-      },
-      async cancel() {
-        await iter.return?.();
-      }
-    });
-  }
-};
-async function* _iterSSEMessages2(response, controller) {
-  if (!response.body) {
-    controller.abort();
-    throw new OpenAIError(`Attempted to iterate over a response with no body`);
-  }
-  const sseDecoder = new SSEDecoder2();
-  const lineDecoder = new LineDecoder2();
-  const iter = readableStreamAsyncIterable2(response.body);
-  for await (const sseChunk of iterSSEChunks2(iter)) {
-    for (const line of lineDecoder.decode(sseChunk)) {
-      const sse = sseDecoder.decode(line);
-      if (sse)
-        yield sse;
-    }
-  }
-  for (const line of lineDecoder.flush()) {
-    const sse = sseDecoder.decode(line);
-    if (sse)
-      yield sse;
-  }
-}
-async function* iterSSEChunks2(iterator) {
-  let data = new Uint8Array();
-  for await (const chunk of iterator) {
-    if (chunk == null) {
-      continue;
-    }
-    const binaryChunk = chunk instanceof ArrayBuffer ? new Uint8Array(chunk) : typeof chunk === "string" ? new TextEncoder().encode(chunk) : chunk;
-    let newData = new Uint8Array(data.length + binaryChunk.length);
-    newData.set(data);
-    newData.set(binaryChunk, data.length);
-    data = newData;
-    let patternIndex;
-    while ((patternIndex = findDoubleNewlineIndex2(data)) !== -1) {
-      yield data.slice(0, patternIndex);
-      data = data.slice(patternIndex);
-    }
-  }
-  if (data.length > 0) {
-    yield data;
-  }
-}
-function findDoubleNewlineIndex2(buffer) {
-  const newline = 10;
-  const carriage = 13;
-  for (let i3 = 0; i3 < buffer.length - 2; i3++) {
-    if (buffer[i3] === newline && buffer[i3 + 1] === newline) {
-      return i3 + 2;
-    }
-    if (buffer[i3] === carriage && buffer[i3 + 1] === carriage) {
-      return i3 + 2;
-    }
-    if (buffer[i3] === carriage && buffer[i3 + 1] === newline && i3 + 3 < buffer.length && buffer[i3 + 2] === carriage && buffer[i3 + 3] === newline) {
-      return i3 + 4;
-    }
-  }
-  return -1;
-}
-var SSEDecoder2 = class {
-  constructor() {
-    this.event = null;
-    this.data = [];
-    this.chunks = [];
-  }
-  decode(line) {
-    if (line.endsWith("\r")) {
-      line = line.substring(0, line.length - 1);
-    }
-    if (!line) {
-      if (!this.event && !this.data.length)
-        return null;
-      const sse = {
-        event: this.event,
-        data: this.data.join("\n"),
-        raw: this.chunks
-      };
-      this.event = null;
-      this.data = [];
-      this.chunks = [];
-      return sse;
-    }
-    this.chunks.push(line);
-    if (line.startsWith(":")) {
-      return null;
-    }
-    let [fieldname, _7, value] = partition2(line, ":");
-    if (value.startsWith(" ")) {
-      value = value.substring(1);
-    }
-    if (fieldname === "event") {
-      this.event = value;
-    } else if (fieldname === "data") {
-      this.data.push(value);
-    }
-    return null;
-  }
-};
-var LineDecoder2 = class {
-  constructor() {
-    this.buffer = [];
-    this.trailingCR = false;
-  }
-  decode(chunk) {
-    let text = this.decodeText(chunk);
-    if (this.trailingCR) {
-      text = "\r" + text;
-      this.trailingCR = false;
-    }
-    if (text.endsWith("\r")) {
-      this.trailingCR = true;
-      text = text.slice(0, -1);
-    }
-    if (!text) {
-      return [];
-    }
-    const trailingNewline = LineDecoder2.NEWLINE_CHARS.has(text[text.length - 1] || "");
-    let lines = text.split(LineDecoder2.NEWLINE_REGEXP);
-    if (trailingNewline) {
-      lines.pop();
-    }
-    if (lines.length === 1 && !trailingNewline) {
-      this.buffer.push(lines[0]);
-      return [];
-    }
-    if (this.buffer.length > 0) {
-      lines = [this.buffer.join("") + lines[0], ...lines.slice(1)];
-      this.buffer = [];
-    }
-    if (!trailingNewline) {
-      this.buffer = [lines.pop() || ""];
-    }
-    return lines;
-  }
-  decodeText(bytes) {
-    if (bytes == null)
-      return "";
-    if (typeof bytes === "string")
-      return bytes;
-    if (typeof Buffer !== "undefined") {
-      if (bytes instanceof Buffer) {
-        return bytes.toString();
-      }
-      if (bytes instanceof Uint8Array) {
-        return Buffer.from(bytes).toString();
-      }
-      throw new OpenAIError(`Unexpected: received non-Uint8Array (${bytes.constructor.name}) stream chunk in an environment with a global "Buffer" defined, which this library assumes to be Node. Please report this error.`);
-    }
-    if (typeof TextDecoder !== "undefined") {
-      if (bytes instanceof Uint8Array || bytes instanceof ArrayBuffer) {
-        this.textDecoder ?? (this.textDecoder = new TextDecoder("utf8"));
-        return this.textDecoder.decode(bytes);
-      }
-      throw new OpenAIError(`Unexpected: received non-Uint8Array/ArrayBuffer (${bytes.constructor.name}) in a web platform. Please report this error.`);
-    }
-    throw new OpenAIError(`Unexpected: neither Buffer nor TextDecoder are available as globals. Please report this error.`);
-  }
-  flush() {
-    if (!this.buffer.length && !this.trailingCR) {
-      return [];
-    }
-    const lines = [this.buffer.join("")];
-    this.buffer = [];
-    this.trailingCR = false;
-    return lines;
-  }
-};
-LineDecoder2.NEWLINE_CHARS = /* @__PURE__ */ new Set(["\n", "\r"]);
-LineDecoder2.NEWLINE_REGEXP = /\r\n|[\n\r]/g;
-function partition2(str2, delimiter) {
-  const index = str2.indexOf(delimiter);
-  if (index !== -1) {
-    return [str2.substring(0, index), delimiter, str2.substring(index + delimiter.length)];
-  }
-  return [str2, "", ""];
-}
-function readableStreamAsyncIterable2(stream4) {
-  if (stream4[Symbol.asyncIterator])
-    return stream4;
-  const reader = stream4.getReader();
-  return {
-    async next() {
-      try {
-        const result = await reader.read();
-        if (result?.done)
-          reader.releaseLock();
-        return result;
-      } catch (e3) {
-        reader.releaseLock();
-        throw e3;
-      }
-    },
-    async return() {
-      const cancelPromise = reader.cancel();
-      reader.releaseLock();
-      await cancelPromise;
-      return { done: true, value: void 0 };
-    },
-    [Symbol.asyncIterator]() {
-      return this;
-    }
-  };
-}
-
-// node_modules/openai/uploads.mjs
-var isResponseLike2 = (value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function";
-var isFileLike3 = (value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike2(value);
-var isBlobLike2 = (value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function";
-var isUploadable = (value) => {
-  return isFileLike3(value) || isResponseLike2(value) || isFsReadStream2(value);
-};
-async function toFile2(value, name, options) {
-  value = await value;
-  options ?? (options = isFileLike3(value) ? { lastModified: value.lastModified, type: value.type } : {});
-  if (isResponseLike2(value)) {
-    const blob = await value.blob();
-    name || (name = new URL(value.url).pathname.split(/[\\/]/).pop() ?? "unknown_file");
-    return new File4([blob], name, options);
-  }
-  const bits = await getBytes2(value);
-  name || (name = getName2(value) ?? "unknown_file");
-  if (!options.type) {
-    const type2 = bits[0]?.type;
-    if (typeof type2 === "string") {
-      options = { ...options, type: type2 };
-    }
-  }
-  return new File4(bits, name, options);
-}
-async function getBytes2(value) {
-  let parts = [];
-  if (typeof value === "string" || ArrayBuffer.isView(value) || value instanceof ArrayBuffer) {
-    parts.push(value);
-  } else if (isBlobLike2(value)) {
-    parts.push(await value.arrayBuffer());
-  } else if (isAsyncIterableIterator2(value)) {
-    for await (const chunk of value) {
-      parts.push(chunk);
-    }
-  } else {
-    throw new Error(`Unexpected data type: ${typeof value}; constructor: ${value?.constructor?.name}; props: ${propsForError2(value)}`);
-  }
-  return parts;
-}
-function propsForError2(value) {
-  const props = Object.getOwnPropertyNames(value);
-  return `[${props.map((p4) => `"${p4}"`).join(", ")}]`;
-}
-function getName2(value) {
-  return getStringFromMaybeBuffer2(value.name) || getStringFromMaybeBuffer2(value.filename) || getStringFromMaybeBuffer2(value.path)?.split(/[\\/]/).pop();
-}
-var getStringFromMaybeBuffer2 = (x5) => {
-  if (typeof x5 === "string")
-    return x5;
-  if (typeof Buffer !== "undefined" && x5 instanceof Buffer)
-    return String(x5);
-  return void 0;
-};
-var isAsyncIterableIterator2 = (value) => value != null && typeof value === "object" && typeof value[Symbol.asyncIterator] === "function";
-var isMultipartBody2 = (body) => body && typeof body === "object" && body.body && body[Symbol.toStringTag] === "MultipartBody";
-var multipartFormRequestOptions = async (opts) => {
-  const form = await createForm(opts.body);
-  return getMultipartRequestOptions3(form, opts);
-};
-var createForm = async (body) => {
-  const form = new FormData5();
-  await Promise.all(Object.entries(body || {}).map(([key, value]) => addFormValue(form, key, value)));
-  return form;
-};
-var addFormValue = async (form, key, value) => {
-  if (value === void 0)
-    return;
-  if (value == null) {
-    throw new TypeError(`Received null for "${key}"; to pass null in FormData, you must use the string 'null'`);
-  }
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-    form.append(key, String(value));
-  } else if (isUploadable(value)) {
-    const file = await toFile2(value);
-    form.append(key, file);
-  } else if (Array.isArray(value)) {
-    await Promise.all(value.map((entry) => addFormValue(form, key + "[]", entry)));
-  } else if (typeof value === "object") {
-    await Promise.all(Object.entries(value).map(([name, prop]) => addFormValue(form, `${key}[${name}]`, prop)));
-  } else {
-    throw new TypeError(`Invalid value given to form, expected a string, number, boolean, object, Array, File or Blob but got ${value} instead`);
-  }
-};
-
-// node_modules/openai/core.mjs
-var __classPrivateFieldSet8 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
-    throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
-};
-var __classPrivateFieldGet9 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
-};
-var _AbstractPage_client2;
-async function defaultParseResponse2(props) {
-  const { response } = props;
-  if (props.options.stream) {
-    debug2("response", response.status, response.url, response.headers, response.body);
-    if (props.options.__streamClass) {
-      return props.options.__streamClass.fromSSEResponse(response, props.controller);
-    }
-    return Stream2.fromSSEResponse(response, props.controller);
-  }
-  if (response.status === 204) {
-    return null;
-  }
-  if (props.options.__binaryResponse) {
-    return response;
-  }
-  const contentType = response.headers.get("content-type");
-  const isJSON = contentType?.includes("application/json") || contentType?.includes("application/vnd.api+json");
-  if (isJSON) {
-    const json = await response.json();
-    debug2("response", response.status, response.url, response.headers, json);
-    return json;
-  }
-  const text = await response.text();
-  debug2("response", response.status, response.url, response.headers, text);
-  return text;
-}
-var APIPromise2 = class extends Promise {
-  constructor(responsePromise, parseResponse = defaultParseResponse2) {
-    super((resolve) => {
-      resolve(null);
-    });
-    this.responsePromise = responsePromise;
-    this.parseResponse = parseResponse;
-  }
-  _thenUnwrap(transform) {
-    return new APIPromise2(this.responsePromise, async (props) => transform(await this.parseResponse(props)));
-  }
-  asResponse() {
-    return this.responsePromise.then((p4) => p4.response);
-  }
-  async withResponse() {
-    const [data, response] = await Promise.all([this.parse(), this.asResponse()]);
-    return { data, response };
-  }
-  parse() {
-    if (!this.parsedPromise) {
-      this.parsedPromise = this.responsePromise.then(this.parseResponse);
-    }
-    return this.parsedPromise;
-  }
-  then(onfulfilled, onrejected) {
-    return this.parse().then(onfulfilled, onrejected);
-  }
-  catch(onrejected) {
-    return this.parse().catch(onrejected);
-  }
-  finally(onfinally) {
-    return this.parse().finally(onfinally);
-  }
-};
-var APIClient2 = class {
-  constructor({
-    baseURL,
-    maxRetries = 2,
-    timeout = 6e5,
-    httpAgent,
-    fetch: overridenFetch
-  }) {
-    this.baseURL = baseURL;
-    this.maxRetries = validatePositiveInteger2("maxRetries", maxRetries);
-    this.timeout = validatePositiveInteger2("timeout", timeout);
-    this.httpAgent = httpAgent;
-    this.fetch = overridenFetch ?? fetch3;
-  }
-  authHeaders(opts) {
-    return {};
-  }
-  defaultHeaders(opts) {
-    return {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "User-Agent": this.getUserAgent(),
-      ...getPlatformHeaders2(),
-      ...this.authHeaders(opts)
-    };
-  }
-  validateHeaders(headers, customHeaders) {
-  }
-  defaultIdempotencyKey() {
-    return `stainless-node-retry-${uuid42()}`;
-  }
-  get(path5, opts) {
-    return this.methodRequest("get", path5, opts);
-  }
-  post(path5, opts) {
-    return this.methodRequest("post", path5, opts);
-  }
-  patch(path5, opts) {
-    return this.methodRequest("patch", path5, opts);
-  }
-  put(path5, opts) {
-    return this.methodRequest("put", path5, opts);
-  }
-  delete(path5, opts) {
-    return this.methodRequest("delete", path5, opts);
-  }
-  methodRequest(method, path5, opts) {
-    return this.request(Promise.resolve(opts).then(async (opts2) => {
-      const body = opts2 && isBlobLike2(opts2?.body) ? new DataView(await opts2.body.arrayBuffer()) : opts2?.body instanceof DataView ? opts2.body : opts2?.body instanceof ArrayBuffer ? new DataView(opts2.body) : opts2 && ArrayBuffer.isView(opts2?.body) ? new DataView(opts2.body.buffer) : opts2?.body;
-      return { method, path: path5, ...opts2, body };
-    }));
-  }
-  getAPIList(path5, Page2, opts) {
-    return this.requestAPIList(Page2, { method: "get", path: path5, ...opts });
-  }
-  calculateContentLength(body) {
-    if (typeof body === "string") {
-      if (typeof Buffer !== "undefined") {
-        return Buffer.byteLength(body, "utf8").toString();
-      }
-      if (typeof TextEncoder !== "undefined") {
-        const encoder = new TextEncoder();
-        const encoded = encoder.encode(body);
-        return encoded.length.toString();
-      }
-    } else if (ArrayBuffer.isView(body)) {
-      return body.byteLength.toString();
-    }
-    return null;
-  }
-  buildRequest(options) {
-    const { method, path: path5, query, headers = {} } = options;
-    const body = ArrayBuffer.isView(options.body) || options.__binaryRequest && typeof options.body === "string" ? options.body : isMultipartBody2(options.body) ? options.body.body : options.body ? JSON.stringify(options.body, null, 2) : null;
-    const contentLength = this.calculateContentLength(body);
-    const url2 = this.buildURL(path5, query);
-    if ("timeout" in options)
-      validatePositiveInteger2("timeout", options.timeout);
-    const timeout = options.timeout ?? this.timeout;
-    const httpAgent = options.httpAgent ?? this.httpAgent ?? getDefaultAgent2(url2);
-    const minAgentTimeout = timeout + 1e3;
-    if (typeof httpAgent?.options?.timeout === "number" && minAgentTimeout > (httpAgent.options.timeout ?? 0)) {
-      httpAgent.options.timeout = minAgentTimeout;
-    }
-    if (this.idempotencyHeader && method !== "get") {
-      if (!options.idempotencyKey)
-        options.idempotencyKey = this.defaultIdempotencyKey();
-      headers[this.idempotencyHeader] = options.idempotencyKey;
-    }
-    const reqHeaders = this.buildHeaders({ options, headers, contentLength });
-    const req = {
-      method,
-      ...body && { body },
-      headers: reqHeaders,
-      ...httpAgent && { agent: httpAgent },
-      signal: options.signal ?? null
-    };
-    return { req, url: url2, timeout };
-  }
-  buildHeaders({ options, headers, contentLength }) {
-    const reqHeaders = {};
-    if (contentLength) {
-      reqHeaders["content-length"] = contentLength;
-    }
-    const defaultHeaders = this.defaultHeaders(options);
-    applyHeadersMut2(reqHeaders, defaultHeaders);
-    applyHeadersMut2(reqHeaders, headers);
-    if (isMultipartBody2(options.body) && kind2 !== "node") {
-      delete reqHeaders["content-type"];
-    }
-    this.validateHeaders(reqHeaders, headers);
-    return reqHeaders;
-  }
-  async prepareOptions(options) {
-  }
-  async prepareRequest(request3, { url: url2, options }) {
-  }
-  parseHeaders(headers) {
-    return !headers ? {} : Symbol.iterator in headers ? Object.fromEntries(Array.from(headers).map((header) => [...header])) : { ...headers };
-  }
-  makeStatusError(status, error, message, headers) {
-    return APIError3.generate(status, error, message, headers);
-  }
-  request(options, remainingRetries = null) {
-    return new APIPromise2(this.makeRequest(options, remainingRetries));
-  }
-  async makeRequest(optionsInput, retriesRemaining) {
-    const options = await optionsInput;
-    if (retriesRemaining == null) {
-      retriesRemaining = options.maxRetries ?? this.maxRetries;
-    }
-    await this.prepareOptions(options);
-    const { req, url: url2, timeout } = this.buildRequest(options);
-    await this.prepareRequest(req, { url: url2, options });
-    debug2("request", url2, options, req.headers);
-    if (options.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    const controller = new AbortController();
-    const response = await this.fetchWithTimeout(url2, req, timeout, controller).catch(castToError2);
-    if (response instanceof Error) {
-      if (options.signal?.aborted) {
-        throw new APIUserAbortError3();
-      }
-      if (retriesRemaining) {
-        return this.retryRequest(options, retriesRemaining);
-      }
-      if (response.name === "AbortError") {
-        throw new APIConnectionTimeoutError3();
-      }
-      throw new APIConnectionError3({ cause: response });
-    }
-    const responseHeaders = createResponseHeaders2(response.headers);
-    if (!response.ok) {
-      if (retriesRemaining && this.shouldRetry(response)) {
-        const retryMessage2 = `retrying, ${retriesRemaining} attempts remaining`;
-        debug2(`response (error; ${retryMessage2})`, response.status, url2, responseHeaders);
-        return this.retryRequest(options, retriesRemaining, responseHeaders);
-      }
-      const errText = await response.text().catch((e3) => castToError2(e3).message);
-      const errJSON = safeJSON2(errText);
-      const errMessage = errJSON ? void 0 : errText;
-      const retryMessage = retriesRemaining ? `(error; no more retries left)` : `(error; not retryable)`;
-      debug2(`response (error; ${retryMessage})`, response.status, url2, responseHeaders, errMessage);
-      const err = this.makeStatusError(response.status, errJSON, errMessage, responseHeaders);
-      throw err;
-    }
-    return { response, options, controller };
-  }
-  requestAPIList(Page2, options) {
-    const request3 = this.makeRequest(options, null);
-    return new PagePromise2(this, request3, Page2);
-  }
-  buildURL(path5, query) {
-    const url2 = isAbsoluteURL3(path5) ? new URL(path5) : new URL(this.baseURL + (this.baseURL.endsWith("/") && path5.startsWith("/") ? path5.slice(1) : path5));
-    const defaultQuery = this.defaultQuery();
-    if (!isEmptyObj2(defaultQuery)) {
-      query = { ...defaultQuery, ...query };
-    }
-    if (typeof query === "object" && query && !Array.isArray(query)) {
-      url2.search = this.stringifyQuery(query);
-    }
-    return url2.toString();
-  }
-  stringifyQuery(query) {
-    return Object.entries(query).filter(([_7, value]) => typeof value !== "undefined").map(([key, value]) => {
-      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-      }
-      if (value === null) {
-        return `${encodeURIComponent(key)}=`;
-      }
-      throw new OpenAIError(`Cannot stringify type ${typeof value}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`);
-    }).join("&");
-  }
-  async fetchWithTimeout(url2, init, ms, controller) {
-    const { signal, ...options } = init || {};
-    if (signal)
-      signal.addEventListener("abort", () => controller.abort());
-    const timeout = setTimeout(() => controller.abort(), ms);
-    return this.getRequestClient().fetch.call(void 0, url2, { signal: controller.signal, ...options }).finally(() => {
-      clearTimeout(timeout);
-    });
-  }
-  getRequestClient() {
-    return { fetch: this.fetch };
-  }
-  shouldRetry(response) {
-    const shouldRetryHeader = response.headers.get("x-should-retry");
-    if (shouldRetryHeader === "true")
-      return true;
-    if (shouldRetryHeader === "false")
-      return false;
-    if (response.status === 408)
-      return true;
-    if (response.status === 409)
-      return true;
-    if (response.status === 429)
-      return true;
-    if (response.status >= 500)
-      return true;
-    return false;
-  }
-  async retryRequest(options, retriesRemaining, responseHeaders) {
-    let timeoutMillis;
-    const retryAfterMillisHeader = responseHeaders?.["retry-after-ms"];
-    if (retryAfterMillisHeader) {
-      const timeoutMs = parseFloat(retryAfterMillisHeader);
-      if (!Number.isNaN(timeoutMs)) {
-        timeoutMillis = timeoutMs;
-      }
-    }
-    const retryAfterHeader = responseHeaders?.["retry-after"];
-    if (retryAfterHeader && !timeoutMillis) {
-      const timeoutSeconds = parseFloat(retryAfterHeader);
-      if (!Number.isNaN(timeoutSeconds)) {
-        timeoutMillis = timeoutSeconds * 1e3;
-      } else {
-        timeoutMillis = Date.parse(retryAfterHeader) - Date.now();
-      }
-    }
-    if (!(timeoutMillis && 0 <= timeoutMillis && timeoutMillis < 60 * 1e3)) {
-      const maxRetries = options.maxRetries ?? this.maxRetries;
-      timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
-    }
-    await sleep2(timeoutMillis);
-    return this.makeRequest(options, retriesRemaining - 1);
-  }
-  calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries) {
-    const initialRetryDelay = 0.5;
-    const maxRetryDelay = 8;
-    const numRetries = maxRetries - retriesRemaining;
-    const sleepSeconds = Math.min(initialRetryDelay * Math.pow(2, numRetries), maxRetryDelay);
-    const jitter = 1 - Math.random() * 0.25;
-    return sleepSeconds * jitter * 1e3;
-  }
-  getUserAgent() {
-    return `${this.constructor.name}/JS ${VERSION4}`;
-  }
-};
-var AbstractPage2 = class {
-  constructor(client, response, body, options) {
-    _AbstractPage_client2.set(this, void 0);
-    __classPrivateFieldSet8(this, _AbstractPage_client2, client, "f");
-    this.options = options;
-    this.response = response;
-    this.body = body;
-  }
-  hasNextPage() {
-    const items = this.getPaginatedItems();
-    if (!items.length)
-      return false;
-    return this.nextPageInfo() != null;
-  }
-  async getNextPage() {
-    const nextInfo = this.nextPageInfo();
-    if (!nextInfo) {
-      throw new OpenAIError("No next page expected; please check `.hasNextPage()` before calling `.getNextPage()`.");
-    }
-    const nextOptions = { ...this.options };
-    if ("params" in nextInfo && typeof nextOptions.query === "object") {
-      nextOptions.query = { ...nextOptions.query, ...nextInfo.params };
-    } else if ("url" in nextInfo) {
-      const params = [...Object.entries(nextOptions.query || {}), ...nextInfo.url.searchParams.entries()];
-      for (const [key, value] of params) {
-        nextInfo.url.searchParams.set(key, value);
-      }
-      nextOptions.query = void 0;
-      nextOptions.path = nextInfo.url.toString();
-    }
-    return await __classPrivateFieldGet9(this, _AbstractPage_client2, "f").requestAPIList(this.constructor, nextOptions);
-  }
-  async *iterPages() {
-    let page = this;
-    yield page;
-    while (page.hasNextPage()) {
-      page = await page.getNextPage();
-      yield page;
-    }
-  }
-  async *[(_AbstractPage_client2 = /* @__PURE__ */ new WeakMap(), Symbol.asyncIterator)]() {
-    for await (const page of this.iterPages()) {
-      for (const item of page.getPaginatedItems()) {
-        yield item;
-      }
-    }
-  }
-};
-var PagePromise2 = class extends APIPromise2 {
-  constructor(client, request3, Page2) {
-    super(request3, async (props) => new Page2(client, props.response, await defaultParseResponse2(props), props.options));
-  }
-  async *[Symbol.asyncIterator]() {
-    const page = await this;
-    for await (const item of page) {
-      yield item;
-    }
-  }
-};
-var createResponseHeaders2 = (headers) => {
-  return new Proxy(Object.fromEntries(
-    headers.entries()
-  ), {
-    get(target, name) {
-      const key = name.toString();
-      return target[key.toLowerCase()] || target[key];
-    }
-  });
-};
-var requestOptionsKeys = {
-  method: true,
-  path: true,
-  query: true,
-  body: true,
-  headers: true,
-  maxRetries: true,
-  stream: true,
-  timeout: true,
-  httpAgent: true,
-  signal: true,
-  idempotencyKey: true,
-  __binaryRequest: true,
-  __binaryResponse: true,
-  __streamClass: true
-};
-var isRequestOptions = (obj) => {
-  return typeof obj === "object" && obj !== null && !isEmptyObj2(obj) && Object.keys(obj).every((k7) => hasOwn2(requestOptionsKeys, k7));
-};
-var getPlatformProperties2 = () => {
-  if (typeof Deno !== "undefined" && Deno.build != null) {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION4,
-      "X-Stainless-OS": normalizePlatform2(Deno.build.os),
-      "X-Stainless-Arch": normalizeArch2(Deno.build.arch),
-      "X-Stainless-Runtime": "deno",
-      "X-Stainless-Runtime-Version": typeof Deno.version === "string" ? Deno.version : Deno.version?.deno ?? "unknown"
-    };
-  }
-  if (typeof EdgeRuntime !== "undefined") {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION4,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": `other:${EdgeRuntime}`,
-      "X-Stainless-Runtime": "edge",
-      "X-Stainless-Runtime-Version": process.version
-    };
-  }
-  if (Object.prototype.toString.call(typeof process !== "undefined" ? process : 0) === "[object process]") {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION4,
-      "X-Stainless-OS": normalizePlatform2(process.platform),
-      "X-Stainless-Arch": normalizeArch2(process.arch),
-      "X-Stainless-Runtime": "node",
-      "X-Stainless-Runtime-Version": process.version
-    };
-  }
-  const browserInfo = getBrowserInfo2();
-  if (browserInfo) {
-    return {
-      "X-Stainless-Lang": "js",
-      "X-Stainless-Package-Version": VERSION4,
-      "X-Stainless-OS": "Unknown",
-      "X-Stainless-Arch": "unknown",
-      "X-Stainless-Runtime": `browser:${browserInfo.browser}`,
-      "X-Stainless-Runtime-Version": browserInfo.version
-    };
-  }
-  return {
-    "X-Stainless-Lang": "js",
-    "X-Stainless-Package-Version": VERSION4,
-    "X-Stainless-OS": "Unknown",
-    "X-Stainless-Arch": "unknown",
-    "X-Stainless-Runtime": "unknown",
-    "X-Stainless-Runtime-Version": "unknown"
-  };
-};
-function getBrowserInfo2() {
-  if (typeof navigator === "undefined" || !navigator) {
-    return null;
-  }
-  const browserPatterns = [
-    { key: "edge", pattern: /Edge(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /MSIE(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "ie", pattern: /Trident(?:.*rv\:(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "chrome", pattern: /Chrome(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "firefox", pattern: /Firefox(?:\W+(\d+)\.(\d+)(?:\.(\d+))?)?/ },
-    { key: "safari", pattern: /(?:Version\W+(\d+)\.(\d+)(?:\.(\d+))?)?(?:\W+Mobile\S*)?\W+Safari/ }
-  ];
-  for (const { key, pattern } of browserPatterns) {
-    const match = pattern.exec(navigator.userAgent);
-    if (match) {
-      const major = match[1] || 0;
-      const minor = match[2] || 0;
-      const patch = match[3] || 0;
-      return { browser: key, version: `${major}.${minor}.${patch}` };
-    }
-  }
-  return null;
-}
-var normalizeArch2 = (arch2) => {
-  if (arch2 === "x32")
-    return "x32";
-  if (arch2 === "x86_64" || arch2 === "x64")
-    return "x64";
-  if (arch2 === "arm")
-    return "arm";
-  if (arch2 === "aarch64" || arch2 === "arm64")
-    return "arm64";
-  if (arch2)
-    return `other:${arch2}`;
-  return "unknown";
-};
-var normalizePlatform2 = (platform) => {
-  platform = platform.toLowerCase();
-  if (platform.includes("ios"))
-    return "iOS";
-  if (platform === "android")
-    return "Android";
-  if (platform === "darwin")
-    return "MacOS";
-  if (platform === "win32")
-    return "Windows";
-  if (platform === "freebsd")
-    return "FreeBSD";
-  if (platform === "openbsd")
-    return "OpenBSD";
-  if (platform === "linux")
-    return "Linux";
-  if (platform)
-    return `Other:${platform}`;
-  return "Unknown";
-};
-var _platformHeaders2;
-var getPlatformHeaders2 = () => {
-  return _platformHeaders2 ?? (_platformHeaders2 = getPlatformProperties2());
-};
-var safeJSON2 = (text) => {
-  try {
-    return JSON.parse(text);
-  } catch (err) {
-    return void 0;
-  }
-};
-var startsWithSchemeRegexp2 = new RegExp("^(?:[a-z]+:)?//", "i");
-var isAbsoluteURL3 = (url2) => {
-  return startsWithSchemeRegexp2.test(url2);
-};
-var sleep2 = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var validatePositiveInteger2 = (name, n2) => {
-  if (typeof n2 !== "number" || !Number.isInteger(n2)) {
-    throw new OpenAIError(`${name} must be an integer`);
-  }
-  if (n2 < 0) {
-    throw new OpenAIError(`${name} must be a positive integer`);
-  }
-  return n2;
-};
-var castToError2 = (err) => {
-  if (err instanceof Error)
-    return err;
-  return new Error(err);
-};
-var readEnv2 = (env2) => {
-  if (typeof process !== "undefined") {
-    return process.env?.[env2]?.trim() ?? void 0;
-  }
-  if (typeof Deno !== "undefined") {
-    return Deno.env?.get?.(env2)?.trim();
-  }
-  return void 0;
-};
-function isEmptyObj2(obj) {
-  if (!obj)
-    return true;
-  for (const _k in obj)
-    return false;
-  return true;
-}
-function hasOwn2(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
-function applyHeadersMut2(targetHeaders, newHeaders) {
-  for (const k7 in newHeaders) {
-    if (!hasOwn2(newHeaders, k7))
-      continue;
-    const lowerKey = k7.toLowerCase();
-    if (!lowerKey)
-      continue;
-    const val = newHeaders[k7];
-    if (val === null) {
-      delete targetHeaders[lowerKey];
-    } else if (val !== void 0) {
-      targetHeaders[lowerKey] = val;
-    }
-  }
-}
-function debug2(action, ...args) {
-  if (typeof process !== "undefined" && process?.env?.["DEBUG"] === "true") {
-    console.log(`OpenAI:DEBUG:${action}`, ...args);
-  }
-}
-var uuid42 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c3) => {
-    const r3 = Math.random() * 16 | 0;
-    const v5 = c3 === "x" ? r3 : r3 & 3 | 8;
-    return v5.toString(16);
-  });
-};
-var isRunningInBrowser = () => {
-  return typeof window !== "undefined" && typeof window.document !== "undefined" && typeof navigator !== "undefined";
-};
-function isObj(obj) {
-  return obj != null && typeof obj === "object" && !Array.isArray(obj);
-}
-
-// node_modules/openai/error.mjs
-var OpenAIError = class extends Error {
-};
-var APIError3 = class extends OpenAIError {
-  constructor(status, error, message, headers) {
-    super(`${APIError3.makeMessage(status, error, message)}`);
-    this.status = status;
-    this.headers = headers;
-    this.request_id = headers?.["x-request-id"];
-    const data = error;
-    this.error = data;
-    this.code = data?.["code"];
-    this.param = data?.["param"];
-    this.type = data?.["type"];
-  }
-  static makeMessage(status, error, message) {
-    const msg = error?.message ? typeof error.message === "string" ? error.message : JSON.stringify(error.message) : error ? JSON.stringify(error) : message;
-    if (status && msg) {
-      return `${status} ${msg}`;
-    }
-    if (status) {
-      return `${status} status code (no body)`;
-    }
-    if (msg) {
-      return msg;
-    }
-    return "(no status code or body)";
-  }
-  static generate(status, errorResponse, message, headers) {
-    if (!status) {
-      return new APIConnectionError3({ cause: castToError2(errorResponse) });
-    }
-    const error = errorResponse?.["error"];
-    if (status === 400) {
-      return new BadRequestError3(status, error, message, headers);
-    }
-    if (status === 401) {
-      return new AuthenticationError3(status, error, message, headers);
-    }
-    if (status === 403) {
-      return new PermissionDeniedError3(status, error, message, headers);
-    }
-    if (status === 404) {
-      return new NotFoundError3(status, error, message, headers);
-    }
-    if (status === 409) {
-      return new ConflictError3(status, error, message, headers);
-    }
-    if (status === 422) {
-      return new UnprocessableEntityError3(status, error, message, headers);
-    }
-    if (status === 429) {
-      return new RateLimitError3(status, error, message, headers);
-    }
-    if (status >= 500) {
-      return new InternalServerError3(status, error, message, headers);
-    }
-    return new APIError3(status, error, message, headers);
-  }
-};
-var APIUserAbortError3 = class extends APIError3 {
-  constructor({ message } = {}) {
-    super(void 0, void 0, message || "Request was aborted.", void 0);
-    this.status = void 0;
-  }
-};
-var APIConnectionError3 = class extends APIError3 {
-  constructor({ message, cause }) {
-    super(void 0, void 0, message || "Connection error.", void 0);
-    this.status = void 0;
-    if (cause)
-      this.cause = cause;
-  }
-};
-var APIConnectionTimeoutError3 = class extends APIConnectionError3 {
-  constructor({ message } = {}) {
-    super({ message: message ?? "Request timed out." });
-  }
-};
-var BadRequestError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 400;
-  }
-};
-var AuthenticationError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 401;
-  }
-};
-var PermissionDeniedError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 403;
-  }
-};
-var NotFoundError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 404;
-  }
-};
-var ConflictError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 409;
-  }
-};
-var UnprocessableEntityError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 422;
-  }
-};
-var RateLimitError3 = class extends APIError3 {
-  constructor() {
-    super(...arguments);
-    this.status = 429;
-  }
-};
-var InternalServerError3 = class extends APIError3 {
-};
-var LengthFinishReasonError = class extends OpenAIError {
-  constructor() {
-    super(`Could not parse response content as the length limit was reached`);
-  }
-};
-var ContentFilterFinishReasonError = class extends OpenAIError {
-  constructor() {
-    super(`Could not parse response content as the request was rejected by the content filter`);
-  }
-};
-
-// node_modules/openai/index.mjs
-var qs = __toESM(require_lib3(), 1);
-
-// node_modules/openai/pagination.mjs
-var Page = class extends AbstractPage2 {
-  constructor(client, response, body, options) {
-    super(client, response, body, options);
-    this.data = body.data || [];
-    this.object = body.object;
-  }
-  getPaginatedItems() {
-    return this.data ?? [];
-  }
-  nextPageParams() {
-    return null;
-  }
-  nextPageInfo() {
-    return null;
-  }
-};
-var CursorPage = class extends AbstractPage2 {
-  constructor(client, response, body, options) {
-    super(client, response, body, options);
-    this.data = body.data || [];
-  }
-  getPaginatedItems() {
-    return this.data ?? [];
-  }
-  nextPageParams() {
-    const info = this.nextPageInfo();
-    if (!info)
-      return null;
-    if ("params" in info)
-      return info.params;
-    const params = Object.fromEntries(info.url.searchParams);
-    if (!Object.keys(params).length)
-      return null;
-    return params;
-  }
-  nextPageInfo() {
-    const data = this.getPaginatedItems();
-    if (!data.length) {
-      return null;
-    }
-    const id = data[data.length - 1]?.id;
-    if (!id) {
-      return null;
-    }
-    return { params: { after: id } };
-  }
-};
-
-// node_modules/openai/resource.mjs
-var APIResource2 = class {
-  constructor(client) {
-    this._client = client;
-  }
-};
-
-// node_modules/openai/resources/chat/completions.mjs
-var Completions2 = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/chat/completions", { body, ...options, stream: body.stream ?? false });
-  }
-};
-(function(Completions5) {
-})(Completions2 || (Completions2 = {}));
-
-// node_modules/openai/resources/chat/chat.mjs
-var Chat = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.completions = new Completions2(this._client);
-  }
-};
-(function(Chat3) {
-  Chat3.Completions = Completions2;
-})(Chat || (Chat = {}));
-
-// node_modules/openai/resources/audio/speech.mjs
-var Speech = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/audio/speech", { body, ...options, __binaryResponse: true });
-  }
-};
-(function(Speech2) {
-})(Speech || (Speech = {}));
-
-// node_modules/openai/resources/audio/transcriptions.mjs
-var Transcriptions = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/audio/transcriptions", multipartFormRequestOptions({ body, ...options }));
-  }
-};
-(function(Transcriptions2) {
-})(Transcriptions || (Transcriptions = {}));
-
-// node_modules/openai/resources/audio/translations.mjs
-var Translations = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/audio/translations", multipartFormRequestOptions({ body, ...options }));
-  }
-};
-(function(Translations2) {
-})(Translations || (Translations = {}));
-
-// node_modules/openai/resources/audio/audio.mjs
-var Audio = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.transcriptions = new Transcriptions(this._client);
-    this.translations = new Translations(this._client);
-    this.speech = new Speech(this._client);
-  }
-};
-(function(Audio2) {
-  Audio2.Transcriptions = Transcriptions;
-  Audio2.Translations = Translations;
-  Audio2.Speech = Speech;
-})(Audio || (Audio = {}));
-
-// node_modules/openai/resources/batches.mjs
-var Batches = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/batches", { body, ...options });
-  }
-  retrieve(batchId, options) {
-    return this._client.get(`/batches/${batchId}`, options);
-  }
-  list(query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list({}, query);
-    }
-    return this._client.getAPIList("/batches", BatchesPage, { query, ...options });
-  }
-  cancel(batchId, options) {
-    return this._client.post(`/batches/${batchId}/cancel`, options);
-  }
-};
-var BatchesPage = class extends CursorPage {
-};
-(function(Batches2) {
-  Batches2.BatchesPage = BatchesPage;
-})(Batches || (Batches = {}));
-
-// node_modules/openai/resources/beta/assistants.mjs
-var Assistants = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/assistants", {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(assistantId, options) {
-    return this._client.get(`/assistants/${assistantId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  update(assistantId, body, options) {
-    return this._client.post(`/assistants/${assistantId}`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list({}, query);
-    }
-    return this._client.getAPIList("/assistants", AssistantsPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  del(assistantId, options) {
-    return this._client.delete(`/assistants/${assistantId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-};
-var AssistantsPage = class extends CursorPage {
-};
-(function(Assistants2) {
-  Assistants2.AssistantsPage = AssistantsPage;
-})(Assistants || (Assistants = {}));
-
-// node_modules/openai/lib/RunnableFunction.mjs
-function isRunnableFunctionWithParse(fn) {
-  return typeof fn.parse === "function";
-}
-
-// node_modules/openai/lib/chatCompletionUtils.mjs
-var isAssistantMessage = (message) => {
-  return message?.role === "assistant";
-};
-var isFunctionMessage = (message) => {
-  return message?.role === "function";
-};
-var isToolMessage = (message) => {
-  return message?.role === "tool";
-};
-
-// node_modules/openai/lib/EventStream.mjs
-var __classPrivateFieldSet9 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
-    throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
-};
-var __classPrivateFieldGet10 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
-};
-var _EventStream_instances;
-var _EventStream_connectedPromise;
-var _EventStream_resolveConnectedPromise;
-var _EventStream_rejectConnectedPromise;
-var _EventStream_endPromise;
-var _EventStream_resolveEndPromise;
-var _EventStream_rejectEndPromise;
-var _EventStream_listeners;
-var _EventStream_ended;
-var _EventStream_errored;
-var _EventStream_aborted;
-var _EventStream_catchingPromiseCreated;
-var _EventStream_handleError;
-var EventStream = class {
-  constructor() {
-    _EventStream_instances.add(this);
-    this.controller = new AbortController();
-    _EventStream_connectedPromise.set(this, void 0);
-    _EventStream_resolveConnectedPromise.set(this, () => {
-    });
-    _EventStream_rejectConnectedPromise.set(this, () => {
-    });
-    _EventStream_endPromise.set(this, void 0);
-    _EventStream_resolveEndPromise.set(this, () => {
-    });
-    _EventStream_rejectEndPromise.set(this, () => {
-    });
-    _EventStream_listeners.set(this, {});
-    _EventStream_ended.set(this, false);
-    _EventStream_errored.set(this, false);
-    _EventStream_aborted.set(this, false);
-    _EventStream_catchingPromiseCreated.set(this, false);
-    __classPrivateFieldSet9(this, _EventStream_connectedPromise, new Promise((resolve, reject) => {
-      __classPrivateFieldSet9(this, _EventStream_resolveConnectedPromise, resolve, "f");
-      __classPrivateFieldSet9(this, _EventStream_rejectConnectedPromise, reject, "f");
-    }), "f");
-    __classPrivateFieldSet9(this, _EventStream_endPromise, new Promise((resolve, reject) => {
-      __classPrivateFieldSet9(this, _EventStream_resolveEndPromise, resolve, "f");
-      __classPrivateFieldSet9(this, _EventStream_rejectEndPromise, reject, "f");
-    }), "f");
-    __classPrivateFieldGet10(this, _EventStream_connectedPromise, "f").catch(() => {
-    });
-    __classPrivateFieldGet10(this, _EventStream_endPromise, "f").catch(() => {
-    });
-  }
-  _run(executor) {
-    setTimeout(() => {
-      executor().then(() => {
-        this._emitFinal();
-        this._emit("end");
-      }, __classPrivateFieldGet10(this, _EventStream_instances, "m", _EventStream_handleError).bind(this));
-    }, 0);
-  }
-  _connected() {
-    if (this.ended)
-      return;
-    __classPrivateFieldGet10(this, _EventStream_resolveConnectedPromise, "f").call(this);
-    this._emit("connect");
-  }
-  get ended() {
-    return __classPrivateFieldGet10(this, _EventStream_ended, "f");
-  }
-  get errored() {
-    return __classPrivateFieldGet10(this, _EventStream_errored, "f");
-  }
-  get aborted() {
-    return __classPrivateFieldGet10(this, _EventStream_aborted, "f");
-  }
-  abort() {
-    this.controller.abort();
-  }
-  on(event, listener) {
-    const listeners = __classPrivateFieldGet10(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet10(this, _EventStream_listeners, "f")[event] = []);
-    listeners.push({ listener });
-    return this;
-  }
-  off(event, listener) {
-    const listeners = __classPrivateFieldGet10(this, _EventStream_listeners, "f")[event];
-    if (!listeners)
-      return this;
-    const index = listeners.findIndex((l3) => l3.listener === listener);
-    if (index >= 0)
-      listeners.splice(index, 1);
-    return this;
-  }
-  once(event, listener) {
-    const listeners = __classPrivateFieldGet10(this, _EventStream_listeners, "f")[event] || (__classPrivateFieldGet10(this, _EventStream_listeners, "f")[event] = []);
-    listeners.push({ listener, once: true });
-    return this;
-  }
-  emitted(event) {
-    return new Promise((resolve, reject) => {
-      __classPrivateFieldSet9(this, _EventStream_catchingPromiseCreated, true, "f");
-      if (event !== "error")
-        this.once("error", reject);
-      this.once(event, resolve);
-    });
-  }
-  async done() {
-    __classPrivateFieldSet9(this, _EventStream_catchingPromiseCreated, true, "f");
-    await __classPrivateFieldGet10(this, _EventStream_endPromise, "f");
-  }
-  _emit(event, ...args) {
-    if (__classPrivateFieldGet10(this, _EventStream_ended, "f")) {
-      return;
-    }
-    if (event === "end") {
-      __classPrivateFieldSet9(this, _EventStream_ended, true, "f");
-      __classPrivateFieldGet10(this, _EventStream_resolveEndPromise, "f").call(this);
-    }
-    const listeners = __classPrivateFieldGet10(this, _EventStream_listeners, "f")[event];
-    if (listeners) {
-      __classPrivateFieldGet10(this, _EventStream_listeners, "f")[event] = listeners.filter((l3) => !l3.once);
-      listeners.forEach(({ listener }) => listener(...args));
-    }
-    if (event === "abort") {
-      const error = args[0];
-      if (!__classPrivateFieldGet10(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error);
-      }
-      __classPrivateFieldGet10(this, _EventStream_rejectConnectedPromise, "f").call(this, error);
-      __classPrivateFieldGet10(this, _EventStream_rejectEndPromise, "f").call(this, error);
-      this._emit("end");
-      return;
-    }
-    if (event === "error") {
-      const error = args[0];
-      if (!__classPrivateFieldGet10(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error);
-      }
-      __classPrivateFieldGet10(this, _EventStream_rejectConnectedPromise, "f").call(this, error);
-      __classPrivateFieldGet10(this, _EventStream_rejectEndPromise, "f").call(this, error);
-      this._emit("end");
-    }
-  }
-  _emitFinal() {
-  }
-};
-_EventStream_connectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectConnectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_endPromise = /* @__PURE__ */ new WeakMap(), _EventStream_resolveEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_rejectEndPromise = /* @__PURE__ */ new WeakMap(), _EventStream_listeners = /* @__PURE__ */ new WeakMap(), _EventStream_ended = /* @__PURE__ */ new WeakMap(), _EventStream_errored = /* @__PURE__ */ new WeakMap(), _EventStream_aborted = /* @__PURE__ */ new WeakMap(), _EventStream_catchingPromiseCreated = /* @__PURE__ */ new WeakMap(), _EventStream_instances = /* @__PURE__ */ new WeakSet(), _EventStream_handleError = function _EventStream_handleError2(error) {
-  __classPrivateFieldSet9(this, _EventStream_errored, true, "f");
-  if (error instanceof Error && error.name === "AbortError") {
-    error = new APIUserAbortError3();
-  }
-  if (error instanceof APIUserAbortError3) {
-    __classPrivateFieldSet9(this, _EventStream_aborted, true, "f");
-    return this._emit("abort", error);
-  }
-  if (error instanceof OpenAIError) {
-    return this._emit("error", error);
-  }
-  if (error instanceof Error) {
-    const openAIError = new OpenAIError(error.message);
-    openAIError.cause = error;
-    return this._emit("error", openAIError);
-  }
-  return this._emit("error", new OpenAIError(String(error)));
-};
-
-// node_modules/openai/lib/parser.mjs
-function isAutoParsableResponseFormat(response_format) {
-  return response_format?.["$brand"] === "auto-parseable-response-format";
-}
-function isAutoParsableTool(tool) {
-  return tool?.["$brand"] === "auto-parseable-tool";
-}
-function maybeParseChatCompletion(completion, params) {
-  if (!params || !hasAutoParseableInput(params)) {
-    return {
-      ...completion,
-      choices: completion.choices.map((choice) => ({
-        ...choice,
-        message: { ...choice.message, parsed: null, tool_calls: choice.message.tool_calls ?? [] }
-      }))
-    };
-  }
-  return parseChatCompletion(completion, params);
-}
-function parseChatCompletion(completion, params) {
-  const choices = completion.choices.map((choice) => {
-    if (choice.finish_reason === "length") {
-      throw new LengthFinishReasonError();
-    }
-    if (choice.finish_reason === "content_filter") {
-      throw new ContentFilterFinishReasonError();
-    }
-    return {
-      ...choice,
-      message: {
-        ...choice.message,
-        tool_calls: choice.message.tool_calls?.map((toolCall) => parseToolCall(params, toolCall)) ?? [],
-        parsed: choice.message.content && !choice.message.refusal ? parseResponseFormat(params, choice.message.content) : null
-      }
-    };
-  });
-  return { ...completion, choices };
-}
-function parseResponseFormat(params, content) {
-  if (params.response_format?.type !== "json_schema") {
-    return null;
-  }
-  if (params.response_format?.type === "json_schema") {
-    if ("$parseRaw" in params.response_format) {
-      const response_format = params.response_format;
-      return response_format.$parseRaw(content);
-    }
-    return JSON.parse(content);
-  }
-  return null;
-}
-function parseToolCall(params, toolCall) {
-  const inputTool = params.tools?.find((inputTool2) => inputTool2.function?.name === toolCall.function.name);
-  return {
-    ...toolCall,
-    function: {
-      ...toolCall.function,
-      parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCall.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCall.function.arguments) : null
-    }
-  };
-}
-function shouldParseToolCall(params, toolCall) {
-  if (!params) {
-    return false;
-  }
-  const inputTool = params.tools?.find((inputTool2) => inputTool2.function?.name === toolCall.function.name);
-  return isAutoParsableTool(inputTool) || inputTool?.function.strict || false;
-}
-function hasAutoParseableInput(params) {
-  if (isAutoParsableResponseFormat(params.response_format)) {
-    return true;
-  }
-  return params.tools?.some((t2) => isAutoParsableTool(t2) || t2.type === "function" && t2.function.strict === true) ?? false;
-}
-function validateInputTools(tools) {
-  for (const tool of tools ?? []) {
-    if (tool.type !== "function") {
-      throw new OpenAIError(`Currently only \`function\` tool types support auto-parsing; Received \`${tool.type}\``);
-    }
-    if (tool.function.strict !== true) {
-      throw new OpenAIError(`The \`${tool.function.name}\` tool is not marked with \`strict: true\`. Only strict function tools can be auto-parsed`);
-    }
-  }
-}
-
-// node_modules/openai/lib/AbstractChatCompletionRunner.mjs
-var __classPrivateFieldGet11 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
-};
-var _AbstractChatCompletionRunner_instances;
-var _AbstractChatCompletionRunner_getFinalContent;
-var _AbstractChatCompletionRunner_getFinalMessage;
-var _AbstractChatCompletionRunner_getFinalFunctionCall;
-var _AbstractChatCompletionRunner_getFinalFunctionCallResult;
-var _AbstractChatCompletionRunner_calculateTotalUsage;
-var _AbstractChatCompletionRunner_validateParams;
-var _AbstractChatCompletionRunner_stringifyFunctionCallResult;
-var DEFAULT_MAX_CHAT_COMPLETIONS = 10;
-var AbstractChatCompletionRunner = class extends EventStream {
-  constructor() {
-    super(...arguments);
-    _AbstractChatCompletionRunner_instances.add(this);
-    this._chatCompletions = [];
-    this.messages = [];
-  }
-  _addChatCompletion(chatCompletion) {
-    this._chatCompletions.push(chatCompletion);
-    this._emit("chatCompletion", chatCompletion);
-    const message = chatCompletion.choices[0]?.message;
-    if (message)
-      this._addMessage(message);
-    return chatCompletion;
-  }
-  _addMessage(message, emit = true) {
-    if (!("content" in message))
-      message.content = null;
-    this.messages.push(message);
-    if (emit) {
-      this._emit("message", message);
-      if ((isFunctionMessage(message) || isToolMessage(message)) && message.content) {
-        this._emit("functionCallResult", message.content);
-      } else if (isAssistantMessage(message) && message.function_call) {
-        this._emit("functionCall", message.function_call);
-      } else if (isAssistantMessage(message) && message.tool_calls) {
-        for (const tool_call of message.tool_calls) {
-          if (tool_call.type === "function") {
-            this._emit("functionCall", tool_call.function);
-          }
-        }
-      }
-    }
-  }
-  async finalChatCompletion() {
-    await this.done();
-    const completion = this._chatCompletions[this._chatCompletions.length - 1];
-    if (!completion)
-      throw new OpenAIError("stream ended without producing a ChatCompletion");
-    return completion;
-  }
-  async finalContent() {
-    await this.done();
-    return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
-  }
-  async finalMessage() {
-    await this.done();
-    return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
-  }
-  async finalFunctionCall() {
-    await this.done();
-    return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionCall).call(this);
-  }
-  async finalFunctionCallResult() {
-    await this.done();
-    return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionCallResult).call(this);
-  }
-  async totalUsage() {
-    await this.done();
-    return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this);
-  }
-  allChatCompletions() {
-    return [...this._chatCompletions];
-  }
-  _emitFinal() {
-    const completion = this._chatCompletions[this._chatCompletions.length - 1];
-    if (completion)
-      this._emit("finalChatCompletion", completion);
-    const finalMessage = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this);
-    if (finalMessage)
-      this._emit("finalMessage", finalMessage);
-    const finalContent = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalContent).call(this);
-    if (finalContent)
-      this._emit("finalContent", finalContent);
-    const finalFunctionCall = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionCall).call(this);
-    if (finalFunctionCall)
-      this._emit("finalFunctionCall", finalFunctionCall);
-    const finalFunctionCallResult = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalFunctionCallResult).call(this);
-    if (finalFunctionCallResult != null)
-      this._emit("finalFunctionCallResult", finalFunctionCallResult);
-    if (this._chatCompletions.some((c3) => c3.usage)) {
-      this._emit("totalUsage", __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_calculateTotalUsage).call(this));
-    }
-  }
-  async _createChatCompletion(client, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_validateParams).call(this, params);
-    const chatCompletion = await client.chat.completions.create({ ...params, stream: false }, { ...options, signal: this.controller.signal });
-    this._connected();
-    return this._addChatCompletion(parseChatCompletion(chatCompletion, params));
-  }
-  async _runChatCompletion(client, params, options) {
-    for (const message of params.messages) {
-      this._addMessage(message, false);
-    }
-    return await this._createChatCompletion(client, params, options);
-  }
-  async _runFunctions(client, params, options) {
-    const role = "function";
-    const { function_call = "auto", stream: stream4, ...restParams } = params;
-    const singleFunctionToCall = typeof function_call !== "string" && function_call?.name;
-    const { maxChatCompletions = DEFAULT_MAX_CHAT_COMPLETIONS } = options || {};
-    const functionsByName = {};
-    for (const f4 of params.functions) {
-      functionsByName[f4.name || f4.function.name] = f4;
-    }
-    const functions = params.functions.map((f4) => ({
-      name: f4.name || f4.function.name,
-      parameters: f4.parameters,
-      description: f4.description
-    }));
-    for (const message of params.messages) {
-      this._addMessage(message, false);
-    }
-    for (let i3 = 0; i3 < maxChatCompletions; ++i3) {
-      const chatCompletion = await this._createChatCompletion(client, {
-        ...restParams,
-        function_call,
-        functions,
-        messages: [...this.messages]
-      }, options);
-      const message = chatCompletion.choices[0]?.message;
-      if (!message) {
-        throw new OpenAIError(`missing message in ChatCompletion response`);
-      }
-      if (!message.function_call)
-        return;
-      const { name, arguments: args } = message.function_call;
-      const fn = functionsByName[name];
-      if (!fn) {
-        const content2 = `Invalid function_call: ${JSON.stringify(name)}. Available options are: ${functions.map((f4) => JSON.stringify(f4.name)).join(", ")}. Please try again`;
-        this._addMessage({ role, name, content: content2 });
-        continue;
-      } else if (singleFunctionToCall && singleFunctionToCall !== name) {
-        const content2 = `Invalid function_call: ${JSON.stringify(name)}. ${JSON.stringify(singleFunctionToCall)} requested. Please try again`;
-        this._addMessage({ role, name, content: content2 });
-        continue;
-      }
-      let parsed;
-      try {
-        parsed = isRunnableFunctionWithParse(fn) ? await fn.parse(args) : args;
-      } catch (error) {
-        this._addMessage({
-          role,
-          name,
-          content: error instanceof Error ? error.message : String(error)
-        });
-        continue;
-      }
-      const rawContent2 = await fn.function(parsed, this);
-      const content = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_stringifyFunctionCallResult).call(this, rawContent2);
-      this._addMessage({ role, name, content });
-      if (singleFunctionToCall)
-        return;
-    }
-  }
-  async _runTools(client, params, options) {
-    const role = "tool";
-    const { tool_choice = "auto", stream: stream4, ...restParams } = params;
-    const singleFunctionToCall = typeof tool_choice !== "string" && tool_choice?.function?.name;
-    const { maxChatCompletions = DEFAULT_MAX_CHAT_COMPLETIONS } = options || {};
-    const inputTools = params.tools.map((tool) => {
-      if (isAutoParsableTool(tool)) {
-        if (!tool.$callback) {
-          throw new OpenAIError("Tool given to `.runTools()` that does not have an associated function");
-        }
-        return {
-          type: "function",
-          function: {
-            function: tool.$callback,
-            name: tool.function.name,
-            description: tool.function.description || "",
-            parameters: tool.function.parameters,
-            parse: tool.$parseRaw,
-            strict: true
-          }
-        };
-      }
-      return tool;
-    });
-    const functionsByName = {};
-    for (const f4 of inputTools) {
-      if (f4.type === "function") {
-        functionsByName[f4.function.name || f4.function.function.name] = f4.function;
-      }
-    }
-    const tools = "tools" in params ? inputTools.map((t2) => t2.type === "function" ? {
-      type: "function",
-      function: {
-        name: t2.function.name || t2.function.function.name,
-        parameters: t2.function.parameters,
-        description: t2.function.description,
-        strict: t2.function.strict
-      }
-    } : t2) : void 0;
-    for (const message of params.messages) {
-      this._addMessage(message, false);
-    }
-    for (let i3 = 0; i3 < maxChatCompletions; ++i3) {
-      const chatCompletion = await this._createChatCompletion(client, {
-        ...restParams,
-        tool_choice,
-        tools,
-        messages: [...this.messages]
-      }, options);
-      const message = chatCompletion.choices[0]?.message;
-      if (!message) {
-        throw new OpenAIError(`missing message in ChatCompletion response`);
-      }
-      if (!message.tool_calls?.length) {
-        return;
-      }
-      for (const tool_call of message.tool_calls) {
-        if (tool_call.type !== "function")
-          continue;
-        const tool_call_id = tool_call.id;
-        const { name, arguments: args } = tool_call.function;
-        const fn = functionsByName[name];
-        if (!fn) {
-          const content2 = `Invalid tool_call: ${JSON.stringify(name)}. Available options are: ${Object.keys(functionsByName).map((name2) => JSON.stringify(name2)).join(", ")}. Please try again`;
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        } else if (singleFunctionToCall && singleFunctionToCall !== name) {
-          const content2 = `Invalid tool_call: ${JSON.stringify(name)}. ${JSON.stringify(singleFunctionToCall)} requested. Please try again`;
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        }
-        let parsed;
-        try {
-          parsed = isRunnableFunctionWithParse(fn) ? await fn.parse(args) : args;
-        } catch (error) {
-          const content2 = error instanceof Error ? error.message : String(error);
-          this._addMessage({ role, tool_call_id, content: content2 });
-          continue;
-        }
-        const rawContent2 = await fn.function(parsed, this);
-        const content = __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_stringifyFunctionCallResult).call(this, rawContent2);
-        this._addMessage({ role, tool_call_id, content });
-        if (singleFunctionToCall) {
-          return;
-        }
-      }
-    }
-    return;
-  }
-};
-_AbstractChatCompletionRunner_instances = /* @__PURE__ */ new WeakSet(), _AbstractChatCompletionRunner_getFinalContent = function _AbstractChatCompletionRunner_getFinalContent2() {
-  return __classPrivateFieldGet11(this, _AbstractChatCompletionRunner_instances, "m", _AbstractChatCompletionRunner_getFinalMessage).call(this).content ?? null;
-}, _AbstractChatCompletionRunner_getFinalMessage = function _AbstractChatCompletionRunner_getFinalMessage2() {
-  let i3 = this.messages.length;
-  while (i3-- > 0) {
-    const message = this.messages[i3];
-    if (isAssistantMessage(message)) {
-      const { function_call, ...rest } = message;
-      const ret = {
-        ...rest,
-        content: message.content ?? null,
-        refusal: message.refusal ?? null
-      };
-      if (function_call) {
-        ret.function_call = function_call;
-      }
-      return ret;
-    }
-  }
-  throw new OpenAIError("stream ended without producing a ChatCompletionMessage with role=assistant");
-}, _AbstractChatCompletionRunner_getFinalFunctionCall = function _AbstractChatCompletionRunner_getFinalFunctionCall2() {
-  for (let i3 = this.messages.length - 1; i3 >= 0; i3--) {
-    const message = this.messages[i3];
-    if (isAssistantMessage(message) && message?.function_call) {
-      return message.function_call;
-    }
-    if (isAssistantMessage(message) && message?.tool_calls?.length) {
-      return message.tool_calls.at(-1)?.function;
-    }
-  }
-  return;
-}, _AbstractChatCompletionRunner_getFinalFunctionCallResult = function _AbstractChatCompletionRunner_getFinalFunctionCallResult2() {
-  for (let i3 = this.messages.length - 1; i3 >= 0; i3--) {
-    const message = this.messages[i3];
-    if (isFunctionMessage(message) && message.content != null) {
-      return message.content;
-    }
-    if (isToolMessage(message) && message.content != null && typeof message.content === "string" && this.messages.some((x5) => x5.role === "assistant" && x5.tool_calls?.some((y6) => y6.type === "function" && y6.id === message.tool_call_id))) {
-      return message.content;
-    }
-  }
-  return;
-}, _AbstractChatCompletionRunner_calculateTotalUsage = function _AbstractChatCompletionRunner_calculateTotalUsage2() {
-  const total = {
-    completion_tokens: 0,
-    prompt_tokens: 0,
-    total_tokens: 0
-  };
-  for (const { usage } of this._chatCompletions) {
-    if (usage) {
-      total.completion_tokens += usage.completion_tokens;
-      total.prompt_tokens += usage.prompt_tokens;
-      total.total_tokens += usage.total_tokens;
-    }
-  }
-  return total;
-}, _AbstractChatCompletionRunner_validateParams = function _AbstractChatCompletionRunner_validateParams2(params) {
-  if (params.n != null && params.n > 1) {
-    throw new OpenAIError("ChatCompletion convenience helpers only support n=1 at this time. To use n>1, please use chat.completions.create() directly.");
-  }
-}, _AbstractChatCompletionRunner_stringifyFunctionCallResult = function _AbstractChatCompletionRunner_stringifyFunctionCallResult2(rawContent2) {
-  return typeof rawContent2 === "string" ? rawContent2 : rawContent2 === void 0 ? "undefined" : JSON.stringify(rawContent2);
-};
-
-// node_modules/openai/lib/ChatCompletionRunner.mjs
-var ChatCompletionRunner = class extends AbstractChatCompletionRunner {
-  static runFunctions(client, params, options) {
-    const runner = new ChatCompletionRunner();
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runFunctions" }
-    };
-    runner._run(() => runner._runFunctions(client, params, opts));
-    return runner;
-  }
-  static runTools(client, params, options) {
-    const runner = new ChatCompletionRunner();
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
-    };
-    runner._run(() => runner._runTools(client, params, opts));
-    return runner;
-  }
-  _addMessage(message) {
-    super._addMessage(message);
-    if (isAssistantMessage(message) && message.content) {
-      this._emit("content", message.content);
-    }
-  }
-};
-
-// node_modules/openai/_vendor/partial-json-parser/parser.mjs
-var tokenize = (input) => {
-  let current = 0;
-  let tokens = [];
-  while (current < input.length) {
-    let char = input[current];
-    if (char === "\\") {
-      current++;
-      continue;
-    }
-    if (char === "{") {
-      tokens.push({
-        type: "brace",
-        value: "{"
-      });
-      current++;
-      continue;
-    }
-    if (char === "}") {
-      tokens.push({
-        type: "brace",
-        value: "}"
-      });
-      current++;
-      continue;
-    }
-    if (char === "[") {
-      tokens.push({
-        type: "paren",
-        value: "["
-      });
-      current++;
-      continue;
-    }
-    if (char === "]") {
-      tokens.push({
-        type: "paren",
-        value: "]"
-      });
-      current++;
-      continue;
-    }
-    if (char === ":") {
-      tokens.push({
-        type: "separator",
-        value: ":"
-      });
-      current++;
-      continue;
-    }
-    if (char === ",") {
-      tokens.push({
-        type: "delimiter",
-        value: ","
-      });
-      current++;
-      continue;
-    }
-    if (char === '"') {
-      let value = "";
-      let danglingQuote = false;
-      char = input[++current];
-      while (char !== '"') {
-        if (current === input.length) {
-          danglingQuote = true;
-          break;
-        }
-        if (char === "\\") {
-          current++;
-          if (current === input.length) {
-            danglingQuote = true;
-            break;
-          }
-          value += char + input[current];
-          char = input[++current];
-        } else {
-          value += char;
-          char = input[++current];
-        }
-      }
-      char = input[++current];
-      if (!danglingQuote) {
-        tokens.push({
-          type: "string",
-          value
-        });
-      }
-      continue;
-    }
-    let WHITESPACE = /\s/;
-    if (char && WHITESPACE.test(char)) {
-      current++;
-      continue;
-    }
-    let NUMBERS = /[0-9]/;
-    if (char && NUMBERS.test(char) || char === "-" || char === ".") {
-      let value = "";
-      if (char === "-") {
-        value += char;
-        char = input[++current];
-      }
-      while (char && NUMBERS.test(char) || char === ".") {
-        value += char;
-        char = input[++current];
-      }
-      tokens.push({
-        type: "number",
-        value
-      });
-      continue;
-    }
-    let LETTERS = /[a-z]/i;
-    if (char && LETTERS.test(char)) {
-      let value = "";
-      while (char && LETTERS.test(char)) {
-        if (current === input.length) {
-          break;
-        }
-        value += char;
-        char = input[++current];
-      }
-      if (value == "true" || value == "false" || value === "null") {
-        tokens.push({
-          type: "name",
-          value
-        });
-      } else {
-        current++;
-        continue;
-      }
-      continue;
-    }
-    current++;
-  }
-  return tokens;
-};
-var strip = (tokens) => {
-  if (tokens.length === 0) {
-    return tokens;
-  }
-  let lastToken = tokens[tokens.length - 1];
-  switch (lastToken.type) {
-    case "separator":
-      tokens = tokens.slice(0, tokens.length - 1);
-      return strip(tokens);
-      break;
-    case "number":
-      let lastCharacterOfLastToken = lastToken.value[lastToken.value.length - 1];
-      if (lastCharacterOfLastToken === "." || lastCharacterOfLastToken === "-") {
-        tokens = tokens.slice(0, tokens.length - 1);
-        return strip(tokens);
-      }
-    case "string":
-      let tokenBeforeTheLastToken = tokens[tokens.length - 2];
-      if (tokenBeforeTheLastToken?.type === "delimiter") {
-        tokens = tokens.slice(0, tokens.length - 1);
-        return strip(tokens);
-      } else if (tokenBeforeTheLastToken?.type === "brace" && tokenBeforeTheLastToken.value === "{") {
-        tokens = tokens.slice(0, tokens.length - 1);
-        return strip(tokens);
-      }
-      break;
-    case "delimiter":
-      tokens = tokens.slice(0, tokens.length - 1);
-      return strip(tokens);
-      break;
-  }
-  return tokens;
-};
-var unstrip = (tokens) => {
-  let tail = [];
-  tokens.map((token) => {
-    if (token.type === "brace") {
-      if (token.value === "{") {
-        tail.push("}");
-      } else {
-        tail.splice(tail.lastIndexOf("}"), 1);
-      }
-    }
-    if (token.type === "paren") {
-      if (token.value === "[") {
-        tail.push("]");
-      } else {
-        tail.splice(tail.lastIndexOf("]"), 1);
-      }
-    }
-  });
-  if (tail.length > 0) {
-    tail.reverse().map((item) => {
-      if (item === "}") {
-        tokens.push({
-          type: "brace",
-          value: "}"
-        });
-      } else if (item === "]") {
-        tokens.push({
-          type: "paren",
-          value: "]"
-        });
-      }
-    });
-  }
-  return tokens;
-};
-var generate = (tokens) => {
-  let output = "";
-  tokens.map((token) => {
-    switch (token.type) {
-      case "string":
-        output += '"' + token.value + '"';
-        break;
-      default:
-        output += token.value;
-        break;
-    }
-  });
-  return output;
-};
-var partialParse = (input) => JSON.parse(generate(unstrip(strip(tokenize(input)))));
-
-// node_modules/openai/lib/ChatCompletionStream.mjs
-var __classPrivateFieldSet10 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
-    throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
-};
-var __classPrivateFieldGet12 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
-};
-var _ChatCompletionStream_instances;
-var _ChatCompletionStream_params;
-var _ChatCompletionStream_choiceEventStates;
-var _ChatCompletionStream_currentChatCompletionSnapshot;
-var _ChatCompletionStream_beginRequest;
-var _ChatCompletionStream_getChoiceEventState;
-var _ChatCompletionStream_addChunk;
-var _ChatCompletionStream_emitToolCallDoneEvent;
-var _ChatCompletionStream_emitContentDoneEvents;
-var _ChatCompletionStream_endRequest;
-var _ChatCompletionStream_getAutoParseableResponseFormat;
-var _ChatCompletionStream_accumulateChatCompletion;
-var ChatCompletionStream = class extends AbstractChatCompletionRunner {
-  constructor(params) {
-    super();
-    _ChatCompletionStream_instances.add(this);
-    _ChatCompletionStream_params.set(this, void 0);
-    _ChatCompletionStream_choiceEventStates.set(this, void 0);
-    _ChatCompletionStream_currentChatCompletionSnapshot.set(this, void 0);
-    __classPrivateFieldSet10(this, _ChatCompletionStream_params, params, "f");
-    __classPrivateFieldSet10(this, _ChatCompletionStream_choiceEventStates, [], "f");
-  }
-  get currentChatCompletionSnapshot() {
-    return __classPrivateFieldGet12(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-  }
-  static fromReadableStream(stream4) {
-    const runner = new ChatCompletionStream(null);
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  static createChatCompletion(client, params, options) {
-    const runner = new ChatCompletionStream(params);
-    runner._run(() => runner._runChatCompletion(client, { ...params, stream: true }, { ...options, headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" } }));
-    return runner;
-  }
-  async _createChatCompletion(client, params, options) {
-    super._createChatCompletion;
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
-    const stream4 = await client.chat.completions.create({ ...params, stream: true }, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const chunk of stream4) {
-      __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addChatCompletion(__classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-  }
-  async _fromReadableStream(readableStream, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_beginRequest).call(this);
-    this._connected();
-    const stream4 = Stream2.fromReadableStream(readableStream, this.controller);
-    let chatId;
-    for await (const chunk of stream4) {
-      if (chatId && chatId !== chunk.id) {
-        this._addChatCompletion(__classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-      }
-      __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_addChunk).call(this, chunk);
-      chatId = chunk.id;
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addChatCompletion(__classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_endRequest).call(this));
-  }
-  [(_ChatCompletionStream_params = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_choiceEventStates = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_currentChatCompletionSnapshot = /* @__PURE__ */ new WeakMap(), _ChatCompletionStream_instances = /* @__PURE__ */ new WeakSet(), _ChatCompletionStream_beginRequest = function _ChatCompletionStream_beginRequest2() {
-    if (this.ended)
-      return;
-    __classPrivateFieldSet10(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
-  }, _ChatCompletionStream_getChoiceEventState = function _ChatCompletionStream_getChoiceEventState2(choice) {
-    let state2 = __classPrivateFieldGet12(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index];
-    if (state2) {
-      return state2;
-    }
-    state2 = {
-      content_done: false,
-      refusal_done: false,
-      logprobs_content_done: false,
-      logprobs_refusal_done: false,
-      done_tool_calls: /* @__PURE__ */ new Set(),
-      current_tool_call_index: null
-    };
-    __classPrivateFieldGet12(this, _ChatCompletionStream_choiceEventStates, "f")[choice.index] = state2;
-    return state2;
-  }, _ChatCompletionStream_addChunk = function _ChatCompletionStream_addChunk2(chunk) {
-    if (this.ended)
-      return;
-    const completion = __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_accumulateChatCompletion).call(this, chunk);
-    this._emit("chunk", chunk, completion);
-    for (const choice of chunk.choices) {
-      const choiceSnapshot = completion.choices[choice.index];
-      if (choice.delta.content != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.content) {
-        this._emit("content", choice.delta.content, choiceSnapshot.message.content);
-        this._emit("content.delta", {
-          delta: choice.delta.content,
-          snapshot: choiceSnapshot.message.content,
-          parsed: choiceSnapshot.message.parsed
-        });
-      }
-      if (choice.delta.refusal != null && choiceSnapshot.message?.role === "assistant" && choiceSnapshot.message?.refusal) {
-        this._emit("refusal.delta", {
-          delta: choice.delta.refusal,
-          snapshot: choiceSnapshot.message.refusal
-        });
-      }
-      if (choice.logprobs?.content != null && choiceSnapshot.message?.role === "assistant") {
-        this._emit("logprobs.content.delta", {
-          content: choice.logprobs?.content,
-          snapshot: choiceSnapshot.logprobs?.content ?? []
-        });
-      }
-      if (choice.logprobs?.refusal != null && choiceSnapshot.message?.role === "assistant") {
-        this._emit("logprobs.refusal.delta", {
-          refusal: choice.logprobs?.refusal,
-          snapshot: choiceSnapshot.logprobs?.refusal ?? []
-        });
-      }
-      const state2 = __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-      if (choiceSnapshot.finish_reason) {
-        __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
-        if (state2.current_tool_call_index != null) {
-          __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state2.current_tool_call_index);
-        }
-      }
-      for (const toolCall of choice.delta.tool_calls ?? []) {
-        if (state2.current_tool_call_index !== toolCall.index) {
-          __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitContentDoneEvents).call(this, choiceSnapshot);
-          if (state2.current_tool_call_index != null) {
-            __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_emitToolCallDoneEvent).call(this, choiceSnapshot, state2.current_tool_call_index);
-          }
-        }
-        state2.current_tool_call_index = toolCall.index;
-      }
-      for (const toolCallDelta of choice.delta.tool_calls ?? []) {
-        const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallDelta.index];
-        if (!toolCallSnapshot?.type) {
-          continue;
-        }
-        if (toolCallSnapshot?.type === "function") {
-          this._emit("tool_calls.function.arguments.delta", {
-            name: toolCallSnapshot.function?.name,
-            index: toolCallDelta.index,
-            arguments: toolCallSnapshot.function.arguments,
-            parsed_arguments: toolCallSnapshot.function.parsed_arguments,
-            arguments_delta: toolCallDelta.function?.arguments ?? ""
-          });
-        } else {
-          assertNever(toolCallSnapshot?.type);
-        }
-      }
-    }
-  }, _ChatCompletionStream_emitToolCallDoneEvent = function _ChatCompletionStream_emitToolCallDoneEvent2(choiceSnapshot, toolCallIndex) {
-    const state2 = __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-    if (state2.done_tool_calls.has(toolCallIndex)) {
-      return;
-    }
-    const toolCallSnapshot = choiceSnapshot.message.tool_calls?.[toolCallIndex];
-    if (!toolCallSnapshot) {
-      throw new Error("no tool call snapshot");
-    }
-    if (!toolCallSnapshot.type) {
-      throw new Error("tool call snapshot missing `type`");
-    }
-    if (toolCallSnapshot.type === "function") {
-      const inputTool = __classPrivateFieldGet12(this, _ChatCompletionStream_params, "f")?.tools?.find((tool) => tool.type === "function" && tool.function.name === toolCallSnapshot.function.name);
-      this._emit("tool_calls.function.arguments.done", {
-        name: toolCallSnapshot.function.name,
-        index: toolCallIndex,
-        arguments: toolCallSnapshot.function.arguments,
-        parsed_arguments: isAutoParsableTool(inputTool) ? inputTool.$parseRaw(toolCallSnapshot.function.arguments) : inputTool?.function.strict ? JSON.parse(toolCallSnapshot.function.arguments) : null
-      });
-    } else {
-      assertNever(toolCallSnapshot.type);
-    }
-  }, _ChatCompletionStream_emitContentDoneEvents = function _ChatCompletionStream_emitContentDoneEvents2(choiceSnapshot) {
-    const state2 = __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getChoiceEventState).call(this, choiceSnapshot);
-    if (choiceSnapshot.message.content && !state2.content_done) {
-      state2.content_done = true;
-      const responseFormat = __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this);
-      this._emit("content.done", {
-        content: choiceSnapshot.message.content,
-        parsed: responseFormat ? responseFormat.$parseRaw(choiceSnapshot.message.content) : null
-      });
-    }
-    if (choiceSnapshot.message.refusal && !state2.refusal_done) {
-      state2.refusal_done = true;
-      this._emit("refusal.done", { refusal: choiceSnapshot.message.refusal });
-    }
-    if (choiceSnapshot.logprobs?.content && !state2.logprobs_content_done) {
-      state2.logprobs_content_done = true;
-      this._emit("logprobs.content.done", { content: choiceSnapshot.logprobs.content });
-    }
-    if (choiceSnapshot.logprobs?.refusal && !state2.logprobs_refusal_done) {
-      state2.logprobs_refusal_done = true;
-      this._emit("logprobs.refusal.done", { refusal: choiceSnapshot.logprobs.refusal });
-    }
-  }, _ChatCompletionStream_endRequest = function _ChatCompletionStream_endRequest2() {
-    if (this.ended) {
-      throw new OpenAIError(`stream has ended, this shouldn't happen`);
-    }
-    const snapshot = __classPrivateFieldGet12(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-    if (!snapshot) {
-      throw new OpenAIError(`request ended without sending any chunks`);
-    }
-    __classPrivateFieldSet10(this, _ChatCompletionStream_currentChatCompletionSnapshot, void 0, "f");
-    __classPrivateFieldSet10(this, _ChatCompletionStream_choiceEventStates, [], "f");
-    return finalizeChatCompletion(snapshot, __classPrivateFieldGet12(this, _ChatCompletionStream_params, "f"));
-  }, _ChatCompletionStream_getAutoParseableResponseFormat = function _ChatCompletionStream_getAutoParseableResponseFormat2() {
-    const responseFormat = __classPrivateFieldGet12(this, _ChatCompletionStream_params, "f")?.response_format;
-    if (isAutoParsableResponseFormat(responseFormat)) {
-      return responseFormat;
-    }
-    return null;
-  }, _ChatCompletionStream_accumulateChatCompletion = function _ChatCompletionStream_accumulateChatCompletion2(chunk) {
-    var _a5, _b2, _c2, _d2;
-    let snapshot = __classPrivateFieldGet12(this, _ChatCompletionStream_currentChatCompletionSnapshot, "f");
-    const { choices, ...rest } = chunk;
-    if (!snapshot) {
-      snapshot = __classPrivateFieldSet10(this, _ChatCompletionStream_currentChatCompletionSnapshot, {
-        ...rest,
-        choices: []
-      }, "f");
-    } else {
-      Object.assign(snapshot, rest);
-    }
-    for (const { delta, finish_reason, index, logprobs = null, ...other } of chunk.choices) {
-      let choice = snapshot.choices[index];
-      if (!choice) {
-        choice = snapshot.choices[index] = { finish_reason, index, message: {}, logprobs, ...other };
-      }
-      if (logprobs) {
-        if (!choice.logprobs) {
-          choice.logprobs = Object.assign({}, logprobs);
-        } else {
-          const { content: content2, refusal: refusal2, ...rest3 } = logprobs;
-          assertIsEmpty(rest3);
-          Object.assign(choice.logprobs, rest3);
-          if (content2) {
-            (_a5 = choice.logprobs).content ?? (_a5.content = []);
-            choice.logprobs.content.push(...content2);
-          }
-          if (refusal2) {
-            (_b2 = choice.logprobs).refusal ?? (_b2.refusal = []);
-            choice.logprobs.refusal.push(...refusal2);
-          }
-        }
-      }
-      if (finish_reason) {
-        choice.finish_reason = finish_reason;
-        if (__classPrivateFieldGet12(this, _ChatCompletionStream_params, "f") && hasAutoParseableInput(__classPrivateFieldGet12(this, _ChatCompletionStream_params, "f"))) {
-          if (finish_reason === "length") {
-            throw new LengthFinishReasonError();
-          }
-          if (finish_reason === "content_filter") {
-            throw new ContentFilterFinishReasonError();
-          }
-        }
-      }
-      Object.assign(choice, other);
-      if (!delta)
-        continue;
-      const { content, refusal, function_call, role, tool_calls, ...rest2 } = delta;
-      assertIsEmpty(rest2);
-      Object.assign(choice.message, rest2);
-      if (refusal) {
-        choice.message.refusal = (choice.message.refusal || "") + refusal;
-      }
-      if (role)
-        choice.message.role = role;
-      if (function_call) {
-        if (!choice.message.function_call) {
-          choice.message.function_call = function_call;
-        } else {
-          if (function_call.name)
-            choice.message.function_call.name = function_call.name;
-          if (function_call.arguments) {
-            (_c2 = choice.message.function_call).arguments ?? (_c2.arguments = "");
-            choice.message.function_call.arguments += function_call.arguments;
-          }
-        }
-      }
-      if (content) {
-        choice.message.content = (choice.message.content || "") + content;
-        if (!choice.message.refusal && __classPrivateFieldGet12(this, _ChatCompletionStream_instances, "m", _ChatCompletionStream_getAutoParseableResponseFormat).call(this)) {
-          choice.message.parsed = partialParse(choice.message.content);
-        }
-      }
-      if (tool_calls) {
-        if (!choice.message.tool_calls)
-          choice.message.tool_calls = [];
-        for (const { index: index2, id, type: type2, function: fn, ...rest3 } of tool_calls) {
-          const tool_call = (_d2 = choice.message.tool_calls)[index2] ?? (_d2[index2] = {});
-          Object.assign(tool_call, rest3);
-          if (id)
-            tool_call.id = id;
-          if (type2)
-            tool_call.type = type2;
-          if (fn)
-            tool_call.function ?? (tool_call.function = { name: fn.name ?? "", arguments: "" });
-          if (fn?.name)
-            tool_call.function.name = fn.name;
-          if (fn?.arguments) {
-            tool_call.function.arguments += fn.arguments;
-            if (shouldParseToolCall(__classPrivateFieldGet12(this, _ChatCompletionStream_params, "f"), tool_call)) {
-              tool_call.function.parsed_arguments = partialParse(tool_call.function.arguments);
-            }
-          }
-        }
-      }
-    }
-    return snapshot;
-  }, Symbol.asyncIterator)]() {
-    const pushQueue = [];
-    const readQueue = [];
-    let done = false;
-    this.on("chunk", (chunk) => {
-      const reader = readQueue.shift();
-      if (reader) {
-        reader.resolve(chunk);
-      } else {
-        pushQueue.push(chunk);
-      }
-    });
-    this.on("end", () => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.resolve(void 0);
-      }
-      readQueue.length = 0;
-    });
-    this.on("abort", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    this.on("error", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    return {
-      next: async () => {
-        if (!pushQueue.length) {
-          if (done) {
-            return { value: void 0, done: true };
-          }
-          return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
-        }
-        const chunk = pushQueue.shift();
-        return { value: chunk, done: false };
-      },
-      return: async () => {
-        this.abort();
-        return { value: void 0, done: true };
-      }
-    };
-  }
-  toReadableStream() {
-    const stream4 = new Stream2(this[Symbol.asyncIterator].bind(this), this.controller);
-    return stream4.toReadableStream();
-  }
-};
-function finalizeChatCompletion(snapshot, params) {
-  const { id, choices, created, model, system_fingerprint, ...rest } = snapshot;
-  const completion = {
-    ...rest,
-    id,
-    choices: choices.map(({ message, finish_reason, index, logprobs, ...choiceRest }) => {
-      if (!finish_reason) {
-        throw new OpenAIError(`missing finish_reason for choice ${index}`);
-      }
-      const { content = null, function_call, tool_calls, ...messageRest } = message;
-      const role = message.role;
-      if (!role) {
-        throw new OpenAIError(`missing role for choice ${index}`);
-      }
-      if (function_call) {
-        const { arguments: args, name } = function_call;
-        if (args == null) {
-          throw new OpenAIError(`missing function_call.arguments for choice ${index}`);
-        }
-        if (!name) {
-          throw new OpenAIError(`missing function_call.name for choice ${index}`);
-        }
-        return {
-          ...choiceRest,
-          message: {
-            content,
-            function_call: { arguments: args, name },
-            role,
-            refusal: message.refusal ?? null
-          },
-          finish_reason,
-          index,
-          logprobs
-        };
-      }
-      if (tool_calls) {
-        return {
-          ...choiceRest,
-          index,
-          finish_reason,
-          logprobs,
-          message: {
-            ...messageRest,
-            role,
-            content,
-            refusal: message.refusal ?? null,
-            tool_calls: tool_calls.map((tool_call, i3) => {
-              const { function: fn, type: type2, id: id2, ...toolRest } = tool_call;
-              const { arguments: args, name, ...fnRest } = fn || {};
-              if (id2 == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i3}].id
-${str(snapshot)}`);
-              }
-              if (type2 == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i3}].type
-${str(snapshot)}`);
-              }
-              if (name == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i3}].function.name
-${str(snapshot)}`);
-              }
-              if (args == null) {
-                throw new OpenAIError(`missing choices[${index}].tool_calls[${i3}].function.arguments
-${str(snapshot)}`);
-              }
-              return { ...toolRest, id: id2, type: type2, function: { ...fnRest, name, arguments: args } };
-            })
-          }
-        };
-      }
-      return {
-        ...choiceRest,
-        message: { ...messageRest, content, role, refusal: message.refusal ?? null },
-        finish_reason,
-        index,
-        logprobs
-      };
-    }),
-    created,
-    model,
-    object: "chat.completion",
-    ...system_fingerprint ? { system_fingerprint } : {}
-  };
-  return maybeParseChatCompletion(completion, params);
-}
-function str(x5) {
-  return JSON.stringify(x5);
-}
-function assertIsEmpty(obj) {
-  return;
-}
-function assertNever(_x) {
-}
-
-// node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
-var ChatCompletionStreamingRunner = class extends ChatCompletionStream {
-  static fromReadableStream(stream4) {
-    const runner = new ChatCompletionStreamingRunner(null);
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  static runFunctions(client, params, options) {
-    const runner = new ChatCompletionStreamingRunner(null);
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runFunctions" }
-    };
-    runner._run(() => runner._runFunctions(client, params, opts));
-    return runner;
-  }
-  static runTools(client, params, options) {
-    const runner = new ChatCompletionStreamingRunner(
-      params
-    );
-    const opts = {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "runTools" }
-    };
-    runner._run(() => runner._runTools(client, params, opts));
-    return runner;
-  }
-};
-
-// node_modules/openai/resources/beta/chat/completions.mjs
-var Completions3 = class extends APIResource2 {
-  async parse(body, options) {
-    validateInputTools(body.tools);
-    const completion = await this._client.chat.completions.create(body, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        "X-Stainless-Helper-Method": "beta.chat.completions.parse"
-      }
-    });
-    return parseChatCompletion(completion, body);
-  }
-  runFunctions(body, options) {
-    if (body.stream) {
-      return ChatCompletionStreamingRunner.runFunctions(this._client, body, options);
-    }
-    return ChatCompletionRunner.runFunctions(this._client, body, options);
-  }
-  runTools(body, options) {
-    if (body.stream) {
-      return ChatCompletionStreamingRunner.runTools(this._client, body, options);
-    }
-    return ChatCompletionRunner.runTools(this._client, body, options);
-  }
-  stream(body, options) {
-    return ChatCompletionStream.createChatCompletion(this._client, body, options);
-  }
-};
-
-// node_modules/openai/resources/beta/chat/chat.mjs
-var Chat2 = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.completions = new Completions3(this._client);
-  }
-};
-(function(Chat3) {
-  Chat3.Completions = Completions3;
-})(Chat2 || (Chat2 = {}));
-
-// node_modules/openai/lib/AssistantStream.mjs
-var __classPrivateFieldGet13 = function(receiver, state2, kind3, f4) {
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind3 === "m" ? f4 : kind3 === "a" ? f4.call(receiver) : f4 ? f4.value : state2.get(receiver);
-};
-var __classPrivateFieldSet11 = function(receiver, state2, value, kind3, f4) {
-  if (kind3 === "m")
-    throw new TypeError("Private method is not writable");
-  if (kind3 === "a" && !f4)
-    throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state2 === "function" ? receiver !== state2 || !f4 : !state2.has(receiver))
-    throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind3 === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state2.set(receiver, value), value;
-};
-var _AssistantStream_instances;
-var _AssistantStream_events;
-var _AssistantStream_runStepSnapshots;
-var _AssistantStream_messageSnapshots;
-var _AssistantStream_messageSnapshot;
-var _AssistantStream_finalRun;
-var _AssistantStream_currentContentIndex;
-var _AssistantStream_currentContent;
-var _AssistantStream_currentToolCallIndex;
-var _AssistantStream_currentToolCall;
-var _AssistantStream_currentEvent;
-var _AssistantStream_currentRunSnapshot;
-var _AssistantStream_currentRunStepSnapshot;
-var _AssistantStream_addEvent;
-var _AssistantStream_endRequest;
-var _AssistantStream_handleMessage;
-var _AssistantStream_handleRunStep;
-var _AssistantStream_handleEvent;
-var _AssistantStream_accumulateRunStep;
-var _AssistantStream_accumulateMessage;
-var _AssistantStream_accumulateContent;
-var _AssistantStream_handleRun;
-var AssistantStream = class extends EventStream {
-  constructor() {
-    super(...arguments);
-    _AssistantStream_instances.add(this);
-    _AssistantStream_events.set(this, []);
-    _AssistantStream_runStepSnapshots.set(this, {});
-    _AssistantStream_messageSnapshots.set(this, {});
-    _AssistantStream_messageSnapshot.set(this, void 0);
-    _AssistantStream_finalRun.set(this, void 0);
-    _AssistantStream_currentContentIndex.set(this, void 0);
-    _AssistantStream_currentContent.set(this, void 0);
-    _AssistantStream_currentToolCallIndex.set(this, void 0);
-    _AssistantStream_currentToolCall.set(this, void 0);
-    _AssistantStream_currentEvent.set(this, void 0);
-    _AssistantStream_currentRunSnapshot.set(this, void 0);
-    _AssistantStream_currentRunStepSnapshot.set(this, void 0);
-  }
-  [(_AssistantStream_events = /* @__PURE__ */ new WeakMap(), _AssistantStream_runStepSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshots = /* @__PURE__ */ new WeakMap(), _AssistantStream_messageSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_finalRun = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContentIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentContent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCallIndex = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentToolCall = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentEvent = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_currentRunStepSnapshot = /* @__PURE__ */ new WeakMap(), _AssistantStream_instances = /* @__PURE__ */ new WeakSet(), Symbol.asyncIterator)]() {
-    const pushQueue = [];
-    const readQueue = [];
-    let done = false;
-    this.on("event", (event) => {
-      const reader = readQueue.shift();
-      if (reader) {
-        reader.resolve(event);
-      } else {
-        pushQueue.push(event);
-      }
-    });
-    this.on("end", () => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.resolve(void 0);
-      }
-      readQueue.length = 0;
-    });
-    this.on("abort", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    this.on("error", (err) => {
-      done = true;
-      for (const reader of readQueue) {
-        reader.reject(err);
-      }
-      readQueue.length = 0;
-    });
-    return {
-      next: async () => {
-        if (!pushQueue.length) {
-          if (done) {
-            return { value: void 0, done: true };
-          }
-          return new Promise((resolve, reject) => readQueue.push({ resolve, reject })).then((chunk2) => chunk2 ? { value: chunk2, done: false } : { value: void 0, done: true });
-        }
-        const chunk = pushQueue.shift();
-        return { value: chunk, done: false };
-      },
-      return: async () => {
-        this.abort();
-        return { value: void 0, done: true };
-      }
-    };
-  }
-  static fromReadableStream(stream4) {
-    const runner = new AssistantStream();
-    runner._run(() => runner._fromReadableStream(stream4));
-    return runner;
-  }
-  async _fromReadableStream(readableStream, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    this._connected();
-    const stream4 = Stream2.fromReadableStream(readableStream, this.controller);
-    for await (const event of stream4) {
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addRun(__classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  toReadableStream() {
-    const stream4 = new Stream2(this[Symbol.asyncIterator].bind(this), this.controller);
-    return stream4.toReadableStream();
-  }
-  static createToolAssistantStream(threadId, runId, runs, params, options) {
-    const runner = new AssistantStream();
-    runner._run(() => runner._runToolAssistantStream(threadId, runId, runs, params, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  async _createToolAssistantStream(run, threadId, runId, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await run.submitToolOutputs(threadId, runId, body, {
-      ...options,
-      signal: this.controller.signal
-    });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addRun(__classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  static createThreadAssistantStream(params, thread, options) {
-    const runner = new AssistantStream();
-    runner._run(() => runner._threadAssistantStream(params, thread, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  static createAssistantStream(threadId, runs, params, options) {
-    const runner = new AssistantStream();
-    runner._run(() => runner._runAssistantStream(threadId, runs, params, {
-      ...options,
-      headers: { ...options?.headers, "X-Stainless-Helper-Method": "stream" }
-    }));
-    return runner;
-  }
-  currentEvent() {
-    return __classPrivateFieldGet13(this, _AssistantStream_currentEvent, "f");
-  }
-  currentRun() {
-    return __classPrivateFieldGet13(this, _AssistantStream_currentRunSnapshot, "f");
-  }
-  currentMessageSnapshot() {
-    return __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f");
-  }
-  currentRunStepSnapshot() {
-    return __classPrivateFieldGet13(this, _AssistantStream_currentRunStepSnapshot, "f");
-  }
-  async finalRunSteps() {
-    await this.done();
-    return Object.values(__classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f"));
-  }
-  async finalMessages() {
-    await this.done();
-    return Object.values(__classPrivateFieldGet13(this, _AssistantStream_messageSnapshots, "f"));
-  }
-  async finalRun() {
-    await this.done();
-    if (!__classPrivateFieldGet13(this, _AssistantStream_finalRun, "f"))
-      throw Error("Final run was not received.");
-    return __classPrivateFieldGet13(this, _AssistantStream_finalRun, "f");
-  }
-  async _createThreadAssistantStream(thread, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await thread.createAndRun(body, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addRun(__classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  async _createAssistantStream(run, threadId, params, options) {
-    const signal = options?.signal;
-    if (signal) {
-      if (signal.aborted)
-        this.controller.abort();
-      signal.addEventListener("abort", () => this.controller.abort());
-    }
-    const body = { ...params, stream: true };
-    const stream4 = await run.create(threadId, body, { ...options, signal: this.controller.signal });
-    this._connected();
-    for await (const event of stream4) {
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
-    }
-    if (stream4.controller.signal?.aborted) {
-      throw new APIUserAbortError3();
-    }
-    return this._addRun(__classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
-  }
-  static accumulateDelta(acc, delta) {
-    for (const [key, deltaValue] of Object.entries(delta)) {
-      if (!acc.hasOwnProperty(key)) {
-        acc[key] = deltaValue;
-        continue;
-      }
-      let accValue = acc[key];
-      if (accValue === null || accValue === void 0) {
-        acc[key] = deltaValue;
-        continue;
-      }
-      if (key === "index" || key === "type") {
-        acc[key] = deltaValue;
-        continue;
-      }
-      if (typeof accValue === "string" && typeof deltaValue === "string") {
-        accValue += deltaValue;
-      } else if (typeof accValue === "number" && typeof deltaValue === "number") {
-        accValue += deltaValue;
-      } else if (isObj(accValue) && isObj(deltaValue)) {
-        accValue = this.accumulateDelta(accValue, deltaValue);
-      } else if (Array.isArray(accValue) && Array.isArray(deltaValue)) {
-        if (accValue.every((x5) => typeof x5 === "string" || typeof x5 === "number")) {
-          accValue.push(...deltaValue);
-          continue;
-        }
-      } else {
-        throw Error(`Unhandled record type: ${key}, deltaValue: ${deltaValue}, accValue: ${accValue}`);
-      }
-      acc[key] = accValue;
-    }
-    return acc;
-  }
-  _addRun(run) {
-    return run;
-  }
-  async _threadAssistantStream(params, thread, options) {
-    return await this._createThreadAssistantStream(thread, params, options);
-  }
-  async _runAssistantStream(threadId, runs, params, options) {
-    return await this._createAssistantStream(runs, threadId, params, options);
-  }
-  async _runToolAssistantStream(threadId, runId, runs, params, options) {
-    return await this._createToolAssistantStream(runs, threadId, runId, params, options);
-  }
-};
-_AssistantStream_addEvent = function _AssistantStream_addEvent2(event) {
-  if (this.ended)
-    return;
-  __classPrivateFieldSet11(this, _AssistantStream_currentEvent, event, "f");
-  __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_handleEvent).call(this, event);
-  switch (event.event) {
-    case "thread.created":
-      break;
-    case "thread.run.created":
-    case "thread.run.queued":
-    case "thread.run.in_progress":
-    case "thread.run.requires_action":
-    case "thread.run.completed":
-    case "thread.run.failed":
-    case "thread.run.cancelling":
-    case "thread.run.cancelled":
-    case "thread.run.expired":
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_handleRun).call(this, event);
-      break;
-    case "thread.run.step.created":
-    case "thread.run.step.in_progress":
-    case "thread.run.step.delta":
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_handleRunStep).call(this, event);
-      break;
-    case "thread.message.created":
-    case "thread.message.in_progress":
-    case "thread.message.delta":
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_handleMessage).call(this, event);
-      break;
-    case "error":
-      throw new Error("Encountered an error event in event processing - errors should be processed earlier");
-  }
-}, _AssistantStream_endRequest = function _AssistantStream_endRequest2() {
-  if (this.ended) {
-    throw new OpenAIError(`stream has ended, this shouldn't happen`);
-  }
-  if (!__classPrivateFieldGet13(this, _AssistantStream_finalRun, "f"))
-    throw Error("Final run has not been received");
-  return __classPrivateFieldGet13(this, _AssistantStream_finalRun, "f");
-}, _AssistantStream_handleMessage = function _AssistantStream_handleMessage2(event) {
-  const [accumulatedMessage, newContent] = __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_accumulateMessage).call(this, event, __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f"));
-  __classPrivateFieldSet11(this, _AssistantStream_messageSnapshot, accumulatedMessage, "f");
-  __classPrivateFieldGet13(this, _AssistantStream_messageSnapshots, "f")[accumulatedMessage.id] = accumulatedMessage;
-  for (const content of newContent) {
-    const snapshotContent = accumulatedMessage.content[content.index];
-    if (snapshotContent?.type == "text") {
-      this._emit("textCreated", snapshotContent.text);
-    }
-  }
-  switch (event.event) {
-    case "thread.message.created":
-      this._emit("messageCreated", event.data);
-      break;
-    case "thread.message.in_progress":
-      break;
-    case "thread.message.delta":
-      this._emit("messageDelta", event.data.delta, accumulatedMessage);
-      if (event.data.delta.content) {
-        for (const content of event.data.delta.content) {
-          if (content.type == "text" && content.text) {
-            let textDelta = content.text;
-            let snapshot = accumulatedMessage.content[content.index];
-            if (snapshot && snapshot.type == "text") {
-              this._emit("textDelta", textDelta, snapshot.text);
-            } else {
-              throw Error("The snapshot associated with this text delta is not text or missing");
-            }
-          }
-          if (content.index != __classPrivateFieldGet13(this, _AssistantStream_currentContentIndex, "f")) {
-            if (__classPrivateFieldGet13(this, _AssistantStream_currentContent, "f")) {
-              switch (__classPrivateFieldGet13(this, _AssistantStream_currentContent, "f").type) {
-                case "text":
-                  this._emit("textDone", __classPrivateFieldGet13(this, _AssistantStream_currentContent, "f").text, __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f"));
-                  break;
-                case "image_file":
-                  this._emit("imageFileDone", __classPrivateFieldGet13(this, _AssistantStream_currentContent, "f").image_file, __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f"));
-                  break;
-              }
-            }
-            __classPrivateFieldSet11(this, _AssistantStream_currentContentIndex, content.index, "f");
-          }
-          __classPrivateFieldSet11(this, _AssistantStream_currentContent, accumulatedMessage.content[content.index], "f");
-        }
-      }
-      break;
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      if (__classPrivateFieldGet13(this, _AssistantStream_currentContentIndex, "f") !== void 0) {
-        const currentContent = event.data.content[__classPrivateFieldGet13(this, _AssistantStream_currentContentIndex, "f")];
-        if (currentContent) {
-          switch (currentContent.type) {
-            case "image_file":
-              this._emit("imageFileDone", currentContent.image_file, __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f"));
-              break;
-            case "text":
-              this._emit("textDone", currentContent.text, __classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f"));
-              break;
-          }
-        }
-      }
-      if (__classPrivateFieldGet13(this, _AssistantStream_messageSnapshot, "f")) {
-        this._emit("messageDone", event.data);
-      }
-      __classPrivateFieldSet11(this, _AssistantStream_messageSnapshot, void 0, "f");
-  }
-}, _AssistantStream_handleRunStep = function _AssistantStream_handleRunStep2(event) {
-  const accumulatedRunStep = __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_accumulateRunStep).call(this, event);
-  __classPrivateFieldSet11(this, _AssistantStream_currentRunStepSnapshot, accumulatedRunStep, "f");
-  switch (event.event) {
-    case "thread.run.step.created":
-      this._emit("runStepCreated", event.data);
-      break;
-    case "thread.run.step.delta":
-      const delta = event.data.delta;
-      if (delta.step_details && delta.step_details.type == "tool_calls" && delta.step_details.tool_calls && accumulatedRunStep.step_details.type == "tool_calls") {
-        for (const toolCall of delta.step_details.tool_calls) {
-          if (toolCall.index == __classPrivateFieldGet13(this, _AssistantStream_currentToolCallIndex, "f")) {
-            this._emit("toolCallDelta", toolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index]);
-          } else {
-            if (__classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f")) {
-              this._emit("toolCallDone", __classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f"));
-            }
-            __classPrivateFieldSet11(this, _AssistantStream_currentToolCallIndex, toolCall.index, "f");
-            __classPrivateFieldSet11(this, _AssistantStream_currentToolCall, accumulatedRunStep.step_details.tool_calls[toolCall.index], "f");
-            if (__classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f"))
-              this._emit("toolCallCreated", __classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f"));
-          }
-        }
-      }
-      this._emit("runStepDelta", event.data.delta, accumulatedRunStep);
-      break;
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-      __classPrivateFieldSet11(this, _AssistantStream_currentRunStepSnapshot, void 0, "f");
-      const details = event.data.step_details;
-      if (details.type == "tool_calls") {
-        if (__classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f")) {
-          this._emit("toolCallDone", __classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f"));
-          __classPrivateFieldSet11(this, _AssistantStream_currentToolCall, void 0, "f");
-        }
-      }
-      this._emit("runStepDone", event.data, accumulatedRunStep);
-      break;
-    case "thread.run.step.in_progress":
-      break;
-  }
-}, _AssistantStream_handleEvent = function _AssistantStream_handleEvent2(event) {
-  __classPrivateFieldGet13(this, _AssistantStream_events, "f").push(event);
-  this._emit("event", event);
-}, _AssistantStream_accumulateRunStep = function _AssistantStream_accumulateRunStep2(event) {
-  switch (event.event) {
-    case "thread.run.step.created":
-      __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
-      return event.data;
-    case "thread.run.step.delta":
-      let snapshot = __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-      if (!snapshot) {
-        throw Error("Received a RunStepDelta before creation of a snapshot");
-      }
-      let data = event.data;
-      if (data.delta) {
-        const accumulated = AssistantStream.accumulateDelta(snapshot, data.delta);
-        __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = accumulated;
-      }
-      return __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-    case "thread.run.step.completed":
-    case "thread.run.step.failed":
-    case "thread.run.step.cancelled":
-    case "thread.run.step.expired":
-    case "thread.run.step.in_progress":
-      __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id] = event.data;
-      break;
-  }
-  if (__classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id])
-    return __classPrivateFieldGet13(this, _AssistantStream_runStepSnapshots, "f")[event.data.id];
-  throw new Error("No snapshot available");
-}, _AssistantStream_accumulateMessage = function _AssistantStream_accumulateMessage2(event, snapshot) {
-  let newContent = [];
-  switch (event.event) {
-    case "thread.message.created":
-      return [event.data, newContent];
-    case "thread.message.delta":
-      if (!snapshot) {
-        throw Error("Received a delta with no existing snapshot (there should be one from message creation)");
-      }
-      let data = event.data;
-      if (data.delta.content) {
-        for (const contentElement of data.delta.content) {
-          if (contentElement.index in snapshot.content) {
-            let currentContent = snapshot.content[contentElement.index];
-            snapshot.content[contentElement.index] = __classPrivateFieldGet13(this, _AssistantStream_instances, "m", _AssistantStream_accumulateContent).call(this, contentElement, currentContent);
-          } else {
-            snapshot.content[contentElement.index] = contentElement;
-            newContent.push(contentElement);
-          }
-        }
-      }
-      return [snapshot, newContent];
-    case "thread.message.in_progress":
-    case "thread.message.completed":
-    case "thread.message.incomplete":
-      if (snapshot) {
-        return [snapshot, newContent];
-      } else {
-        throw Error("Received thread message event with no existing snapshot");
-      }
-  }
-  throw Error("Tried to accumulate a non-message event");
-}, _AssistantStream_accumulateContent = function _AssistantStream_accumulateContent2(contentElement, currentContent) {
-  return AssistantStream.accumulateDelta(currentContent, contentElement);
-}, _AssistantStream_handleRun = function _AssistantStream_handleRun2(event) {
-  __classPrivateFieldSet11(this, _AssistantStream_currentRunSnapshot, event.data, "f");
-  switch (event.event) {
-    case "thread.run.created":
-      break;
-    case "thread.run.queued":
-      break;
-    case "thread.run.in_progress":
-      break;
-    case "thread.run.requires_action":
-    case "thread.run.cancelled":
-    case "thread.run.failed":
-    case "thread.run.completed":
-    case "thread.run.expired":
-      __classPrivateFieldSet11(this, _AssistantStream_finalRun, event.data, "f");
-      if (__classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f")) {
-        this._emit("toolCallDone", __classPrivateFieldGet13(this, _AssistantStream_currentToolCall, "f"));
-        __classPrivateFieldSet11(this, _AssistantStream_currentToolCall, void 0, "f");
-      }
-      break;
-    case "thread.run.cancelling":
-      break;
-  }
-};
-
-// node_modules/openai/resources/beta/threads/messages.mjs
-var Messages2 = class extends APIResource2 {
-  create(threadId, body, options) {
-    return this._client.post(`/threads/${threadId}/messages`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(threadId, messageId, options) {
-    return this._client.get(`/threads/${threadId}/messages/${messageId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  update(threadId, messageId, body, options) {
-    return this._client.post(`/threads/${threadId}/messages/${messageId}`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(threadId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list(threadId, {}, query);
-    }
-    return this._client.getAPIList(`/threads/${threadId}/messages`, MessagesPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  del(threadId, messageId, options) {
-    return this._client.delete(`/threads/${threadId}/messages/${messageId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-};
-var MessagesPage = class extends CursorPage {
-};
-(function(Messages3) {
-  Messages3.MessagesPage = MessagesPage;
-})(Messages2 || (Messages2 = {}));
-
-// node_modules/openai/resources/beta/threads/runs/steps.mjs
-var Steps = class extends APIResource2 {
-  retrieve(threadId, runId, stepId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.retrieve(threadId, runId, stepId, {}, query);
-    }
-    return this._client.get(`/threads/${threadId}/runs/${runId}/steps/${stepId}`, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(threadId, runId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list(threadId, runId, {}, query);
-    }
-    return this._client.getAPIList(`/threads/${threadId}/runs/${runId}/steps`, RunStepsPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-};
-var RunStepsPage = class extends CursorPage {
-};
-(function(Steps2) {
-  Steps2.RunStepsPage = RunStepsPage;
-})(Steps || (Steps = {}));
-
-// node_modules/openai/resources/beta/threads/runs/runs.mjs
-var Runs = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.steps = new Steps(this._client);
-  }
-  create(threadId, params, options) {
-    const { include, ...body } = params;
-    return this._client.post(`/threads/${threadId}/runs`, {
-      query: { include },
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers },
-      stream: params.stream ?? false
-    });
-  }
-  retrieve(threadId, runId, options) {
-    return this._client.get(`/threads/${threadId}/runs/${runId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  update(threadId, runId, body, options) {
-    return this._client.post(`/threads/${threadId}/runs/${runId}`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(threadId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list(threadId, {}, query);
-    }
-    return this._client.getAPIList(`/threads/${threadId}/runs`, RunsPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  cancel(threadId, runId, options) {
-    return this._client.post(`/threads/${threadId}/runs/${runId}/cancel`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  async createAndPoll(threadId, body, options) {
-    const run = await this.create(threadId, body, options);
-    return await this.poll(threadId, run.id, options);
-  }
-  createAndStream(threadId, body, options) {
-    return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
-  }
-  async poll(threadId, runId, options) {
-    const headers = { ...options?.headers, "X-Stainless-Poll-Helper": "true" };
-    if (options?.pollIntervalMs) {
-      headers["X-Stainless-Custom-Poll-Interval"] = options.pollIntervalMs.toString();
-    }
-    while (true) {
-      const { data: run, response } = await this.retrieve(threadId, runId, {
-        ...options,
-        headers: { ...options?.headers, ...headers }
-      }).withResponse();
-      switch (run.status) {
-        case "queued":
-        case "in_progress":
-        case "cancelling":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep2(sleepInterval);
-          break;
-        case "requires_action":
-        case "incomplete":
-        case "cancelled":
-        case "completed":
-        case "failed":
-        case "expired":
-          return run;
-      }
-    }
-  }
-  stream(threadId, body, options) {
-    return AssistantStream.createAssistantStream(threadId, this._client.beta.threads.runs, body, options);
-  }
-  submitToolOutputs(threadId, runId, body, options) {
-    return this._client.post(`/threads/${threadId}/runs/${runId}/submit_tool_outputs`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers },
-      stream: body.stream ?? false
-    });
-  }
-  async submitToolOutputsAndPoll(threadId, runId, body, options) {
-    const run = await this.submitToolOutputs(threadId, runId, body, options);
-    return await this.poll(threadId, run.id, options);
-  }
-  submitToolOutputsStream(threadId, runId, body, options) {
-    return AssistantStream.createToolAssistantStream(threadId, runId, this._client.beta.threads.runs, body, options);
-  }
-};
-var RunsPage = class extends CursorPage {
-};
-(function(Runs2) {
-  Runs2.RunsPage = RunsPage;
-  Runs2.Steps = Steps;
-  Runs2.RunStepsPage = RunStepsPage;
-})(Runs || (Runs = {}));
-
-// node_modules/openai/resources/beta/threads/threads.mjs
-var Threads = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.runs = new Runs(this._client);
-    this.messages = new Messages2(this._client);
-  }
-  create(body = {}, options) {
-    if (isRequestOptions(body)) {
-      return this.create({}, body);
-    }
-    return this._client.post("/threads", {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(threadId, options) {
-    return this._client.get(`/threads/${threadId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  update(threadId, body, options) {
-    return this._client.post(`/threads/${threadId}`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  del(threadId, options) {
-    return this._client.delete(`/threads/${threadId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  createAndRun(body, options) {
-    return this._client.post("/threads/runs", {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers },
-      stream: body.stream ?? false
-    });
-  }
-  async createAndRunPoll(body, options) {
-    const run = await this.createAndRun(body, options);
-    return await this.runs.poll(run.thread_id, run.id, options);
-  }
-  createAndRunStream(body, options) {
-    return AssistantStream.createThreadAssistantStream(body, this._client.beta.threads, options);
-  }
-};
-(function(Threads2) {
-  Threads2.Runs = Runs;
-  Threads2.RunsPage = RunsPage;
-  Threads2.Messages = Messages2;
-  Threads2.MessagesPage = MessagesPage;
-})(Threads || (Threads = {}));
-
-// node_modules/openai/lib/Util.mjs
-var allSettledWithThrow = async (promises) => {
-  const results = await Promise.allSettled(promises);
-  const rejected = results.filter((result) => result.status === "rejected");
-  if (rejected.length) {
-    for (const result of rejected) {
-      console.error(result.reason);
-    }
-    throw new Error(`${rejected.length} promise(s) failed - see the above errors`);
-  }
-  const values = [];
-  for (const result of results) {
-    if (result.status === "fulfilled") {
-      values.push(result.value);
-    }
-  }
-  return values;
-};
-
-// node_modules/openai/resources/beta/vector-stores/files.mjs
-var Files = class extends APIResource2 {
-  create(vectorStoreId, body, options) {
-    return this._client.post(`/vector_stores/${vectorStoreId}/files`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(vectorStoreId, fileId, options) {
-    return this._client.get(`/vector_stores/${vectorStoreId}/files/${fileId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(vectorStoreId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list(vectorStoreId, {}, query);
-    }
-    return this._client.getAPIList(`/vector_stores/${vectorStoreId}/files`, VectorStoreFilesPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  del(vectorStoreId, fileId, options) {
-    return this._client.delete(`/vector_stores/${vectorStoreId}/files/${fileId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  async createAndPoll(vectorStoreId, body, options) {
-    const file = await this.create(vectorStoreId, body, options);
-    return await this.poll(vectorStoreId, file.id, options);
-  }
-  async poll(vectorStoreId, fileId, options) {
-    const headers = { ...options?.headers, "X-Stainless-Poll-Helper": "true" };
-    if (options?.pollIntervalMs) {
-      headers["X-Stainless-Custom-Poll-Interval"] = options.pollIntervalMs.toString();
-    }
-    while (true) {
-      const fileResponse = await this.retrieve(vectorStoreId, fileId, {
-        ...options,
-        headers
-      }).withResponse();
-      const file = fileResponse.data;
-      switch (file.status) {
-        case "in_progress":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = fileResponse.response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep2(sleepInterval);
-          break;
-        case "failed":
-        case "completed":
-          return file;
-      }
-    }
-  }
-  async upload(vectorStoreId, file, options) {
-    const fileInfo = await this._client.files.create({ file, purpose: "assistants" }, options);
-    return this.create(vectorStoreId, { file_id: fileInfo.id }, options);
-  }
-  async uploadAndPoll(vectorStoreId, file, options) {
-    const fileInfo = await this.upload(vectorStoreId, file, options);
-    return await this.poll(vectorStoreId, fileInfo.id, options);
-  }
-};
-var VectorStoreFilesPage = class extends CursorPage {
-};
-(function(Files3) {
-  Files3.VectorStoreFilesPage = VectorStoreFilesPage;
-})(Files || (Files = {}));
-
-// node_modules/openai/resources/beta/vector-stores/file-batches.mjs
-var FileBatches = class extends APIResource2 {
-  create(vectorStoreId, body, options) {
-    return this._client.post(`/vector_stores/${vectorStoreId}/file_batches`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(vectorStoreId, batchId, options) {
-    return this._client.get(`/vector_stores/${vectorStoreId}/file_batches/${batchId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  cancel(vectorStoreId, batchId, options) {
-    return this._client.post(`/vector_stores/${vectorStoreId}/file_batches/${batchId}/cancel`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  async createAndPoll(vectorStoreId, body, options) {
-    const batch = await this.create(vectorStoreId, body);
-    return await this.poll(vectorStoreId, batch.id, options);
-  }
-  listFiles(vectorStoreId, batchId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.listFiles(vectorStoreId, batchId, {}, query);
-    }
-    return this._client.getAPIList(`/vector_stores/${vectorStoreId}/file_batches/${batchId}/files`, VectorStoreFilesPage, { query, ...options, headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers } });
-  }
-  async poll(vectorStoreId, batchId, options) {
-    const headers = { ...options?.headers, "X-Stainless-Poll-Helper": "true" };
-    if (options?.pollIntervalMs) {
-      headers["X-Stainless-Custom-Poll-Interval"] = options.pollIntervalMs.toString();
-    }
-    while (true) {
-      const { data: batch, response } = await this.retrieve(vectorStoreId, batchId, {
-        ...options,
-        headers
-      }).withResponse();
-      switch (batch.status) {
-        case "in_progress":
-          let sleepInterval = 5e3;
-          if (options?.pollIntervalMs) {
-            sleepInterval = options.pollIntervalMs;
-          } else {
-            const headerInterval = response.headers.get("openai-poll-after-ms");
-            if (headerInterval) {
-              const headerIntervalMs = parseInt(headerInterval);
-              if (!isNaN(headerIntervalMs)) {
-                sleepInterval = headerIntervalMs;
-              }
-            }
-          }
-          await sleep2(sleepInterval);
-          break;
-        case "failed":
-        case "cancelled":
-        case "completed":
-          return batch;
-      }
-    }
-  }
-  async uploadAndPoll(vectorStoreId, { files, fileIds = [] }, options) {
-    if (files == null || files.length == 0) {
-      throw new Error(`No \`files\` provided to process. If you've already uploaded files you should use \`.createAndPoll()\` instead`);
-    }
-    const configuredConcurrency = options?.maxConcurrency ?? 5;
-    const concurrencyLimit = Math.min(configuredConcurrency, files.length);
-    const client = this._client;
-    const fileIterator = files.values();
-    const allFileIds = [...fileIds];
-    async function processFiles(iterator) {
-      for (let item of iterator) {
-        const fileObj = await client.files.create({ file: item, purpose: "assistants" }, options);
-        allFileIds.push(fileObj.id);
-      }
-    }
-    const workers = Array(concurrencyLimit).fill(fileIterator).map(processFiles);
-    await allSettledWithThrow(workers);
-    return await this.createAndPoll(vectorStoreId, {
-      file_ids: allFileIds
-    });
-  }
-};
-(function(FileBatches2) {
-})(FileBatches || (FileBatches = {}));
-
-// node_modules/openai/resources/beta/vector-stores/vector-stores.mjs
-var VectorStores = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.files = new Files(this._client);
-    this.fileBatches = new FileBatches(this._client);
-  }
-  create(body, options) {
-    return this._client.post("/vector_stores", {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  retrieve(vectorStoreId, options) {
-    return this._client.get(`/vector_stores/${vectorStoreId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  update(vectorStoreId, body, options) {
-    return this._client.post(`/vector_stores/${vectorStoreId}`, {
-      body,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  list(query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list({}, query);
-    }
-    return this._client.getAPIList("/vector_stores", VectorStoresPage, {
-      query,
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-  del(vectorStoreId, options) {
-    return this._client.delete(`/vector_stores/${vectorStoreId}`, {
-      ...options,
-      headers: { "OpenAI-Beta": "assistants=v2", ...options?.headers }
-    });
-  }
-};
-var VectorStoresPage = class extends CursorPage {
-};
-(function(VectorStores2) {
-  VectorStores2.VectorStoresPage = VectorStoresPage;
-  VectorStores2.Files = Files;
-  VectorStores2.VectorStoreFilesPage = VectorStoreFilesPage;
-  VectorStores2.FileBatches = FileBatches;
-})(VectorStores || (VectorStores = {}));
-
-// node_modules/openai/resources/beta/beta.mjs
-var Beta = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.vectorStores = new VectorStores(this._client);
-    this.chat = new Chat2(this._client);
-    this.assistants = new Assistants(this._client);
-    this.threads = new Threads(this._client);
-  }
-};
-(function(Beta2) {
-  Beta2.VectorStores = VectorStores;
-  Beta2.VectorStoresPage = VectorStoresPage;
-  Beta2.Chat = Chat2;
-  Beta2.Assistants = Assistants;
-  Beta2.AssistantsPage = AssistantsPage;
-  Beta2.Threads = Threads;
-})(Beta || (Beta = {}));
-
-// node_modules/openai/resources/completions.mjs
-var Completions4 = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/completions", { body, ...options, stream: body.stream ?? false });
-  }
-};
-(function(Completions5) {
-})(Completions4 || (Completions4 = {}));
-
-// node_modules/openai/resources/embeddings.mjs
-var Embeddings = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/embeddings", { body, ...options });
-  }
-};
-(function(Embeddings2) {
-})(Embeddings || (Embeddings = {}));
-
-// node_modules/openai/resources/files.mjs
-var Files2 = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/files", multipartFormRequestOptions({ body, ...options }));
-  }
-  retrieve(fileId, options) {
-    return this._client.get(`/files/${fileId}`, options);
-  }
-  list(query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list({}, query);
-    }
-    return this._client.getAPIList("/files", FileObjectsPage, { query, ...options });
-  }
-  del(fileId, options) {
-    return this._client.delete(`/files/${fileId}`, options);
-  }
-  content(fileId, options) {
-    return this._client.get(`/files/${fileId}/content`, { ...options, __binaryResponse: true });
-  }
-  retrieveContent(fileId, options) {
-    return this._client.get(`/files/${fileId}/content`, {
-      ...options,
-      headers: { Accept: "application/json", ...options?.headers }
-    });
-  }
-  async waitForProcessing(id, { pollInterval = 5e3, maxWait = 30 * 60 * 1e3 } = {}) {
-    const TERMINAL_STATES = /* @__PURE__ */ new Set(["processed", "error", "deleted"]);
-    const start = Date.now();
-    let file = await this.retrieve(id);
-    while (!file.status || !TERMINAL_STATES.has(file.status)) {
-      await sleep2(pollInterval);
-      file = await this.retrieve(id);
-      if (Date.now() - start > maxWait) {
-        throw new APIConnectionTimeoutError3({
-          message: `Giving up on waiting for file ${id} to finish processing after ${maxWait} milliseconds.`
-        });
-      }
-    }
-    return file;
-  }
-};
-var FileObjectsPage = class extends Page {
-};
-(function(Files3) {
-  Files3.FileObjectsPage = FileObjectsPage;
-})(Files2 || (Files2 = {}));
-
-// node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
-var Checkpoints = class extends APIResource2 {
-  list(fineTuningJobId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list(fineTuningJobId, {}, query);
-    }
-    return this._client.getAPIList(`/fine_tuning/jobs/${fineTuningJobId}/checkpoints`, FineTuningJobCheckpointsPage, { query, ...options });
-  }
-};
-var FineTuningJobCheckpointsPage = class extends CursorPage {
-};
-(function(Checkpoints2) {
-  Checkpoints2.FineTuningJobCheckpointsPage = FineTuningJobCheckpointsPage;
-})(Checkpoints || (Checkpoints = {}));
-
-// node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
-var Jobs = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.checkpoints = new Checkpoints(this._client);
-  }
-  create(body, options) {
-    return this._client.post("/fine_tuning/jobs", { body, ...options });
-  }
-  retrieve(fineTuningJobId, options) {
-    return this._client.get(`/fine_tuning/jobs/${fineTuningJobId}`, options);
-  }
-  list(query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.list({}, query);
-    }
-    return this._client.getAPIList("/fine_tuning/jobs", FineTuningJobsPage, { query, ...options });
-  }
-  cancel(fineTuningJobId, options) {
-    return this._client.post(`/fine_tuning/jobs/${fineTuningJobId}/cancel`, options);
-  }
-  listEvents(fineTuningJobId, query = {}, options) {
-    if (isRequestOptions(query)) {
-      return this.listEvents(fineTuningJobId, {}, query);
-    }
-    return this._client.getAPIList(`/fine_tuning/jobs/${fineTuningJobId}/events`, FineTuningJobEventsPage, {
-      query,
-      ...options
-    });
-  }
-};
-var FineTuningJobsPage = class extends CursorPage {
-};
-var FineTuningJobEventsPage = class extends CursorPage {
-};
-(function(Jobs2) {
-  Jobs2.FineTuningJobsPage = FineTuningJobsPage;
-  Jobs2.FineTuningJobEventsPage = FineTuningJobEventsPage;
-  Jobs2.Checkpoints = Checkpoints;
-  Jobs2.FineTuningJobCheckpointsPage = FineTuningJobCheckpointsPage;
-})(Jobs || (Jobs = {}));
-
-// node_modules/openai/resources/fine-tuning/fine-tuning.mjs
-var FineTuning = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.jobs = new Jobs(this._client);
-  }
-};
-(function(FineTuning2) {
-  FineTuning2.Jobs = Jobs;
-  FineTuning2.FineTuningJobsPage = FineTuningJobsPage;
-  FineTuning2.FineTuningJobEventsPage = FineTuningJobEventsPage;
-})(FineTuning || (FineTuning = {}));
-
-// node_modules/openai/resources/images.mjs
-var Images = class extends APIResource2 {
-  createVariation(body, options) {
-    return this._client.post("/images/variations", multipartFormRequestOptions({ body, ...options }));
-  }
-  edit(body, options) {
-    return this._client.post("/images/edits", multipartFormRequestOptions({ body, ...options }));
-  }
-  generate(body, options) {
-    return this._client.post("/images/generations", { body, ...options });
-  }
-};
-(function(Images2) {
-})(Images || (Images = {}));
-
-// node_modules/openai/resources/models.mjs
-var Models = class extends APIResource2 {
-  retrieve(model, options) {
-    return this._client.get(`/models/${model}`, options);
-  }
-  list(options) {
-    return this._client.getAPIList("/models", ModelsPage, options);
-  }
-  del(model, options) {
-    return this._client.delete(`/models/${model}`, options);
-  }
-};
-var ModelsPage = class extends Page {
-};
-(function(Models2) {
-  Models2.ModelsPage = ModelsPage;
-})(Models || (Models = {}));
-
-// node_modules/openai/resources/moderations.mjs
-var Moderations = class extends APIResource2 {
-  create(body, options) {
-    return this._client.post("/moderations", { body, ...options });
-  }
-};
-(function(Moderations2) {
-})(Moderations || (Moderations = {}));
-
-// node_modules/openai/resources/uploads/parts.mjs
-var Parts = class extends APIResource2 {
-  create(uploadId, body, options) {
-    return this._client.post(`/uploads/${uploadId}/parts`, multipartFormRequestOptions({ body, ...options }));
-  }
-};
-(function(Parts2) {
-})(Parts || (Parts = {}));
-
-// node_modules/openai/resources/uploads/uploads.mjs
-var Uploads = class extends APIResource2 {
-  constructor() {
-    super(...arguments);
-    this.parts = new Parts(this._client);
-  }
-  create(body, options) {
-    return this._client.post("/uploads", { body, ...options });
-  }
-  cancel(uploadId, options) {
-    return this._client.post(`/uploads/${uploadId}/cancel`, options);
-  }
-  complete(uploadId, body, options) {
-    return this._client.post(`/uploads/${uploadId}/complete`, { body, ...options });
-  }
-};
-(function(Uploads2) {
-  Uploads2.Parts = Parts;
-})(Uploads || (Uploads = {}));
-
-// node_modules/openai/index.mjs
-var _a4;
-var OpenAI = class extends APIClient2 {
-  constructor({ baseURL = readEnv2("OPENAI_BASE_URL"), apiKey = readEnv2("OPENAI_API_KEY"), organization = readEnv2("OPENAI_ORG_ID") ?? null, project = readEnv2("OPENAI_PROJECT_ID") ?? null, ...opts } = {}) {
-    if (apiKey === void 0) {
-      throw new OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
-    }
-    const options = {
-      apiKey,
-      organization,
-      project,
-      ...opts,
-      baseURL: baseURL || `https://api.openai.com/v1`
-    };
-    if (!options.dangerouslyAllowBrowser && isRunningInBrowser()) {
-      throw new OpenAIError("It looks like you're running in a browser-like environment.\n\nThis is disabled by default, as it risks exposing your secret API credentials to attackers.\nIf you understand the risks and have appropriate mitigations in place,\nyou can set the `dangerouslyAllowBrowser` option to `true`, e.g.,\n\nnew OpenAI({ apiKey, dangerouslyAllowBrowser: true });\n\nhttps://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety\n");
-    }
-    super({
-      baseURL: options.baseURL,
-      timeout: options.timeout ?? 6e5,
-      httpAgent: options.httpAgent,
-      maxRetries: options.maxRetries,
-      fetch: options.fetch
-    });
-    this.completions = new Completions4(this);
-    this.chat = new Chat(this);
-    this.embeddings = new Embeddings(this);
-    this.files = new Files2(this);
-    this.images = new Images(this);
-    this.audio = new Audio(this);
-    this.moderations = new Moderations(this);
-    this.models = new Models(this);
-    this.fineTuning = new FineTuning(this);
-    this.beta = new Beta(this);
-    this.batches = new Batches(this);
-    this.uploads = new Uploads(this);
-    this._options = options;
-    this.apiKey = apiKey;
-    this.organization = organization;
-    this.project = project;
-  }
-  defaultQuery() {
-    return this._options.defaultQuery;
-  }
-  defaultHeaders(opts) {
-    return {
-      ...super.defaultHeaders(opts),
-      "OpenAI-Organization": this.organization,
-      "OpenAI-Project": this.project,
-      ...this._options.defaultHeaders
-    };
-  }
-  authHeaders(opts) {
-    return { Authorization: `Bearer ${this.apiKey}` };
-  }
-  stringifyQuery(query) {
-    return qs.stringify(query, { arrayFormat: "brackets" });
-  }
-};
-_a4 = OpenAI;
-OpenAI.OpenAI = _a4;
-OpenAI.DEFAULT_TIMEOUT = 6e5;
-OpenAI.OpenAIError = OpenAIError;
-OpenAI.APIError = APIError3;
-OpenAI.APIConnectionError = APIConnectionError3;
-OpenAI.APIConnectionTimeoutError = APIConnectionTimeoutError3;
-OpenAI.APIUserAbortError = APIUserAbortError3;
-OpenAI.NotFoundError = NotFoundError3;
-OpenAI.ConflictError = ConflictError3;
-OpenAI.RateLimitError = RateLimitError3;
-OpenAI.BadRequestError = BadRequestError3;
-OpenAI.AuthenticationError = AuthenticationError3;
-OpenAI.InternalServerError = InternalServerError3;
-OpenAI.PermissionDeniedError = PermissionDeniedError3;
-OpenAI.UnprocessableEntityError = UnprocessableEntityError3;
-OpenAI.toFile = toFile2;
-OpenAI.fileFromPath = fileFromPath4;
-var { OpenAIError: OpenAIError2, APIError: APIError4, APIConnectionError: APIConnectionError4, APIConnectionTimeoutError: APIConnectionTimeoutError4, APIUserAbortError: APIUserAbortError4, NotFoundError: NotFoundError4, ConflictError: ConflictError4, RateLimitError: RateLimitError4, BadRequestError: BadRequestError4, AuthenticationError: AuthenticationError4, InternalServerError: InternalServerError4, PermissionDeniedError: PermissionDeniedError4, UnprocessableEntityError: UnprocessableEntityError4 } = error_exports2;
-(function(OpenAI2) {
-  OpenAI2.Page = Page;
-  OpenAI2.CursorPage = CursorPage;
-  OpenAI2.Completions = Completions4;
-  OpenAI2.Chat = Chat;
-  OpenAI2.Embeddings = Embeddings;
-  OpenAI2.Files = Files2;
-  OpenAI2.FileObjectsPage = FileObjectsPage;
-  OpenAI2.Images = Images;
-  OpenAI2.Audio = Audio;
-  OpenAI2.Moderations = Moderations;
-  OpenAI2.Models = Models;
-  OpenAI2.ModelsPage = ModelsPage;
-  OpenAI2.FineTuning = FineTuning;
-  OpenAI2.Beta = Beta;
-  OpenAI2.Batches = Batches;
-  OpenAI2.BatchesPage = BatchesPage;
-  OpenAI2.Uploads = Uploads;
-})(OpenAI || (OpenAI = {}));
-
 // src/engine/openAi.ts
 var OpenAiEngine = class {
   constructor(config7) {
@@ -44494,9 +38046,11 @@ var OpenAiEngine = class {
         const REQUEST_TOKENS = messages.map((msg) => tokenCount(msg.content) + 4).reduce((a4, b7) => a4 + b7, 0);
         if (REQUEST_TOKENS > this.config.maxTokensInput - this.config.maxTokensOutput)
           throw new Error("TOO_MUCH_TOKENS" /* tooMuchTokens */);
-        const completion = await this.client.chat.completions.create(params);
-        const message = completion.choices[0].message;
-        return message?.content;
+        let finalMessage = "";
+        for (const item of params.messages) {
+          finalMessage = finalMessage + item.content;
+        }
+        return finalMessage;
       } catch (error) {
         const err = error;
         if (axios_default.isAxiosError(error) && error.response?.status === 401) {
@@ -44508,11 +38062,6 @@ var OpenAiEngine = class {
       }
     };
     this.config = config7;
-    if (!config7.baseURL) {
-      this.client = new OpenAI({ apiKey: config7.apiKey });
-    } else {
-      this.client = new OpenAI({ apiKey: config7.apiKey, baseURL: config7.baseURL });
-    }
   }
 };
 
@@ -44550,6 +38099,8 @@ function getEngine() {
       return new FlowiseEngine(DEFAULT_CONFIG2);
     case "groq" /* GROQ */:
       return new GroqEngine(DEFAULT_CONFIG2);
+    case "md" /* MDENGIN */:
+      return new Md();
     default:
       return new OpenAiEngine(DEFAULT_CONFIG2);
   }
@@ -44572,7 +38123,7 @@ var computeHash = async (content, algorithm = "sha256") => {
 };
 
 // src/modules/commitlint/prompts.ts
-var import_types = __toESM(require_lib4(), 1);
+var import_types = __toESM(require_lib3(), 1);
 var config2 = getConfig();
 var translation = i18n[config2.OCO_LANGUAGE || "en"];
 var getTypeRuleExtraDescription = (type2, prompt) => prompt?.questions?.type?.enum?.[type2]?.description;
@@ -45269,10 +38820,6 @@ var trytm = async (promise) => {
 
 // src/commands/commit.ts
 var config6 = getConfig();
-var getGitRemotes = async () => {
-  const { stdout } = await execa("git", ["remote"]);
-  return stdout.split("\n").filter((remote) => Boolean(remote.trim()));
-};
 var checkMessageTemplate = (extraArgs2) => {
   for (const key in extraArgs2) {
     if (extraArgs2[key].includes(config6.OCO_MESSAGE_TEMPLATE_PLACEHOLDER))
@@ -45310,88 +38857,6 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
 ${commitMessage}
 ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014")}`
     );
-    const isCommitConfirmedByUser = skipCommitConfirmation || await Q3({
-      message: "Confirm the commit message?"
-    });
-    if (hD2(isCommitConfirmedByUser))
-      process.exit(1);
-    if (isCommitConfirmedByUser) {
-      const committingChangesSpinner = le();
-      committingChangesSpinner.start("Committing the changes");
-      const { stdout } = await execa("git", [
-        "commit",
-        "-m",
-        commitMessage,
-        ...extraArgs2
-      ]);
-      committingChangesSpinner.stop(
-        `${source_default.green("\u2714")} Successfully committed`
-      );
-      ce(stdout);
-      const remotes = await getGitRemotes();
-      if (config6.OCO_GITPUSH === false)
-        return;
-      if (!remotes.length) {
-        const { stdout: stdout2 } = await execa("git", ["push"]);
-        if (stdout2)
-          ce(stdout2);
-        process.exit(0);
-      }
-      if (remotes.length === 1) {
-        const isPushConfirmedByUser = await Q3({
-          message: "Do you want to run `git push`?"
-        });
-        if (hD2(isPushConfirmedByUser))
-          process.exit(1);
-        if (isPushConfirmedByUser) {
-          const pushSpinner = le();
-          pushSpinner.start(`Running 'git push ${remotes[0]}'`);
-          const { stdout: stdout2 } = await execa("git", [
-            "push",
-            "--verbose",
-            remotes[0]
-          ]);
-          pushSpinner.stop(
-            `${source_default.green("\u2714")} Successfully pushed all commits to ${remotes[0]}`
-          );
-          if (stdout2)
-            ce(stdout2);
-        } else {
-          ce("`git push` aborted");
-          process.exit(0);
-        }
-      } else {
-        const selectedRemote = await ee({
-          message: "Choose a remote to push to",
-          options: remotes.map((remote) => ({ value: remote, label: remote }))
-        });
-        if (hD2(selectedRemote))
-          process.exit(1);
-        const pushSpinner = le();
-        pushSpinner.start(`Running 'git push ${selectedRemote}'`);
-        const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
-        if (stdout2)
-          ce(stdout2);
-        pushSpinner.stop(
-          `${source_default.green(
-            "\u2714"
-          )} successfully pushed all commits to ${selectedRemote}`
-        );
-      }
-    } else {
-      const regenerateMessage = await Q3({
-        message: "Do you want to regenerate the message?"
-      });
-      if (hD2(regenerateMessage))
-        process.exit(1);
-      if (regenerateMessage) {
-        await generateCommitMessageFromGitDiff({
-          diff,
-          extraArgs: extraArgs2,
-          fullGitMojiSpec
-        });
-      }
-    }
   } catch (error) {
     commitGenerationSpinner.stop(
       `${source_default.red("\u2716")} Failed to generate the commit message`
@@ -45630,36 +39095,6 @@ var prepareCommitMessageHook = async (isStageAllFlag = false) => {
   }
 };
 
-// src/version.ts
-var getOpenCommitLatestVersion = async () => {
-  try {
-    const { stdout } = await execa("npm", ["view", "opencommit", "version"]);
-    return stdout;
-  } catch (_7) {
-    ce("Error while getting the latest version of opencommit");
-    return void 0;
-  }
-};
-
-// src/utils/checkIsLatestVersion.ts
-var checkIsLatestVersion = async () => {
-  const latestVersion = await getOpenCommitLatestVersion();
-  if (latestVersion) {
-    const currentVersion = package_default.version;
-    if (currentVersion !== latestVersion) {
-      ce(
-        source_default.yellow(
-          `
-You are not using the latest stable version of OpenCommit with new features and bug fixes.
-Current version: ${currentVersion}. Latest version: ${latestVersion}.
-\u{1F680} To update run: npm i -g opencommit@latest.
-        `
-        )
-      );
-    }
-  }
-};
-
 // src/migrations/_run.ts
 var import_fs5 = __toESM(require("fs"), 1);
 var import_os2 = require("os");
@@ -45829,7 +39264,6 @@ Z2(
   },
   async ({ flags }) => {
     await runMigrations();
-    await checkIsLatestVersion();
     if (await isHookCalled()) {
       prepareCommitMessageHook();
     } else {

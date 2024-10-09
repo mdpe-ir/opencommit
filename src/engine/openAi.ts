@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { OpenAI } from 'openai';
+import clipboardy from 'clipboardy';
 import { GenerateCommitMessageErrorEnum } from '../generateCommitMessageFromGitDiff';
 import { tokenCount } from '../utils/tokenCount';
 import { AiEngine, AiEngineConfig } from './Engine';
@@ -12,12 +13,6 @@ export class OpenAiEngine implements AiEngine {
 
   constructor(config: OpenAiConfig) {
     this.config = config;
-
-    if (!config.baseURL) {
-      this.client = new OpenAI({ apiKey: config.apiKey });
-    } else {
-      this.client = new OpenAI({ apiKey: config.apiKey, baseURL: config.baseURL });
-    }
   }
 
   public generateCommitMessage = async (
@@ -42,11 +37,18 @@ export class OpenAiEngine implements AiEngine {
       )
         throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
 
-      const completion = await this.client.chat.completions.create(params);
+      // const completion = await this.client.chat.completions.create(params);
 
-      const message = completion.choices[0].message;
+      // const message = completion.choices[0].message;
 
-      return message?.content;
+      // return message?.content;
+
+      let finalMessage: string = '';
+      for (const item of params.messages) {
+        finalMessage = finalMessage + item.content;
+      }
+
+      return finalMessage;
     } catch (error) {
       const err = error as Error;
       if (

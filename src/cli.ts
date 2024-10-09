@@ -32,7 +32,6 @@ cli(
   },
   async ({ flags }) => {
     await runMigrations();
-    await checkIsLatestVersion();
 
     if (await isHookCalled()) {
       prepareCommitMessageHook();

@@ -307,7 +307,8 @@ export enum OCO_AI_PROVIDER_ENUM {
   AZURE = 'azure',
   TEST = 'test',
   FLOWISE = 'flowise',
-  GROQ = 'groq'
+  GROQ = 'groq',
+  MDENGIN = 'md'
 }
 
 export type ConfigType = {

@@ -82,106 +82,106 @@ ${commitMessage}
 ${chalk.grey('——————————————————')}`
     );
 
-    const isCommitConfirmedByUser =
-      skipCommitConfirmation ||
-      (await confirm({
-        message: 'Confirm the commit message?'
-      }));
+    // const isCommitConfirmedByUser =
+    //   skipCommitConfirmation ||
+    //   (await confirm({
+    //     message: 'Confirm the commit message?'
+    //   }));
 
-    if (isCancel(isCommitConfirmedByUser)) process.exit(1);
+    // if (isCancel(isCommitConfirmedByUser)) process.exit(1);
 
-    if (isCommitConfirmedByUser) {
-      const committingChangesSpinner = spinner();
-      committingChangesSpinner.start('Committing the changes');
-      const { stdout } = await execa('git', [
-        'commit',
-        '-m',
-        commitMessage,
-        ...extraArgs
-      ]);
-      committingChangesSpinner.stop(
-        `${chalk.green('✔')} Successfully committed`
-      );
+    // if (isCommitConfirmedByUser) {
+    //   const committingChangesSpinner = spinner();
+    //   committingChangesSpinner.start('Committing the changes');
+    //   const { stdout } = await execa('git', [
+    //     'commit',
+    //     '-m',
+    //     commitMessage,
+    //     ...extraArgs
+    //   ]);
+    //   committingChangesSpinner.stop(
+    //     `${chalk.green('✔')} Successfully committed`
+    //   );
 
-      outro(stdout);
+    //   outro(stdout);
 
-      const remotes = await getGitRemotes();
+    //   const remotes = await getGitRemotes();
 
-      // user isn't pushing, return early
-      if (config.OCO_GITPUSH === false) return;
+    //   // user isn't pushing, return early
+    //   if (config.OCO_GITPUSH === false) return;
 
-      if (!remotes.length) {
-        const { stdout } = await execa('git', ['push']);
-        if (stdout) outro(stdout);
-        process.exit(0);
-      }
+    //   if (!remotes.length) {
+    //     const { stdout } = await execa('git', ['push']);
+    //     if (stdout) outro(stdout);
+    //     process.exit(0);
+    //   }
 
-      if (remotes.length === 1) {
-        const isPushConfirmedByUser = await confirm({
-          message: 'Do you want to run `git push`?'
-        });
+    //   if (remotes.length === 1) {
+    //     const isPushConfirmedByUser = await confirm({
+    //       message: 'Do you want to run `git push`?'
+    //     });
 
-        if (isCancel(isPushConfirmedByUser)) process.exit(1);
+    //     if (isCancel(isPushConfirmedByUser)) process.exit(1);
 
-        if (isPushConfirmedByUser) {
-          const pushSpinner = spinner();
+    //     if (isPushConfirmedByUser) {
+    //       const pushSpinner = spinner();
 
-          pushSpinner.start(`Running 'git push ${remotes[0]}'`);
+    //       pushSpinner.start(`Running 'git push ${remotes[0]}'`);
 
-          const { stdout } = await execa('git', [
-            'push',
-            '--verbose',
-            remotes[0]
-          ]);
+    //       const { stdout } = await execa('git', [
+    //         'push',
+    //         '--verbose',
+    //         remotes[0]
+    //       ]);
 
-          pushSpinner.stop(
-            `${chalk.green('✔')} Successfully pushed all commits to ${
-              remotes[0]
-            }`
-          );
+    //       pushSpinner.stop(
+    //         `${chalk.green('✔')} Successfully pushed all commits to ${
+    //           remotes[0]
+    //         }`
+    //       );
 
-          if (stdout) outro(stdout);
-        } else {
-          outro('`git push` aborted');
-          process.exit(0);
-        }
-      } else {
-        const selectedRemote = (await select({
-          message: 'Choose a remote to push to',
-          options: remotes.map((remote) => ({ value: remote, label: remote }))
-        })) as string;
+    //       if (stdout) outro(stdout);
+    //     } else {
+    //       outro('`git push` aborted');
+    //       process.exit(0);
+    //     }
+    //   } else {
+    //     const selectedRemote = (await select({
+    //       message: 'Choose a remote to push to',
+    //       options: remotes.map((remote) => ({ value: remote, label: remote }))
+    //     })) as string;
 
-        if (isCancel(selectedRemote)) process.exit(1);
+    //     if (isCancel(selectedRemote)) process.exit(1);
 
-        const pushSpinner = spinner();
+    //     const pushSpinner = spinner();
 
-        pushSpinner.start(`Running 'git push ${selectedRemote}'`);
+    //     pushSpinner.start(`Running 'git push ${selectedRemote}'`);
 
-        const { stdout } = await execa('git', ['push', selectedRemote]);
+    //     const { stdout } = await execa('git', ['push', selectedRemote]);
 
-        if (stdout) outro(stdout);
+    //     if (stdout) outro(stdout);
 
-        pushSpinner.stop(
-          `${chalk.green(
-            '✔'
-          )} successfully pushed all commits to ${selectedRemote}`
-        );
-      }
-    } else {
-      const regenerateMessage = await confirm({
-        message: 'Do you want to regenerate the message?'
-      });
+    //     pushSpinner.stop(
+    //       `${chalk.green(
+    //         '✔'
+    //       )} successfully pushed all commits to ${selectedRemote}`
+    //     );
+    //   }
+    // } else {
+    //   const regenerateMessage = await confirm({
+    //     message: 'Do you want to regenerate the message?'
+    //   });
 
-      if (isCancel(regenerateMessage)) process.exit(1);
+    //   if (isCancel(regenerateMessage)) process.exit(1);
 
-      if (regenerateMessage) {
-        await generateCommitMessageFromGitDiff({
-          diff,
-          extraArgs,
-          fullGitMojiSpec
-        });
-      }
-    }
+    //   if (regenerateMessage) {
+    //     await generateCommitMessageFromGitDiff({
+    //       diff,
+    //       extraArgs,
+    //       fullGitMojiSpec
+    //     });
+    //   }
+    // }
   } catch (error) {
     commitGenerationSpinner.stop(
       `${chalk.red('✖')} Failed to generate the commit message`
